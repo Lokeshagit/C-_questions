@@ -1,0 +1,7306 @@
+LSET Solutions:
+
+1) TWO SUM
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int a=0;
+        int b=0;
+        for(int i=0;i<nums.size()-1;i++)
+        {
+            for(int j=i+1;j<nums.size();j++)
+            {
+                if(nums[i]+nums[j]==target)
+                {
+                    a=i;
+                    b=j;
+                }
+            }
+        }
+        return {a,b}; 
+    }
+};
+
+-----------------------------------------------------------------
+
+
+2) Best Time to Buy and Sell Stock II
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        
+        for(int i = 1;i < prices.size();i++)
+        {
+            if(prices[i] > prices[i-1])
+            {
+                profit += (prices[i]-prices[i-1]);
+            }
+        }
+        return profit;
+    }
+};
+
+-------------------------------------------------------------------
+
+3) Diwali Lights
+
+long lights(int n) {
+    if(n<=1)
+        return n;
+    long ans=1;
+    for (int i = 0; i < n; i++) {
+        ans *= 2;
+        ans = ans % 100000;
+    }
+    return ans-1;
+}
+
+--------------------------------------------------------------------
+
+4) Common child
+
+int commonChild(string s1, string s2) {
+    int i,j, m = s1.size(), n = s2.size();
+    vector<vector<int>>L(s1.size()+1, vector<int>(s2.size()+1,0));
+    
+    if(s1.empty() || s2.empty())
+        return 0;
+    
+    for( i=1; i<=m; i++)
+    {
+        for( j=1; j<=m; j++)
+        {
+            if(s1[i-1]==s2[j-1])
+                L[i][j]=L[i-1][j-1]+1;
+            else
+                L[i][j]=max(L[i-1][j],L[i][j-1]);
+        }
+    }
+    return L[m][n];
+}
+
+-------------------------------------------------------------------------
+
+5) Merge two sorted linked lists
+
+SinglyLinkedListNode* mergeLists(SinglyLinkedListNode* head1, SinglyLinkedListNode* head2) {
+
+    if(!head1) return head2;
+    if(!head2) return head1;
+    SinglyLinkedListNode *temp = NULL, *head = NULL;
+    
+    if (head1->data <= head2->data)
+    {
+        head = head1;
+        head1 = head1->next;
+    }
+    else
+    {
+        head = head2;
+        head2 = head2->next;
+    }
+    
+    temp = head;
+    
+    while(head1!=NULL || head2!=NULL) {
+        if(!head2 || (head1 && head1->data < head2->data)) {
+            temp->next = head1;
+            head1 = head1->next;
+        } else {
+            temp->next = head2;
+            head2 = head2->next;
+        }
+        temp = temp->next;
+    }
+    return head;
+    
+}
+
+-------------------------------------------------------------------------------------
+
+6) Maximum Subarray
+
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size();
+        int local_max = 0;
+        int global_max = INT_MIN;
+        for(int i=0; i<n; i++)
+        {
+            local_max = max(nums[i],nums[i]+local_max);
+            if(local_max > global_max)
+                global_max = local_max;
+        }
+        return global_max;
+    }
+};
+
+-------------------------------------------------------------------------------
+
+7) Best Time to Buy and Sell Stock with Cooldown
+
+class Solution {
+public:
+    int help(int day,vector<int>&p,int bag,vector<vector<int>>&dp)
+    {
+        if(day >=p.size())return 0;
+        if(dp[day][bag]!=-1)return dp[day][bag];
+        //if bag is full i can either sell or skip
+        if(bag==1)
+        {
+            //if i sell then i need to skip the next day and the bag will be empty
+            int sell=p[day]+help(day+2,p,0,dp);
+            
+            //if i skip this day
+            int skip=help(day+1,p,1,dp);
+            return dp[day][bag]=max(sell,skip);
+        }
+        else
+            //if the bag is empty i can either buy or skip
+        {
+            int buy=-p[day]+help(day+1,p,1,dp);//buying a amount so negative
+            int skipp=help(day+1,p,0,dp);
+            return dp[day][bag]=max(buy,skipp);
+        }
+            
+    }
+    int maxProfit(vector<int>& prices) {
+        //since our day and bag is changing so we will make a 2d dp array
+        int n=prices.size();
+        vector<vector<int>>dp(n+1,vector<int>(2,-1));
+        return help(0,prices,0,dp);
+    }
+};
+
+-------------------------------------------------------------------------------
+
+8) Sherlock and Anagrams
+
+map<string,int> mp ;
+int sherlockAndAnagrams(string s) {
+
+mp.clear();
+    string sn,ss ;
+    int j;
+    int l=s.length();
+        for(int k=0;k<l;k++){
+            ss = "";
+            for(int i=0;i<l-k;i++){    
+                    j = k+i;
+                    ss = ss + s[j];
+                    sn = ss ;
+                    sort(sn.begin() , sn.end());
+                    mp[sn]++;
+            }
+        }
+    long long int ans = 0 ;
+        map<string,int> :: iterator it ;
+        for(it = mp.begin() ; it != mp.end() ; it++){
+            long long  vl = (long long)(it->second) ;
+            if(vl > 1){                
+                ans += (vl*(vl-1))/2LL ;
+            }
+        }
+    return ans;
+
+}
+
+-----------------------------------------------------------------------------------------
+
+9) Insertion Sort - Part 2
+
+void insertionSort2(int n, vector<int> arr) {
+    for(int iter=1; iter<n; iter++ ){
+        int val = arr[iter];
+        int j = iter - 1;
+        
+        while(val < arr[j] && j>=0 ) {
+            arr[j+1] = arr[j];
+            j--;
+        }
+        
+        arr[j+1] = val;
+        for(int iter=0; iter<n; iter++ ) {
+            cout <<arr[iter]<<" ";
+        }
+        cout <<endl;
+    }
+}
+
+------------------------------------------------------------------
+
+
+10)
+
+int birthdayCakeCandles(vector<int> candles) {
+    int max = candles[0];
+    int count = 0, n = candles.size();
+    for(int i=0; i<n; i++)
+        if(candles[i] > max)
+            max = candles[i];
+    for(int i = 0; i < n; i++)
+        if (candles[i] == max)
+            count++;
+    return count;
+}
+
+---------------------------------------------------------------------------
+
+11)largestRectangle
+
+
+long largestRectangle(vector<int> h) {
+    int i,j,count,min;
+    long int Area,Max=0;
+    int n=h.size();
+    h[n]=0;            //to avoid crash while executing h[n]
+    for(i=0;i<n;i++){
+    count=1;        
+    min=h[i];
+    j=i-1;
+    while(j>=0){    //Loop to check for greater no.s in reverse dir.
+        if(h[j]>min){      
+            count++;
+            j--;
+        }
+        else 
+        break;
+    }
+    while(h[i+1]==min&&i+1<n){  
+        i++;        //Loop to check for similar no.s (forward)
+        count++;
+    }  
+    j=i+1;
+    while(h[j]>=min&&j<n){    
+        j++;        //Loop to check for greater no.s (forward)
+        count++;
+    }
+    Area=min*count;
+    if(Area>Max)
+        Max=Area;
+    }
+    return Max;
+}
+
+--------------------------------------------------------------------------
+
+12) Closest Numbers
+
+
+vector<int> closestNumbers(vector<int> arr) {
+    vector<int> res;
+    int size = arr.size();
+    sort(arr.begin(), arr.end());
+    
+    int diff = arr[1] - arr[0];
+    
+    for(int i=2; i < size; i++){
+        if(diff / (arr[i] - arr[i-1])){
+            diff = arr[i] - arr[i-1];
+            res.clear();
+            res.push_back(arr[i-1]);
+            res.push_back(arr[i]);
+        }
+        else if(diff == (arr[i] - arr[i-1])){
+            res.push_back(arr[i-1]);
+            res.push_back(arr[i]);
+        }
+    }
+    return res;
+}
+
+-------------------------------------------------------------------------
+
+
+long getWays(int n, int[] coins) {
+    
+    long[] combinations = new long[amount + 1];
+        
+    combinations[0] = 1;
+        
+    for(int coin : coins) {
+        for(int i = 1; i < combinations.length; i++){
+            if(i >= coin) {
+                combinations[i] += combinations[i - coin];
+            }
+        }
+    }
+    return combinations[n];
+}
+
+
+-------------------------------------------------------------------------
+
+14) // C++ LSET code solution for Array Left rotation issue
+
+
+vector<int> rotateLeft(int d, vector<int> arr) {
+    vector<int> result;
+    for(auto i=arr.begin()+d; i != arr.end(); i++) {
+        result.push_back(*i);
+    }
+    for(auto i=arr.begin(); i != arr.begin()+d; i++){
+        result.push_back(*i);
+    }
+    return result;
+}
+
+------------------------------------------------------------------------
+
+
+15) Tree: Level Order Traversal
+
+void levelOrder(Node * root) {
+    queue<Node*> q;
+    q.push(root);
+    while (!q.empty()) {
+        Node* root = q.front();
+        q.pop();
+        cout << root->data <<' ';
+        if(root->left) q.push(root->left);
+        if(root->right) q.push(root->right);
+    }
+
+}
+
+
+-------------------------------------------------------------------------
+
+16) BFS
+
+vector<int> bfs(int n, int m, vector<vector<int>> edges, int s) {
+    vector<bool> visited(n, false);
+    visited[s] = true;
+    distance[s] = 0;
+    while(!q.empty()){
+        auto node = q.front();
+        q.pop();
+        for(auto i = edges[node].begin(); i != edges[node].end(); i++) {
+            if(!visited[*i]){
+                distance[*i] = distance[node] + 1;
+                q.push(*i);
+                visited[*i] = true;
+            }
+        }
+    }
+    for(int i = 0; i<n; i++){
+        if(visited[i] == false)
+            cout << -1 <<" ";
+        else if(distance[i] > 0)
+            cout << distance[i] * 6 << " ";
+    }
+    cout << endl;
+}
+
+
+vector<int> bfs(int n, int m, vector<vector<int>> edges, int s) {
+    //transform edges into adjacency lists
+    vector<list<int>> adj_list;
+    adj_list.resize(n);
+    for(auto edge: edges)
+    {
+        int u = edge[0];
+        int v = edge[1];
+        int u_idx = edge[0] - 1;
+        int v_idx = edge[1] - 1;
+        adj_list[u_idx].push_back(v);
+        adj_list[v_idx].push_back(u);
+    }
+
+    //initialize two arrays holding 
+    //1. whether path to node from s has been found 
+    //2. respective distance from s
+    bool found[n];
+    vector<int> dist;
+    for(int i = 0; i < n; i++)
+    {
+        found[i] = false;
+        dist.push_back(-1);
+    }
+    int idx_s = s-1;
+    found[idx_s] = true;
+    dist[idx_s] = 0;
+
+    //initialize queue holding only s in the beginning
+    queue<int> q;
+    q.push(s);
+
+    //queue q marks boundary between visited and unvisited area.
+    //while loop ends when all nodes have been visited
+    while(!q.empty())
+    {
+        int u = q.front();
+        int idx_u = u - 1;
+
+        //remove first node from q and add every of its unvisited neighbor to q's end.
+        //then mark every neighbor as visited
+        //their distance is by 6 bigger than the parent node
+        q.pop();
+        for(auto v: adj_list[idx_u])
+        {
+            int idx_v = v - 1;
+            if(false == found[idx_v])
+            {
+                found[idx_v] = true;
+                dist[idx_v] = dist[idx_u]+6;
+                q.push(v);
+            }
+        }
+    }
+
+    //remove starting node from distance vector to match solution.
+    dist.erase(dist.begin() + idx_s);
+    return dist;
+}
+
+----------------------------------------------------------------------------------------------------
+
+17) PowerSum
+
+int count1 = 0;
+
+void findCombination(int sum, int power, int start) {
+    if(sum == 0)
+        count1++;
+    if(sum < 0)
+        return;
+    
+    int val = 0;
+    
+    for(int j = start; val >= 0; j++){
+        val = sum - pow(j, power);
+        findCombination(val, power, j + 1);
+    }
+}
+
+int powerSum(int X, int N) {
+    findCombination(X, N, 1);
+    return count1;
+}
+
+-------------------------------------------------------------------------------------
+
+Breadth First Search: Shortest Reach :-
+
+/*
+ * Complete the 'bfs' function below.
+ *
+ * The function is expected to return an INTEGER_ARRAY.
+ * The function accepts following parameters:
+ *  1. INTEGER n
+ *  2. INTEGER m
+ *  3. 2D_INTEGER_ARRAY edges
+ *  4. INTEGER s
+ */
+
+vector<int> bfs(int n, int m, vector<vector<int>> edges, int s) {
+int i, weight = 6;
+    int visited[n];
+    int sv, ev;
+    vector<int> distance(n); // Store the distances to all nodes from start node, including start node
+    queue<int> q; q.push(s);
+    
+    for (i = 0; i < n; ++i) {
+        visited[i] = distance[i] = 0;
+    }
+    
+    while (!q.empty()) {
+        int w = q.front(); q.pop();
+        if (!visited[w-1]) visited[w-1] = 1;
+
+        // Search for edges that connect current node
+        for (i = 0; i < edges.size(); ++i) {
+            sv = edges[i][0];
+            ev = edges[i][1];
+            // The distance to the other node from start node is the distance to the current node from start node  +  weight
+            if (sv == w) {
+                if (!visited[ev-1]) {
+                    visited[ev-1] = 1;
+                    q.push(ev);
+                    distance[ev-1] += distance[sv-1] + weight;
+                } 
+            } else if (ev == w) {
+                if (!visited[sv-1]) {
+                    visited[sv-1] = 1;
+                    q.push(sv);
+                    distance[sv-1] += distance[ev-1] + weight;
+                } 
+            }
+        }
+    }
+
+    // Delete the start node from distance table
+    distance.erase(distance.begin() + (s - 1));
+    
+    // If the distance from start node to a node is 0, then there is no connection between the two.  
+    for (int n = 0; n < distance.size(); ++n) {
+        if (distance[n] == 0)
+            distance[n] = -1;
+    }
+    
+    return distance;
+}
+
+============================================================================
+
+Sansa and XOR :-
+
+/*
+ * Complete the 'sansaXor' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER_ARRAY arr as parameter.
+ */
+
+int sansaXor(vector<int> arr) {
+    unsigned int len = arr.size()   ;
+    int result = 0;
+    if(len%2 == 0) return 0;
+    for(unsigned int iter = 0; iter<len; iter+=2)
+        result ^= arr[iter];
+    return result;
+}
+
+-=====================================================
+
+Triangle Numbers :-
+
+
+line 1  -> -1                                                          1                 
+line 2  -> -1                                                      1   1   1             
+line 3  -> 2nd                                                 1   2   3   2   1         
+line 4  -> 3rd                                             1   3   6   7   6   3   1
+line 5  -> 2nd                                         1   4   10  16  19  16  10  4   1
+line 6  -> 4th                                     1   5   15  30  45  51  45  30  15  5   1
+line 7  -> 2nd                                 1   6   21  50  90  126 141 126 90  50  21  6   1
+line 8  -> 3rd                             1   7   28  77  161 266 357 393
+line 9  -> 2nd                         1   8   36  112
+line 10 -> 4th                     1   9   45  156
+line 11 -> 2nd                 1   10  55  210 
+line 12 -> 3rd             1   11  66  275
+line 13 -> 2nd         1   12  78  352
+
+
+
+
+
+/*
+ * Complete the 'solve' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER n as parameter.
+ */
+
+int solve(int n) {
+    if(n==1 || n==2)
+        return -1;
+    else
+    {
+        if(n%2==1)
+            return 2;
+        else if(n%4==0)
+            return 3;
+        else
+            return 4;
+    }
+}
+
+================================================================================
+
+Find Maximum Index Product :-
+
+
+/*
+ * Complete the 'solve' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER_ARRAY arr as parameter.
+ */
+
+int solve(vector<int> arr) {
+    int n=arr.size();
+    vector<int> left(n,0),right(n,0);
+    stack<int> s;
+    int i = 0;
+    while(i < n)
+    {
+        if(!s.empty() && arr[s.top()] < arr[i])
+        {
+            left[s.top()] = i + 1; 
+            s.pop();
+        }
+        else
+            s.push(i++);
+    }
+    
+    while(!s.empty())
+    {
+        s.pop();
+    }
+    
+    i = n - 1;
+    while(i >= 0)
+    {
+        if(!s.empty() && arr[s.top()] < arr[i])
+        {
+            right[s.top()] = i + 1; 
+            s.pop();
+        }
+        else
+            s.push(i--);
+    }
+    int res = 0;
+    for(int i=0; i<n; i++)
+        res = max(res, left[i] * right[i]);
+    return res;
+}
+
+
+/*
+ * Complete the 'solve' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER_ARRAY arr as parameter.
+ */
+
+int solve(vector<int> arr) {
+    int n = arr.size();
+    vector<int> left(n) , right(n);
+    stack<int> Stack;
+    for(int i=0 ; i<n ; i++)
+    {
+        while( !Stack.empty() and arr[Stack.top()] <= arr[i])
+            Stack.pop();
+        if( !Stack.empty())
+            left[i] = Stack.top() + 1;
+        Stack.push(i);
+    }
+    
+    /* just to make stack clear */
+    while( !Stack.empty())
+        Stack.pop();
+
+    for(int i=n-1 ; i>=0 ; i--)
+    {
+        while( !Stack.empty() and arr[Stack.top()] <= arr[i])
+            Stack.pop();
+        if( !Stack.empty())
+            right[i] = Stack.top() + 1;
+        Stack.push(i);
+    }
+
+    long long ans = 0;
+
+    for(int i=0 ; i<n ; i++)
+    {
+        ans = max(ans ,(long long)left[i] * right[i]);
+    }
+    return ans;
+}
+
+=========================================================================
+
+Circular Palindromes :-
+
+/*
+ * Complete the 'circularPalindromes' function below.
+ *
+ * The function is expected to return an INTEGER_ARRAY.
+ * The function accepts STRING s as parameter.
+ */
+
+long unsigned k = 0;
+
+bool isPalindrom(string s) {
+    for (long unsigned i = 0; i < s.size(); i++) {
+        if (s[i] != s[s.size() - i - 1]) return false;
+    }
+    return true;
+}
+
+set<string> allPalSubstrings(string s) {
+    set<string> result;
+    if(s.size() == 0) {
+        result.insert("");
+        return result;
+    }
+    if (isPalindrom(s)){
+        if (s.size() >= k) {
+            k = s.size();
+        }
+        result.insert(s);
+    }
+    for (string str : allPalSubstrings(s.substr(0, s.size() - 1))){
+        result.insert(str);
+    }
+    for (string str : allPalSubstrings(s.substr(1, s.size()))){
+        result.insert(str);
+    }
+    return result;
+}
+
+vector<int> circularPalindromes(string s) {
+    vector<int> result;
+    for (long unsigned i = 0; i <= s.size() - 1; i++) {
+           string newStr;
+           if (i == 0) newStr = s;
+           else
+           newStr = s.substr(i , s.size() - 1) + s.substr(0,i);
+
+           allPalSubstrings(newStr);
+           result.push_back(k);
+           k = 0;
+    }
+    return result;
+
+}
+
+=============================================================================================
+
+Find a Word :-
+
+
+#include <vector>
+#include <iostream>
+#include <regex>
+using namespace std;
+
+int main() {
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */  
+    int n;
+    cin >> n;
+    vector<string> sentences(n);
+    for (int i = 0; i < n; i++) {
+        cin >> sentences[i];
+    }
+    int t;
+    cin >> t;
+    vector<string> words(t);
+    for (int i = 0; i < t; ++i) {
+        cin >> words[i];
+    }
+    
+    vector<int> result;
+    for (string &word : words) {
+        regex pattern(R"(\b)" + word + R"(\b)");
+        int word_occurs = 0;
+        for (string &sentence : sentences) {
+            word_occurs += regex_match(sentence, pattern);
+        }
+        result.push_back(word_occurs);
+    }
+    
+    for (int &x : result) {
+        cout << x << endl;
+    }
+    return 0;
+}
+
+-------------
+
+#include <iostream>
+#include <regex>
+#include <vector>
+
+std::vector<int> count_words_occurrence(const std::vector<std::string> &s, const std::vector<std::string> &w) {
+    std::vector<int> res;
+    for (const auto &word : w) {
+        std::regex pattern(R"(\b)" + word + R"(\b)");
+        int word_occurs = 0;
+        for (const auto &sentence : s) {
+            word_occurs += std::regex_match(sentence, pattern);
+        }
+        res.push_back(word_occurs);
+    }
+    return res;
+}
+
+int main() {
+    int n;
+    std::cin >> n;
+    std::vector<std::string> sentences(n);
+    for (int i = 0; i < n; ++i) {
+        std::cin >> sentences[i];
+    }
+    int m;
+    std::cin >> m;
+    std::vector<std::string> words(m);
+    for (int i = 0; i < m; ++i) {
+        std::cin >> words[i];
+    }
+    const auto result = count_words_occurrence(sentences, words);
+    for (const auto &x : result) {
+        std::cout << x << '\n';
+    }
+    return 0;
+}
+
+
+========================================================================
+
+
+mario problem
+
+n=int(input())
+l=list(map(int,input().split()))
+i=0
+s=0
+z=0
+while(i<n):
+	max1=-1
+	min1=10000
+	while(l[i]>max1):
+		max1=l[i]
+		i+=1
+		if(i>n-1):
+			z=1
+			break
+	s=s+max1
+	if(z==1):
+		break
+	while(l[i]<min1 and z!=1):
+		min1=l[i]
+		i+=1
+		if(i>n-1):
+			z=1
+			break
+	if(z==1):
+		break
+	else:
+		s=s-min1
+print(s)
+		
+===========================================================
+
+#include <iostream>
+using namespace std;
+
+int N;//Number of mushrooms
+int P[150000 + 10];//Mushroom value
+
+void InputData(){
+	cin >> N;
+	for (int i = 0; i < N; i++){
+		cin >> P[i];
+	}
+}
+
+int main(){
+	int ans = 0;
+
+	InputData();			//	Input function
+
+	//	Write the code
+
+	int i = 0;
+	int z = 0;
+	while(i<N){
+		int max1 = -1;
+	  int min1 = 10000;
+		while(P[i] > max1) {
+			max1 = P[i];
+			i += 1;
+			if(i > N - 1){
+				z = 1;
+				break;
+			}
+		}
+		ans += max1;
+		if( z == 1){
+			break;
+		}
+		while(P[i] < min1 && z != 1){
+			min1 = P[i];
+			i += 1;
+			if( i > N - 1){
+				z = 1;
+				break;
+			}	
+		}		
+		if(z == 1){
+			break;
+		} else {
+			ans -= min1;
+		}
+	}
+		
+	cout << ans << endl;	//	Output answer
+	return 0;
+}
+
+
+===============================================	
+		
+		
+virus problem
+
+
+import sys
+
+def InputData():
+	readl = sys.stdin.readline
+	N, M = map(int, readl().split())
+	A = list(map(int, readl().split()))
+	B = list(map(int, readl().split()))
+
+	return N, M, A, B
+
+def Find(start) :
+	l=[]
+	B.sort()
+	for i in range(M) :
+		l.append(A[start + i])
+	l.sort()
+
+	k=l[0]-B[0]
+	
+	for i in range(1,M):
+		if(l[i]-B[i]!=k):
+			l.clear()
+			return 0
+	l.clear()
+	return 1
+
+def Solve():
+	sol = 0
+	for i in range(N - M + 1) :
+		sol += Find(i)
+	return sol
+
+sol = 0
+
+# Input 
+# N: Number of executable code data
+# M: Number of virus data
+# A: Executable code data
+# B: Virus data
+N, M, A, B = InputData()
+
+# TODO : Problem solving
+sol = Solve()
+
+# Output
+print(sol)
+
+
+
+
+settlement for scholor ship
+https://www.geeksforgeeks.org/largest-sum-contiguous-subarray/
+
+import sys
+
+def input_data() :
+	readl = sys.stdin.readline
+	N = int(readl())#Number of sponsored goods
+	D = list(map(int, readl().split()))#Preference
+	return N, D
+
+
+def Solve(max1):
+	sol = -30001#Maximum preference of the first method
+	for i in range(0,N-2) :
+		t = sum(D[i:i+3])
+		if(t > sol) : sol = t
+		for j in range(i+3,N):
+			t=t+D[j]
+			if(max1<t):
+				max1=t
+	return max1
+
+#Input function
+N, D = input_data()
+max1=-1
+sol = Solve(max1)
+print(sol)#Output 
+
+working code
+
+
+import sys
+
+def input_data() :
+	readl = sys.stdin.readline
+	N = int(readl())#Number of sponsored goods
+	D = list(map(int, readl().split()))#Preference
+	return N, D
+
+
+def Solve():
+	sol = -30001#Maximum preference of the first method
+	ma=0
+	for i in range(0,N) :
+		ma=ma+D[i]
+		if(sol<ma):
+			sol=ma
+		if(ma<0):
+			ma=0
+			
+	return sol
+
+#Input function
+N, D = input_data()
+sol = Solve()
+print(sol)#Output 
+
+
+
+
+
+
+physology  experiment
+
+
+
+#include <stdio.h>
+
+int N;//The number of candidates
+int A[100000 + 10];//Temperament value
+
+void InputData(){
+    int i;
+    scanf("%d", &N);
+    for (i = 0; i < N; i++) scanf("%d", &A[i]);
+}
+
+int main(){
+    InputData();//	Input function
+int i=0,j=N-1,min=100000,x,y;
+	while(i<j)
+	{
+		int z=abs(A[i]+A[j]);
+		if(z<min)
+		{
+			min=z;
+			x=i;
+			y=j;
+		}
+		if(A[i]+A[j]>0)
+		{
+			j--;
+		}
+		else if(A[i]+A[j]<0)
+		{
+			i++;
+		}
+		else
+			break;
+	}
+	printf("%d %d",x,y);//	Create the code
+ 
+    return 0;
+}
+
+
+==================================================================
+
+[Solution] Roof garden of Buildings:
+
+
+
+#include <iostream>
+using namespace std;
+
+int N;//Number of buildings
+int H[80010];//Height of buildings
+
+void Input_Data(void){
+	cin >> N;
+	for (int i = 0; i < N; i++){
+		cin >> H[i];
+	}
+}
+
+struct st {
+	int i;
+	int v;
+};
+
+
+
+int main(){
+	long long ans = 0;
+	Input_Data();                //        Input function
+	
+	//        Write the code
+	stack<st> stk;       
+    struct st s;
+    int count = 0;
+    s.i = N-1;
+    s.v = H[N-1];
+    stk.push(s);
+    for(int i = N-2; i >= 0; i--) {              
+        while(!stk.empty() && (stk.top().v < H[i])) {
+                count++;
+                stk.pop();
+        }
+        
+        if(stk.empty()) { 
+                ans += N-1 - i;
+        } else
+                ans += stk.top().i - i -1;               
+
+        count = 0;
+        s.i = i;
+        s.v = H[i];
+        stk.push(s);
+    }
+    
+    cout << ans << endl;        //        Output right answer
+    return 0;
+}
+
+
+====================================
+
+int j;
+//	Write the code
+for (int i=0; i< N-1; i++){
+	j = i+1;
+	while(H[i] >= H[j] && j < N){
+		ans++;
+		j++;
+	}
+}
+=================================
+
+
+
+
+
+
+5 2 4 2 6 1
+
+#include <iostream>
+#include<stack>
+using namespace std;
+
+int N;//Number of buildings
+int H[80010];//Height of buildings
+
+void Input_Data(void){
+	cin >> N;
+	for (int i = 0; i < N; i++){
+		cin >> H[i];
+	}
+}
+
+struct node{
+    int x;
+    int height;
+};
+
+int main(){
+    long long ans = 0;
+Input_Data();
+    stack<node> st;//    Input function
+    struct node n;
+    n.x=0;
+    n.height=H[0];
+    st.push(n);  // 5
+    for(int i=1;i<N;i++)
+    {
+        while(!st.empty() && st.top().height<=H[i])
+        { 
+            ans+=i-st.top().x-1;
+            st.pop();
+            
+        }
+        
+    n.x=i;
+    n.height=H[i];
+    st.push(n);
+    }
+    while(!st.empty())
+		{
+    ans+=N-1-st.top().x;
+    st.pop();
+		}
+    //    Write the code
+    
+    
+    cout << ans << endl;    //    Output right answer
+    return 0;
+}
+
+
+
+
+
+
+dfs in graph practice
+
+
+#include <iostream>
+using namespace std;
+#include<vector>
+#include<stack>
+int main() {
+	int n,m;
+	cin>>n;
+	cin>>m;
+	vector<int> v[n+1];
+	for(int i=0;i<m;i++)
+	{
+		int x,y;
+		cin>>x;
+		cin>>y;
+		v[x].push_back(y);
+	} 
+stack<int> st;
+for(int i=1;i<n+1;i++)
+{
+int visited[n+1]={0};
+for(auto x : v[i])
+	st.push(x);
+visited[i]=1;
+int z=1;
+while(!st.empty() && z==1)
+	{
+		if(visited[st.top()]==0)
+		{visited[st.top()]=1;
+		int k=st.top();
+			st.pop();
+			for(auto y :v[k])
+			{
+				if(visited[y]==1)
+				{
+					cout<<i<<"  loop"<<"\n";
+					z=0;
+					break;
+				}
+			st.push(y);
+			}
+
+		}
+	}
+}
+	}
+
+
+
+
+
+Given a string s, find the length of the longest substring without repeating characters.
+
+ Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+       int arr[127]={0};
+        int x=0,y=0,max=0,max1=0;
+        for(int i=0;i<s.length();i++)
+        {
+            arr[int(s[i])]+=1;
+            while(arr[int(s[i])]>1)
+            {
+                arr[int(s[x])]--;
+                x=x+1;
+                max1--;
+                
+            }
+                max1++;
+            if(max1>max)
+                max=max1;
+        }
+        return max;
+    }
+};
+
+
+
+hacking compitation
+
+l=list(input())
+c=list(input())
+index=len(l)
+for x in c:
+	if(x=='L' and index>0):
+		index-=1
+	elif(x=='R' and index<len(l)-1):
+		index+=1
+	elif(x=="B" and index>0 ):
+		l.pop(index-1)
+		index-=1
+	elif(ord(x)>=97 and ord(x)<123):
+		l.insert(index,x)
+		index+=1
+s=""
+for i in l:
+	s=s+i
+print(s)
+
+l=list(input())
+c=list(input())
+index=len(l)-1
+for x in c:
+	if(x=='L' and index!=0):
+		index-=1
+	elif(x=='R' and index!=len(l)-1):
+		index+=1
+	elif(x=="B" and index!=0 and len(l)>=1):
+		l.pop(index)
+		index-=1
+
+	elif(ord(x)>=97 and ord(x)<123):
+		if(index>0):
+			l.insert(index+1,x)
+		else:
+			l.insert(index,x)
+		index+=1
+s=""
+for i in l:
+	s=s+i
+print(s)
+		
+		
+		
+		l=list(input())
+c=list(input())
+index=len(l)
+for x in c:
+	if(x=='L' and index>0):
+		index-=1
+	elif(x=='R' and index<len(l)-1):
+		index+=1
+	elif(x=="B" and index>0 ):
+		l.pop(index-1)
+		index-=1
+	elif(ord(x)>=97 and ord(x)<123):
+		l.insert(index,x)
+		index+=1
+s=""
+for i in l:
+	s=s+i
+print(s)
+		
+		
+		
+		
+		
+		
+		
+unmanned train
+	
+n,m=list(map(int,input().split()))
+l=[]
+for i in range(0,n):
+	l1=list(map(int,input().split()))
+	l.append(l1.copy())
+	l1.clear()
+l2=[]
+l3=[]
+k=[]
+for i in range(0,n):
+	j=0
+	while(j<m):
+		if(l[i][j]==1):
+			k.append([i,j])
+			while(j<m and l[i][j]==1):
+				j=j+1
+			k.append([i,j-1])
+
+			if(len(l2)!=0):
+				if(k[0][0]-1==l2[len(l2)-1][0][0]  and k[0][1]<=l2[len(l2)-1][1][1]  and k[1][1]>=l2[len(l2)-1][0][1]):
+					l2.append(k.copy())
+					k.clear()
+				else:
+					l3.append(k.copy())
+					k.clear()
+			elif(len(l3)!=0):
+				if(k[0][0]-1==l3[len(l3)-1][0][0] and k[0][1]<=l3[len(l3)-1][1][1] and k[1][1]>=l3[len(l3)-1][0][1]):
+					l3.append(k.copy())
+					k.clear()
+				else:
+					l2.append(k.copy())
+					k.clear()
+			else:
+				l2.append(k.copy())
+				k.clear()
+		j=j+1
+min=1000000
+z=10000000
+for i in range(0,len(l2)):
+	for j in range(0,len(l3)):
+		if(l2[i][1][1]<=l3[j][0][1] or l3[j][1][1]<= l2[i][0][0]):
+			z=abs(l3[j][0][1]-l2[i][1][1])-1+abs(l3[j][0][0]-l2[i][0][0])
+		if(min>z):
+			min=z
+
+print(min)
+			
+n,m=list(map(int,input().split()))
+l=[]
+for i in range(0,n):
+	l1=list(map(int,input().split()))
+	l.append(l1.copy())
+	l1.clear()
+l2=[]
+l3=[]
+k=[]
+for i in range(0,n):
+	j=0
+	while(j<m):
+		if(l[i][j]==1):
+			k.append([i,j])
+			while(j<m and l[i][j]==1):
+				j=j+1
+			k.append([i,j-1])
+
+			if(len(l2)!=0):
+				if(k[0][0]-1==l2[len(l2)-1][0][0]  and k[0][1]<=l2[len(l2)-1][1][1]  and k[1][1]>=l2[len(l2)-1][0][1]):
+					l2.append(k.copy())
+					k.clear()
+				else:
+					l3.append(k.copy())
+					k.clear()
+			elif(len(l3)!=0):
+				if(k[0][0]-1==l3[len(l3)-1][0][0] and k[0][1]<=l3[len(l3)-1][1][1] and k[1][1]>=l3[len(l3)-1][0][1]):
+					l3.append(k.copy())
+					k.clear()
+				else:
+					l2.append(k.copy())
+					k.clear()
+			else:
+				l2.append(k.copy())
+				k.clear()
+		j=j+1
+min=1000000
+z=10000000
+for i in range(0,len(l2)):
+	for j in range(0,len(l3)):
+		if(l2[i][1][1]<=l3[j][0][1] or l3[j][1][1]<= l2[i][0][0]):
+			z=abs(l3[j][0][1]-l2[i][1][1])-1+abs(l3[j][0][0]-l2[i][0][0])
+		elif(l2[i][0][1]>=l3[j][1][1] or l3[j][0][1]<= l2[i][0][0]):
+			z=abs(l3[j][0][1]-l2[i][1][1])-1+abs(l3[j][0][0]-l2[i][0][0])
+		else:
+			z=abs(l3[j][0][0]-l2[i][0][0])
+		if(min>z):
+			min=z
+
+print(min)
+
+
+
+
+
+
+
+
+
+
+
+
+Connected Cells in a Grid
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+string ltrim(const string &);
+string rtrim(const string &);
+vector<string> split(const string &);
+
+/*
+ * Complete the 'connectedCell' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts 2D_INTEGER_ARRAY matrix as parameter.
+ */
+int region(vector<vector<int>> matrix,int x,int y,int n,int m)
+{
+int z=0;
+stack <vector<int>> st;
+vector<int> v;
+v.push_back(x);
+v.push_back(y);
+matrix[x][y]=0;
+st.push(v);
+while(!st.empty())
+{
+    vector<int> v1=st.top();
+    st.pop();
+    z++;
+    int i=v1[0];
+    int j=v1[1];
+if(i-1>=0 && matrix[i-1][j]==1)
+{
+    v.push_back(i-1);
+    v.push_back(j);
+    st.push(v);
+    matrix[i-1][j]=0;
+    v.clear();
+}
+if(j+1<m && matrix[i][j+1]==1)
+{
+    v.push_back(i);
+    v.push_back(j+1);
+    st.push(v);
+     matrix[i][j+1]=0;
+    v.clear();
+}
+if(i+1<n && matrix[i+1][j]==1)
+{
+    v.push_back(i+1);
+    v.push_back(j);
+    st.push(v);
+     matrix[i+1][j]=0;
+    v.clear();
+}
+if(i-1>=0 && j-1>=0 && matrix[i-1][j-1]==1)
+{
+    v.push_back(i-1);
+    v.push_back(j-1);
+    st.push(v);
+     matrix[i-1][j-1]=0;
+    v.clear();
+}
+if(i-1>=0 && j+1<m && matrix[i-1][j+1]==1)
+{
+    v.push_back(i-1);
+    v.push_back(j+1);
+    st.push(v); 
+    matrix[i-1][j+1]=0;
+    v.clear();
+}
+if(j-1>=0 && matrix[i][j-1]==1)
+{
+    v.push_back(i);
+    v.push_back(j-1);
+    st.push(v);
+     matrix[i][j-1]=0;
+    v.clear();
+}
+if(i+1<n && j+1<m && matrix[i+1][j+1]==1)
+{
+    v.push_back(i+1);
+    v.push_back(j+1);
+    st.push(v);
+     matrix[i+1][j+1]=0;
+    v.clear();
+}
+if(i+1<n && j-1>=0 && matrix[i+1][j-1]==1)
+{
+    v.push_back(i+1);
+    v.push_back(j-1);
+    st.push(v);
+     matrix[i+1][j-1]=0;
+    v.clear();
+}
+
+}
+return z;
+}
+int connectedCell(vector<vector<int>> matrix,int n,int m) {
+
+int max=-1;
+for(int i=0;i<n;i++)
+{
+    for(int j=0;j<m;j++)
+    {
+        if(matrix[i][j]==1)
+        {
+         int k=region(matrix,i,j,n,m);
+           if(k>max)
+           max=k;
+        }
+    }
+}
+return max;
+}
+
+int main()
+{
+    ofstream fout(getenv("OUTPUT_PATH"));
+
+    string n_temp;
+    getline(cin, n_temp);
+
+    int n = stoi(ltrim(rtrim(n_temp)));
+
+    string m_temp;
+    getline(cin, m_temp);
+
+    int m = stoi(ltrim(rtrim(m_temp)));
+
+    vector<vector<int>> matrix(n);
+
+    for (int i = 0; i < n; i++) {
+        matrix[i].resize(m);
+
+        string matrix_row_temp_temp;
+        getline(cin, matrix_row_temp_temp);
+
+        vector<string> matrix_row_temp = split(rtrim(matrix_row_temp_temp));
+
+        for (int j = 0; j < m; j++) {
+            int matrix_row_item = stoi(matrix_row_temp[j]);
+
+            matrix[i][j] = matrix_row_item;
+        }
+    }
+
+    int result = connectedCell(matrix,n,m);
+
+    fout << result << "\n";
+
+    fout.close();
+
+    return 0;
+}
+
+string ltrim(const string &str) {
+    string s(str);
+
+    s.erase(
+        s.begin(),
+        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
+    );
+
+    return s;
+}
+
+string rtrim(const string &str) {
+    string s(str);
+
+    s.erase(
+        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
+        s.end()
+    );
+
+    return s;
+}
+
+vector<string> split(const string &str) {
+    vector<string> tokens;
+
+    string::size_type start = 0;
+    string::size_type end = 0;
+
+    while ((end = str.find(" ", start)) != string::npos) {
+        tokens.push_back(str.substr(start, end - start));
+
+        start = end + 1;
+    }
+
+    tokens.push_back(str.substr(start));
+
+    return tokens;
+}
+	
+
+
+
+
+
+
+
+vector<vector<int> > ratInAMaze(vector<vector<int> > &maze, int n){
+  // Write your code here.
+	vector<vector<int>> v;
+	int x=0
+	for(int i=0;i<n;i++)
+	{
+		for(int j=0;j<m;j++)
+		{
+			if(i-1>=0 and maze[i][j]==1)
+			{
+				v[i*n+(j+1)].push_back((i-1)*n+j+1
+			}
+			if(i+1<n and maze[i][j]==1)
+			{v[i*n+(j+1)].push_back((i-1)*n+j+1}
+			if(j-1>=0 and maze[i][j]==1)
+			{
+			v[i*n+(j+1)].push_back((i-1)*n+j+1	
+			}
+			if(j+1<n and maze[i][j]==1)
+			{
+				v[i*n+(j+1)].push_back((i-1)*n+j+1
+			}
+		}
+	}
+	
+	for(int i=0;i<n;i++)
+ {
+	for(auto it=v[i].begin();it!=v[i].end();it++)
+	{
+		cout<<*it<<"\t";
+	}
+	cout<<"\n";  }	
+	
+}
+
+===================================================================
+
+Find the Winner of the Circular Game
+
+class Solution {
+public:
+    int findTheWinner(int n, int k) {
+        vector<int> v;
+        for(int i=1; i<=n; i++){
+            v.push_back(i);
+        }
+        int cur = 0;
+        while(v.size() > 1){
+            cur += k - 1;
+            if(cur > v.size() - 1){
+                cur = cur % v.size();
+            } 
+            int val = v[cur];
+            auto it = find(v.begin(), v.end(), val);
+            v.erase(it);
+        }
+        if(v.size() == 1)
+            return v[0];
+        else
+            return 0;
+    }
+};
+
+
+
+================================================================
+
+
+https://www.hackerrank.com/contests/4-apr-2024/challenges/rust-murderer
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+/*
+ * Complete the rustMurdered function below.
+ */
+vector<int> rustMurderer(int n, vector<vector<int>> roads) {
+    vector<int> distances(n, -1);
+    vector<unordered_set<int>> graph(n);
+    
+    for (const auto& road : roads) {
+        graph[road[0] - 1].insert(road[1] - 1);
+        graph[road[1] - 1].insert(road[0] - 1);
+    }
+ 
+    queue<int> q;
+    q.push(0);
+    distances[0] = 0;
+ 
+    while (!q.empty()) {
+        int current = q.front();
+        q.pop();
+ 
+        for (int neighbor : graph[current]) {
+            if (distances[neighbor] == -1) {
+                distances[neighbor] = distances[current] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+ 
+    distances.erase(distances.begin());
+ 
+    return distances;
+}
+
+int main()
+{
+    ofstream fout(getenv("OUTPUT_PATH"));
+
+    int t;
+    cin >> t;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (int t_itr = 0; t_itr < t; t_itr++) {
+        string nm_temp;
+        getline(cin, nm_temp);
+
+        vector<string> nm = split_string(nm_temp);
+
+        int n = stoi(nm[0]);
+
+        int m = stoi(nm[1]);
+
+        vector<vector<int>> roads(m);
+        for (int roads_row_itr = 0; roads_row_itr < m; roads_row_itr++) {
+            roads[roads_row_itr].resize(2);
+
+            for (int roads_column_itr = 0; roads_column_itr < 2; roads_column_itr++) {
+                cin >> roads[roads_row_itr][roads_column_itr];
+            }
+
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        int s;
+        cin >> s;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        vector<int> result = rustMurderer(n, roads);
+
+        for (int result_itr = 0; result_itr < result.size(); result_itr++) {
+            fout << result[result_itr];
+
+            if (result_itr != result.size() - 1) {
+                fout << " ";
+            }
+        }
+
+        fout << "\n";
+    }
+
+    fout.close();
+
+    return 0;
+}
+
+======================================================================
+
+
+WareHouse:
+
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+int warehouse_fun(vector<vector<int>> factories, int n, int m){
+	vector<vector<int>> matrix(n+1, vector<int>(n+1, 1e9));
+	for(int i=1; i<=m; i++){
+		int u= factories[i][0];
+		int v= factories[i][1];
+		int wt= factories[i][2];
+		matrix[u][v] = wt;
+		matrix[v][u] = wt;
+	}
+	for(int i=1; i<=n; i++){
+		matrix[i][i] = 0;
+	}
+	for(int k=1; k<=n; k++){
+		for(int i=1; i<=n; i++){
+			for(int j=1; j<=n; j++){
+				//if(matrix[i][j] == 1e9){
+					matrix[i][j] = min(matrix[i][j], matrix[i][k]+matrix[k][j]);
+				//}
+			}
+		}
+	}
+	// for(int i=1; i<=n; i++){
+	// 	for(int j=1; j<=n; j++){
+	// 			cout << matrix[i][j] << " ";
+	// 		}
+	// 	 cout << endl;
+	// }
+	int min_val = INT_MAX;
+	for(int i=1; i<=n; i++){
+		int max_val = 0;
+		for(int j=1; j<=n; j++){
+			if(max_val < matrix[i][j]){
+				max_val = matrix[i][j];
+			}
+		}
+		min_val = min(min_val, max_val);
+	}
+	
+	return min_val;
+}
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	
+	vector<vector<int>> factories(M+1,vector<int>(3));
+	
+	for(int i=1; i<=M; i++){
+		int u,v,wt;
+		cin >> u >> v >> wt;
+		factories[i][0] = u;
+		factories[i][1] = v;
+		factories[i][2] = wt;
+	}
+	
+	int distance = warehouse_fun(factories, N, M);
+	cout << distance << endl;
+	return 0;
+}
+
+===========================================================
+
+https://www.hackerearth.com/practice/algorithms/graphs/breadth-first-search/practice-problems/algorithm/vaccine-2c845ac0/
+
+
+#include <iostream>
+#include <vector>
+#include <queue>
+ 
+using namespace std;
+ 
+void sieve(vector<bool>& prime) {
+    fill(prime.begin(), prime.end(), true); 
+    prime[0] = prime[1] = false;
+ 
+    for (size_t i = 2; i * i < prime.size(); i++) {
+        if (prime[i]) { 
+            for (size_t j = i * i; j < prime.size(); j += i) {
+                prime[j] = false;
+            }
+        }
+    }
+}
+ 
+int main() {
+    int nodes, roads;
+    cin >> nodes >> roads;
+ 
+    vector<int> adj[nodes + 1];
+ 
+   
+    for (int i = 0; i < roads; i++) {
+        int u, v;
+        cin >> u >> v;
+ 
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+ 
+    vector<bool> isPrime(nodes + 1, true);
+    sieve(isPrime);
+ 
+    priority_queue<pair<int, int>,vector<pair<int, int>>,greater<pair<int, int>>> pq;
+ 
+    for (int i = 1; i <= nodes; i++) {
+        if (isPrime[i]) {
+            pq.push({0, i}); 
+        }
+    }
+ 
+	vector<int> distance(nodes+1,1e7);
+ 
+	for(int i = 0;i<isPrime.size();i++){
+		if(isPrime[i]){
+			distance[i] = 0;
+		}
+	}
+ 
+    while (!pq.empty()) {
+        auto it = pq.top();
+     //   cout << it.second << " " << it.first << endl; 
+        pq.pop();
+ 
+		int node = it.second;
+		int dist = it.first;
+ 
+		for(int it : adj[node]){
+			int newDistance = max(node,it);
+			if(newDistance + dist < distance[it]){
+				distance[it] = newDistance + dist;
+				pq.push({newDistance + dist,it});
+			}
+		}
+    }
+ 
+	for(int i = 1;i<distance.size();i++){
+		if(distance[i] == 1e7){
+			distance[i] = -1;
+		}
+	}
+ 
+	for(int i = 1;i<distance.size();i++){
+		cout<<distance[i]<<" ";
+	}
+ 
+    return 0;
+}
+
+=====================================================================
+
+subtree queries
+
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+int find_gcd(vector<int> &w, int node){
+    int X = w[node-1];
+    int cnt = 0;
+    for(int M=1; M<=X; M++){
+        if(__gcd(M, X) == 1) cnt++;
+    }
+    return cnt;
+}
+
+vector<int> solve(int N, int Q, vector<int> &w, vector<vector<int>> &edges, vector<vector<int>> &queries) {
+    vector<int> adj[N+1];
+    vector<int> ans;
+    for(auto it : edges){
+        adj[it[0]].push_back(it[1]);
+    }
+    for(int i=0; i<Q; i++){
+        int type = queries[i][0];
+        int node = queries[i][1];
+        switch(type) {
+            case 1:
+                w[node-1] = queries[i][2];
+                break;
+            case 2: {
+                long long sum=0;
+                sum += find_gcd(w, node);
+                queue<int> q;
+                q.push(node);
+                while(!q.empty()){
+                    int n = q.front();
+                    q.pop();
+                    for(auto adjNode : adj[n]){
+                        sum += find_gcd(w, adjNode);
+                        q.push(adjNode);
+                    }
+                }
+                ans.push_back(sum);
+            }
+        }
+    }
+    return ans;
+}
+
+int main()
+{
+    int N=5, Q=3;
+    vector<int> w{3,5,9,6,10};
+    vector<vector<int>> edges{{1,2}, {1,4}, {1,5}, {2,3}};
+    vector<vector<int>> queries{{2,1,0}, {1,3,1}, {2,2,0}};
+    
+    vector<int> res = solve(N, Q, w, edges, queries);
+    
+    for(int i=0; i<res.size(); i++){
+        cout << res[i] << " ";
+    }
+
+    return 0;
+}
+
+=====================================================================
+
+The Calculation game
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+ 
+vector<int> Help_Alice_Bob(int n, vector<int> &arr, vector<vector<int>> &queries) {
+    sort(arr.begin(), arr.end());
+    vector<int> deg(n);
+    for(int i=0; i<queries.size(); i++){
+        int x=queries[i][0], y=queries[i][1];
+        for(int j=x; j<=y; j++){
+            deg[j]++;
+        }
+    }
+    sort(deg.begin(), deg.end());
+    int alice = 0, bob = 0;
+    for(int i=0; i<n; i++){
+        alice += (arr[i] * deg[n-i-1]);
+        bob += (arr[i] * deg[i]);
+    }
+    return {alice, bob};
+}
+ 
+int main()
+{
+    int N=5, Q=4;
+    vector<int> arr{5,3,1,4,2};
+    vector<vector<int>> queries{{1,3}, {4,4}, {0,3}, {2,4}};
+    vector<int> res = Help_Alice_Bob(N, arr, queries);
+    for(int i=0; i<res.size(); i++){
+        cout << res[i] << " ";
+    }
+ 
+    return 0;
+}
+
+
+============================
+
+Seat Booking
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int solve(int N, int M, vector<int> A, vector<int> B){
+    sort(A.begin(), A.end());
+    int sum = 0, maxi = INT_MIN;
+    int size = 0;
+    for(int i=0; i<M; i++) size += B[i];
+    for(int i=0; i<N; i++){
+        if(i+size <= N){
+            for(int j=i; j<size+i; j++){
+                sum += A[j];
+            }
+        } else {
+            break;
+        }
+        maxi = max(sum, maxi);
+        sum=0;
+    }
+    return maxi;
+}
+
+int main()
+{
+    int N, M;
+    cin >> N >> M;
+    vector<int> A(N), B(M);
+    for(int i=0; i<N; i++){
+        cin >> A[i];
+    }
+    for(int i=0; i<M; i++){
+        cin >> B[i];
+    }
+    
+    int res = solve(N, M, A, B);
+    cout << res << endl;
+    return 0;
+}
+
+
+=========================================================
+
+https://leetcode.com/problems/spiral-matrix-ii/description/
+
+vector<vector<int>> generateMatrix(int n) {
+    int rowStart = 0, rowEnd=n-1, colStart=0, colEnd=n-1;
+    vector<vector<int>> matrix(n, vector<int>(n,0));
+    int num = 1;
+    while(rowStart <= rowEnd && colStart <= colEnd){
+        for(int i=colStart; i<=colEnd; i++){
+            matrix[rowStart][i] = num++;
+        }
+        rowStart++;
+        for(int i=rowStart; i<=rowEnd; i++){
+            matrix[i][colEnd] = num++;
+        }
+        colEnd--;
+        for(int i=colEnd; i>=colStart; i--){
+            matrix[rowEnd][i] = num++;
+        }
+        rowEnd--;
+        for(int i=rowEnd; i>=rowStart; i--){
+            matrix[i][colStart] = num++;
+        }
+        colStart++;
+    }
+    return matrix;
+}
+
+===========================================================
+
+https://leetcode.com/problems/spiral-matrix/description/
+
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    int n = matrix.size();
+    int m = matrix[0].size();
+    int rowStart = 0, rowEnd=n-1, colStart=0, colEnd=m-1;
+    vector<int> result;
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+    while(rowStart <= rowEnd && colStart <= colEnd){
+        for(int i=colStart; i<=colEnd; i++){
+            if(!vis[rowStart][i]) {
+                result.push_back(matrix[rowStart][i]);
+                vis[rowStart][i] = 1;
+            }
+            vis[rowStart][i] = 1;
+        }
+        rowStart++;
+        for(int i=rowStart; i<=rowEnd; i++){
+            if(!vis[i][colEnd]) {
+                result.push_back(matrix[i][colEnd]);
+                vis[i][colEnd] = 1;
+            }
+        }
+        colEnd--;
+        for(int i=colEnd; i>=colStart; i--){
+            if(!vis[rowEnd][i]) {
+                result.push_back(matrix[rowEnd][i]);
+                vis[rowEnd][i] = 1;
+            }
+        }
+        rowEnd--;
+        for(int i=rowEnd; i>=rowStart; i--){
+            if(!vis[i][colStart]) {
+                result.push_back(matrix[i][colStart]);
+                vis[i][colStart] = 1;
+            }
+        }
+        colStart++;
+    }
+    return result;
+}
+
+--------------
+
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    int n = matrix.size();
+    int m = matrix[0].size();
+    int rowStart = 0, rowEnd=n-1, colStart=0, colEnd=m-1;
+    vector<int> result;
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+    while(rowStart <= rowEnd && colStart <= colEnd){
+        for(int i=colStart; i<=colEnd; i++){
+            result.push_back(matrix[rowStart][i]);
+        }
+        rowStart++;
+        for(int i=rowStart; i<=rowEnd; i++){
+            result.push_back(matrix[i][colEnd]);
+        }
+        colEnd--;
+        if(rowStart<= rowEnd) {
+            for(int i=colEnd; i>=colStart; i--){
+                result.push_back(matrix[rowEnd][i]);
+            }
+            rowEnd--;
+        }
+        if(colStart <= colEnd){
+            for(int i=rowEnd; i>=rowStart; i--){
+                result.push_back(matrix[i][colStart]);
+            }
+            colStart++;
+        }
+    }
+    return result;
+}
+
+
+
+===========================================================
+
+https://leetcode.com/problems/game-of-life/description/
+
+
+void gameOfLife(vector<vector<int>>& board) {
+    int n = board.size();
+    int m = board[0].size();
+    vector<vector<int>> game(n, vector<int>(m, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            int sum = 0;
+            for(int r=-1; r<=1; r++){
+                for(int c=-1; c<=1; c++){
+                    int nr = i+r;
+                    int nc = j+c;
+                    if(r == 0 && c == 0) continue;
+                    if(nr>=0 && nr<n && nc>=0 && nc<m && board[nr][nc] == 1){
+                        sum++;
+                    }
+                }
+            }
+            cout << sum << " ";
+            if (board[i][j] == 1) {
+                if (sum < 2 || sum > 3) {
+                    game[i][j] = 0;
+                } else {
+                    game[i][j] = 1;
+                }
+            }
+            else {
+                if (sum == 3) {
+                    game[i][j] = 1;
+                } else {
+                    game[i][j] = 0;
+                }
+            }
+        }
+        cout << endl;
+    }
+    board = game;
+}
+
+====================================
+
+
+The Game of grid
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool find_plus(const vector<vector<int>> &grid, int n, int m, int val) {
+    if (n < 3 || m < 3) return false;
+    for (int i = 1; i < n - 1; ++i) {
+        for (int j = 1; j < m - 1; ++j) {
+            if (grid[i][j] == val &&
+                grid[i - 1][j] == val &&
+                grid[i + 1][j] == val &&
+                grid[i][j - 1] == val &&
+                grid[i][j + 1] == val) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+vector<int> solve(vector<vector<int>> &grid, int n, int m, int k) {
+    vector<int> result(3, 0); // [no_plus, single_plus, pair_plus]
+    vector<pair<int,int>> empty_cells;
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            if (grid[i][j] == 0)
+                empty_cells.emplace_back(i, j);
+
+    int s = (int)empty_cells.size();
+
+    // Single cells
+    for (auto &[x, y] : empty_cells) {
+        for (int val = 1; val <= k; ++val) {
+            int old_val = grid[x][y];
+            grid[x][y] = val;
+            if (find_plus(grid, n, m, val))
+                result[1]++;
+            grid[x][y] = old_val;
+        }
+    }
+
+    // Pairs of consecutive empty cells
+    for (int i = 0; i < s - 1; ++i) {
+        auto &[x1, y1] = empty_cells[i];
+        auto &[x2, y2] = empty_cells[i + 1];
+
+        for (int val1 = 1; val1 <= k; ++val1) {
+            int old_val1 = grid[x1][y1];
+            grid[x1][y1] = val1;
+
+            for (int val2 = 1; val2 <= k; ++val2) {
+                int old_val2 = grid[x2][y2];
+                grid[x2][y2] = val2;
+
+                if (find_plus(grid, n, m, val2))
+                    result[2]++;
+                else
+                    result[0]++;
+
+                grid[x2][y2] = old_val2;
+            }
+            grid[x1][y1] = old_val1;
+        }
+    }
+
+    // Adjust counts to avoid double counting
+    result[0] -= result[1];
+    result[2] -= result[1];
+
+    return result;
+}
+
+int main() {
+    int n = 3, m = 5, k = 2;
+    vector<vector<int>> grid{
+        {1, 1, 1, 2, 1},
+        {0, 1, 0, 2, 2},
+        {1, 1, 1, 2, 1}
+    };
+
+    vector<int> res = solve(grid, n, m, k);
+    for (int v : res) cout << v << " ";
+    return 0;
+}
+
+
+---------------------
+
+
+#include<bits/stdc++.h>
+using namespace std;
+bool checkwin(int n, int m, vector<vector<int>>& arr, int p) {
+    for(int i = 1; i < n-1; i++) {
+        for(int j = 1; j < m-1; j++) {
+            if(arr[i][j] == p && arr[i-1][j] == p && arr[i][j-1] == p && arr[i+1][j] == p && arr[i][j+1] == p) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void solve(bool amove, int &bwin, int &awin, int &draw, int n, int m, int k, vector<vector<int>>& arr) {
+    bool full = true;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            if(arr[i][j] == 0) {
+                full = false;
+                for(int x = 1; x <= k; x++) {
+                    arr[i][j] = x;
+                    if(checkwin(n, m, arr, x)) {
+                        if(amove) awin++;
+                        else bwin++;
+                    } else {
+                        solve(!amove, bwin, awin, draw, n, m, k, arr);
+                    }
+                    arr[i][j] = 0;  
+                }
+            }
+        }
+    }
+    if(full) {
+        draw++;  
+    }
+}
+ 
+void hemanth_hp() {
+    //int n, m, k;
+    // cin >> n >> m >> k;
+    // vector<vector<int>> arr(n, vector<int>(m, 0));
+ 
+    // for(int i = 0; i < n; i++) {
+    //     for(int j = 0; j < m; j++) {
+    //         cin >> arr[i][j];
+    //     }
+    // }
+    
+    int n=3, m=5, k=2;
+    vector<vector<int>> arr{{1,1,1,2,1}, {0,1,0,2,2}, {1,1,1,2,1}};
+    int bwin = 0, awin = 0, draw = 0;
+    solve(true, bwin, awin, draw, n, m, k, arr);
+    cout << awin << " " << bwin << " " << draw << endl;
+}
+int main() {
+    int t=1;
+    //cin >> t;
+    while(t--) hemanth_hp();
+}
+
+===========================================
+
+Black and White tree
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+long long power(long long base, long long exponent) {
+    if(base==0 or base==1)return 0;
+    long long result = 1;
+    while (exponent > 0) {
+		if (exponent % 2 == 1) {
+			result *= base;
+		}
+		base *= base;
+		exponent /= 2;
+    }
+    return result;
+}
+
+long long dfs(int node,vector<long long >&nnodes,map<int,bool>&vis,unordered_map<int,vector<int>>&adjlist){
+    vis[node]=true;
+    long long temp=1;
+    for(auto nextnode:adjlist[node]){
+		if(!vis[nextnode]){
+			vis[nextnode]=true;
+            temp=temp+dfs(nextnode,nnodes,vis,adjlist);
+		}
+	}
+    return nnodes[node]=temp;
+}
+
+int numzeros(int node,vector<long long >&zeros,string &color,map<int,bool>&vis,unordered_map<int,vector<int>>&adjlist){
+    vis[node]=true;
+    long long temp=0;
+    for(auto nextnode:adjlist[node]){
+		if(!vis[nextnode]){
+			vis[nextnode]=true;
+			temp=temp+((color[nextnode-1]=='0')+numzeros(nextnode,zeros,color,vis,adjlist));
+		}
+    }
+    return zeros[node]=temp;
+}
+
+vector<long long> solve(int n,string &color,vector<vector<int>>&edges){
+    vector<long long>nnodes(n+1,0);
+    vector<long long>zeros(n+1,0);
+    unordered_map<int,vector<int>>adjlist;
+    for(auto i:edges){
+		adjlist[i[0]].push_back(i[1]);
+		adjlist[i[1]].push_back(i[0]);
+	}
+
+    map<int,bool>vis;
+    dfs(1,nnodes,vis,adjlist);
+    map<int,bool>vis1;
+    numzeros(1,zeros,color,vis1,adjlist);
+    vector<long long>res;
+    for(int i=1; i<=n; i++){
+		long long N=nnodes[i];
+        long long k=zeros[i];
+        if(color[i-1]=='0')k=N-k-1;
+        long long ans=k*(N-1)-power(k,k-1) + (k*(k-1))/2;
+        res.push_back(ans);
+	}
+    return res;
+}
+
+int main(){
+    int t;
+	cin>>t;
+    while(t--){
+		int n; 
+		cin>>n;
+        string color;
+		cin>>color;
+        vector<vector<int>>edges;
+        for(int i=0; i<n-1; i++){
+			vector<int>v(2);
+            cin>>v[0]>>v[1];
+            edges.push_back(v);
+		}
+        vector<long long >ans=solve(n,color,edges);
+        for(auto i:ans)cout<<i<<" ";
+        cout<<endl;
+	}
+}
+
+===========================================
+
+Maximum Displacement
+
+#include<bits/stdc++.h>
+using namespace std;
+int solve(int ind,int dis,int move,string &s){
+    if(ind>=s.size()){
+        if(move==0){
+            //cout<<s<<" "<<dis<<endl;
+            return abs(dis);
+        }
+        return 0;
+    }
+ 
+    int notchange=0;
+    if(s[ind]=='R')notchange = solve(ind+1,dis-1,move,s);
+    else notchange=max(notchange,solve(ind+1,dis+1,move,s));
+    
+    int changeR=0,changeS=0;
+    if(move>0){
+        if(s[ind]=='R'){
+            s[ind]='S';
+            changeR=solve(ind,dis,move-1,s);
+            s[ind]='R';
+        }
+        if(s[ind]=='S'){
+            s[ind]='R';
+            changeS=solve(ind,dis,move-1,s);
+            s[ind]='S';
+        }
+    }
+    return max({notchange,changeR,changeS});
+}
+int game(string s,int N){
+    return solve(0,0,N,s);
+}
+int main(){
+    int t; cin>>t;
+    while(t--){
+        string s; cin>>s;
+        int N; cin>>N;
+        int ans=game(s,N);
+        cout<<ans<<endl;
+    }
+}
+
+================================
+
+Meeting room
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int solve(int n, vector<int> &people, vector<int> &starting, vector<int> &ending){
+    vector<vector<int>> timing(n, vector<int>(3, 0));
+    int total = 0;
+    for(int i=0; i<n; i++){
+        timing[i][0] = starting[i];
+        timing[i][1] = ending[i];
+        timing[i][2] = people[i];
+        total += people[i];
+    }
+    sort(timing.begin(), timing.end());
+    
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int peopleWithoutRoom = 0;
+    
+    for(int i=0; i<n; i++){
+        while (!pq.empty() && pq.top() < timing[i][0]) {
+            pq.pop();
+        }
+
+        if (pq.size() < 1) {
+            pq.push(timing[i][1]);
+        } else {
+            peopleWithoutRoom += timing[i][2];
+        }
+    }
+    
+    // for(int i=0; i<n; i++){
+    //     for(auto it:timing[i]){
+    //         cout<< it << " ";
+    //     }
+    //     cout << endl;
+    // }
+    return peopleWithoutRoom;
+}
+
+int main(){
+    int t; cin>>t;
+    while(t--){
+        int n; cin>>n;
+        vector<int> people(n);
+        vector<int> starting(n);
+        vector<int> ending(n);
+        for(int i=0; i<n; i++){
+            cin >> people[i];
+        }
+        for(int i=0; i<n; i++){
+            cin >> starting[i];
+        }
+        for(int i=0; i<n; i++){
+            cin >> ending[i];
+        }
+        int ans=solve(n, people, starting, ending);
+        cout<<ans << endl;
+    }
+}
+
+--------------
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int maxPeople(vector<vector<int>>& data, int n)
+{
+    sort(data.begin(), data.end(),
+         [&](vector<int> a, vector<int> b) {
+             if (a[1] == b[1])
+                 return a[0] < b[0];
+             else
+                 return a[1] < b[1];
+         });
+ 
+    vector<int> dp(n, 0);
+    dp[0] = data[0][2];
+
+    map<int, int> mp;
+
+    mp[data[0][1]] = dp[0];
+    for (int i = 1; i < n; i++) {
+        int curstart = data[i][0];
+        int curend = data[i][1];
+
+        if (curstart <= data[i - 1][1]) {
+            int left = 0;
+            int right = i;
+            int var = data[i][0];
+            while (left < right) {
+                int mid = left + (right - left) / 2;
+                if (data[mid][1] < var)
+                    left = mid;
+                else
+                    right = mid - 1;
+            }
+
+            dp[i] = max(dp[i - 1], mp[data[left][1]] + data[i][2]);
+
+            mp[data[i][1]] = max(dp[i], mp[data[i][1]]);
+        }
+        else {
+            dp[i] = dp[i - 1] + data[i][2];
+            mp[data[i][1]] = max(mp[data[i][1]], dp[i]);
+        }
+    }
+ 
+    return dp[n - 1];
+}
+
+int solve(int n, vector<int> &people, vector<int> &starting, vector<int> &ending){
+    vector<vector<int>> meeting(n, vector<int>(3, 0));
+    int total_people = 0;
+    for(int i=0; i<n; i++){
+        meeting[i][0] = starting[i];
+        meeting[i][1] = ending[i];
+        meeting[i][2] = people[i];
+        total_people += people[i];
+    }
+    
+    int max_people = maxPeople(meeting, n);
+    
+    return total_people - max_people;
+}
+
+int main(){
+    int n; cin>>n;
+    vector<int> people(n);
+    vector<int> starting(n);
+    vector<int> ending(n);
+    for(int i=0; i<n; i++){
+        cin >> people[i];
+    }
+    for(int i=0; i<n; i++){
+        cin >> starting[i];
+    }
+    for(int i=0; i<n; i++){
+        cin >> ending[i];
+    }
+    int ans=solve(n, people, starting, ending);
+    cout<<ans << endl;
+	return 0;
+}
+
+---------------------
+
+#include<bits/stdc++.h>
+using namespace std;
+long long solution(int ind,int n,int met,vector<int>&ppl,vector<int>&st,vector<int>&et,vector<long long>&dp){
+    if(ind>=n)return 0;
+    if(dp[ind]!=-1)return dp[ind];
+    long long pick=0;
+    if(met<st[ind]){
+        pick=ppl[ind]+solution(ind+1,n,et[ind],ppl,st,et,dp);
+    }
+    long long notpick=solution(ind+1,n,met,ppl,st,et,dp);
+    return dp[ind]=max(notpick,pick);
+}
+
+long long solve(int N,vector<int>&people,vector<int>&starting ,vector<int>&ending){
+    long long total=0;
+    for(auto i: people)total+=i;
+    vector<long long>dp(N+1,-1);
+    return total-solution(0,N,0,people,starting,ending,dp);
+}
+int main(){
+    int n; cin>>n;
+    vector<int>ppl(n,0),st(n,0),et(n,0);
+    for(int i=0; i<n; i++)cin>>ppl[i];
+    for(int i=0; i<n; i++)cin>>st[i];
+    for(int i=0; i<n; i++)cin>>et[i];
+    cout<<solve(n,ppl,st,et)<<endl;
+}
+
+=====================================================
+
+https://leetcode.com/problems/rotate-image/submissions/1400511534/
+https://leetcode.com/problems/transpose-matrix/submissions/1400523148/
+https://leetcode.com/problems/set-matrix-zeroes/submissions/1400529993/
+https://leetcode.com/problems/reshape-the-matrix/submissions/1400660553/
+
+
+
+https://www.hackerearth.com/challenges/test/lgsoft-pretest-oct-2024/?login=46e49aa31a89e7a9d03a0a35ce616a94
+
+=========================================================
+
+subtree problem
+
+#include<bits/stdc++.h>
+using namespace std;
+
+void dfs(int x,int p, vector<int>&sub, vector<vector<int>>&v)
+{
+    sub[x]=1;
+    for(auto itr:v[x])
+    {
+        if(itr!=p)
+        {
+            dfs(itr,x,sub,v);
+            sub[x]+=sub[itr];
+        }
+    }
+}
+vector<int> subtreeProblem (int n, vector<vector<int>> edges, vector<int> queries)
+{
+    vector<int>sub(n+1);
+    vector<vector<int>>v(n+1);
+    int x,y;
+    for(int i=0;i<edges.size();i++)
+    {
+        x=edges[i][0],y=edges[i][1];
+        v[x].push_back(y);
+        v[y].push_back(x);
+    }
+    vector<int>ans;
+    dfs(1,-1,sub,v);
+    for(int i=0;i<queries.size();i++)
+    {
+        x=queries[i];
+        ans.push_back(sub[x]);
+    }
+    return ans;
+}
+
+===================================================================
+
+Example:
+
+Input
+
+n = 5 , k = 1
+edges = [
+    [1, 2, 1],
+    [1, 3, 1],
+    [2, 4, 1],
+    [3, 5, 1]
+]
+ 
+queries = [
+    [2, 4],
+    [2, 3],
+    [4, 5]
+]
+Output
+
+[3, 2, 4]
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second 
+
+vector<vector<pair<int,int>>>v;
+vector<int>dis;
+void dfs(int x ,int p,int w)
+{
+    dis[x]=w;
+    for(auto itr:v[x])
+    {
+        if(itr.fi!=p)
+        {
+            dfs(itr.fi,x,w+itr.se);
+        }
+    }
+}
+vector<int> pathOnTree (int n, int k, vector<vector<int>> edges, vector<vector<int>> queries)
+{
+    dis.resize(n+1);
+    v=vector<vector<pair<int,int>>>(n+1,vector<pair<int,int>>());
+    int x,y,val;
+    for(int i=0;i<n-1;i++)
+    {
+        x=edges[i][0],y=edges[i][1],val=edges[i][2];
+        v[x].push_back({y,val});
+        v[y].push_back({x,val});
+    }
+    dfs(k,0,0);
+    vector<int>ans;
+    for(int i=0;i<queries.size();i++)
+    {
+        x=queries[i][0],y=queries[i][1];
+        val=dis[x]+dis[y];
+        ans.push_back(val);
+    }
+    return  ans;
+}
+
+=================================================
+
+Recursive Digit Sum
+
+int sum_length(int sum){
+    int size = 0;
+    while(sum != 0){
+        sum = sum/10;
+        size++;
+    }
+    return size;
+}
+
+int superDigit(string n, int k) {
+    int res=0, sum=stoi(n);
+    int num=0;
+    while(sum != 0){
+        res = sum%10;
+        num += res;
+        sum = sum/10;
+    }
+    sum = num * k;
+    while(sum_length(sum) != 1){
+        num=0;
+        while(sum != 0){
+            res = sum%10;
+            num += res;
+            sum = sum/10;
+        }
+        cout << num << endl;
+        sum=num;
+    }
+    return sum;
+}
+
+====================================
+
+Huffman decoding algorithm:
+
+void decode_huff(node * root, string s) {
+    string ans = "";
+    struct node* curr = root;
+    int len = s.length();
+    for (int i = 0; i < len; i++) {
+        if (s[i] == '0')
+            curr = curr->left;
+        else
+            curr = curr->right;
+ 
+        // reached leaf node
+        if (curr->left == NULL and curr->right == NULL) {
+            ans += curr->data;
+            curr = root;
+        }
+    }
+    for(auto str:ans){
+        cout << str;
+    }
+}
+
+========================================
+
+Height of the tree:
+
+int height(Node* root) {
+    // Write your code here.
+    if(!root) return -1;
+    int lcnt = height(root->left);
+    int rcnt = height(root->right);
+    
+    return max(lcnt, rcnt)+1;
+            
+}
+
+============================================
+
+https://www.hackerrank.com/contests/week12-ms-skill-test/challenges/torque-and-development/submissions/code/1388157631
+
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited) {
+    stack<int> s;
+    s.push(node);
+    visited[node] = true;
+ 
+    while (!s.empty()) {
+	int u = s.top();
+        s.pop();
+        for (int v : adj[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                s.push(v);
+            }
+        }
+    }
+}
+ 
+long long roadsAndLibraries(int n, int c_lib, int c_road, vector<vector<int>>& cities) {
+    if (c_lib <= c_road) {
+        // Cheaper to build a library in every city
+        return (long long)n * c_lib;
+    }
+ 
+    vector<vector<int>> adj(n + 1);
+    vector<bool> visited(n + 1, false);
+ 
+    for (const auto& edge : cities) {
+        int u = edge[0];
+        int v = edge[1];
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+ 
+    int connectedComponents = 0;
+ 
+    for (int i = 1; i <= n; ++i) {
+        if (!visited[i]) {
+            dfs(i, adj, visited);
+            connectedComponents++;
+        }
+    }
+    
+    return (long long)connectedComponents * c_lib + (long long)(n - connectedComponents) * c_road;
+}
+
+
+================================================
+Snakes and Ladders: The Quickest Way Up:
+
+https://www.hackerrank.com/contests/week12-ms-skill-test/challenges/the-quickest-way-up/submissions/code/1388161351
+
+
+int quickestWayUp(vector<vector<int>> ladders, vector<vector<int>> snakes) {
+    vector<int> board(101, -1);
+    
+    for (auto& ladder : ladders) {
+        board[ladder[0]] = ladder[1];
+    }
+ 
+    for (auto& snake : snakes) {
+        board[snake[0]] = snake[1];
+    }
+ 
+    queue<pair<int, int>> q;
+    vector<bool> visited(101, false);
+ 
+    q.push({1, 0});
+    visited[1] = true;
+ 
+    while (!q.empty()) {
+        auto [pos, rolls] = q.front();
+        q.pop();
+ 
+        if (pos == 100) return rolls;
+ 
+        for (int dice = 1; dice <= 6; ++dice) {
+            int nextPos = pos + dice;
+            if (nextPos > 100) continue;
+ 
+            if (board[nextPos] != -1) {
+                nextPos = board[nextPos];
+            }
+ 
+            if (!visited[nextPos]) {
+                visited[nextPos] = true;
+                q.push({nextPos, rolls + 1});
+            }
+        }
+    }
+    return -1;
+}
+
+==================================================
+
+Abbrevation:
+
+https://www.hackerrank.com/contests/week13-ms-skill-test/challenges/abbr/submissions/code/1388496614
+
+string abbreviation(string a, string b) {
+    int size_a = a.length(), size_b = b.length();
+    vector<vector<bool>> abb(size_a+1, vector<bool>(size_b+1));
+    int upperCase = 0;
+    abb[0][0] = true;
+    for (int i=1; i < size_a+1; i++) {
+        if (isupper(a[i-1])) upperCase++;
+        if (upperCase == 0) abb[i][0] = true;
+    }
+    for (int j=1; j < size_b+1; j++) {
+        for (int i=j; i < size_a+1; i++) {
+            if (abb[i-1][j] == false or isupper(a[i-1])) abb[i][j] = (abb[i-1][j-1] and toupper(a[i-1]) == b[j-1]);
+            else abb[i][j] = true;
+        }
+    }
+    return abb[size_a][size_b] ? "YES" : "NO";
+}
+
+===========================================================
+
+The Longest Common Subsequence
+
+vector<int> longestCommonSubsequence(vector<int> a, vector<int> b) {
+    int n = a.size(), m = b.size();
+    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+ 
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (a[i - 1] == b[j - 1])
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            else
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+        }
+    }
+ 
+    vector<int> lcs;
+    int i = n, j = m;
+    while (i > 0 && j > 0) {
+        if (a[i - 1] == b[j - 1]) {
+            lcs.push_back(a[i - 1]);
+            i--; j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+    
+    reverse(lcs.begin(), lcs.end());
+    return lcs;
+}
+
+=================================
+
+Candies
+
+https://www.hackerrank.com/contests/week17-hes-skill-test/challenges/candies/submissions/code/1389889423
+
+long candies(int n, vector<int>& arr) {
+    vector<long> dp(n, 1);
+ 
+    // Forward pass: Check if the next child has a higher rating, if yes, give more candies
+    for (int i = 1; i < n; ++i) {
+        if (arr[i] > arr[i - 1]) {
+            dp[i] = dp[i - 1] + 1;
+        }
+    }
+ 
+    // Backward pass: Check if the previous child has a higher rating, if yes, update candies
+    for (int i = n - 2; i >= 0; --i) {
+        if (arr[i] > arr[i + 1]) {
+            dp[i] = max(dp[i], dp[i + 1] + 1);
+        }
+    }
+ 
+    // Sum up the total number of candies
+    long total_candies = 0;
+    for (int i = 0; i < n; ++i) {
+        total_candies += dp[i];
+    }
+ 
+    return total_candies;
+}
+
+===============================================
+
+Goodland Electricity
+
+https://www.hackerrank.com/contests/week17-hes-skill-test/challenges/pylons/submissions/code/1389889995
+
+
+int pylons(int k, vector<int> arr) {
+    int size = arr.size();
+    int plant = 0, i=0;
+    
+    while (i < size) {
+        int temp;
+        if (i + k - 1 < size) 
+            temp = i + k - 1;
+        else 
+            temp = size - 1;
+        
+        while (arr[temp] == 0 and temp >= max(0, i - k + 1)) 
+            temp--;
+        
+        if (temp == max(0, i - k + 1) - 1) 
+            return -1;
+        plant++;
+        i = temp + k;
+    }
+    return plant;
+}
+
+======================================================
+
+Balanced Brackets:
+
+https://www.hackerrank.com/contests/week18-hes-skill-test/challenges/balanced-brackets/submissions/code/1390192502
+
+string isBalanced(string s) {
+    stack<char> stack;
+    for (char ch : s) {
+        if (ch == '(' || ch == '{' || ch == '[') {
+            stack.push(ch);
+        }
+        else if (ch == ')' || ch == '}' || ch == ']') {
+            if (stack.empty()) {
+                return "NO";
+            }
+            char top = stack.top();
+            stack.pop();
+
+            if ((ch == ')' && top != '(') || 
+                (ch == '}' && top != '{') || 
+                (ch == ']' && top != '[')) {
+                return "NO";
+            }
+        }
+    }
+    if(!stack.empty()){
+        return "NO";
+    } else
+        return "YES";
+}
+
+==========================================
+
+Find the Running Median:
+
+https://www.hackerrank.com/contests/week18-hes-skill-test/challenges/find-the-running-median/submissions/code/1390192813
+
+vector<double> runningMedian(vector<int> a) {
+    vector<double> medians;
+    priority_queue<int> maxHeap;
+    priority_queue<int, vector<int>, greater<int>> minHeap;
+    
+    for (int num : a) {
+        if (maxHeap.empty() || num <= maxHeap.top()) {
+            maxHeap.push(num);
+        } else {
+            minHeap.push(num);
+        }
+        
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        }
+        if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+
+        if (maxHeap.size() > minHeap.size()) {
+            medians.push_back((double)maxHeap.top());
+        } else {
+            medians.push_back((maxHeap.top() + minHeap.top()) / 2.0);
+        }
+    }
+    return medians;
+}
+
+================================================
+
+https://www.hackerrank.com/contests/week19-hes-skill-test/challenges/the-power-sum/submissions/code/1390517614
+
+The Power Sum:
+
+int countWays(int X, int N, int currentBase){
+    if (X == 0) {
+        return 1;
+    }
+    if (X < 0) {
+        return 0;
+    }
+
+    int ways = 0;
+    
+    for (int i = currentBase; pow(i, N) <= X; ++i) {
+        ways += countWays(X - pow(i, N), N, i + 1);
+    }
+    
+    return ways;
+}
+
+int powerSum(int X, int N) {
+     return countWays(X, N, 1);
+}
+
+=========================================================
+
+https://www.hackerrank.com/contests/week21-ms-skill-test/challenges/dijkstrashortreach/submissions/code/1391028209
+
+vector<int> shortestReach(int n, vector<vector<int>> edges, int s) {
+    vector<pair<int, int>> adj[n + 1];
+    for (auto it : edges)
+    {
+        adj[it[0]].push_back({it[1], it[2]});
+        adj[it[1]].push_back({it[0], it[2]});
+    }
+        
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int,int>>> pq;
+    vector<int> distTo(n+1, INT_MAX);
+
+    distTo[s] = 0;
+    pq.push({0, s});
+
+    while (!pq.empty())
+    {
+        int node = pq.top().second;
+        int dis = pq.top().first;
+        pq.pop();
+
+        for (auto it : adj[node])
+        {
+            int v = it.first;
+            int w = it.second;
+            if (dis + w < distTo[v])
+            {
+                distTo[v] = dis + w;
+                pq.push({dis + w, v});
+            }
+        }
+    }
+    
+    vector<int> path;
+    for(int i=1; i<distTo.size(); i++){
+        if(i != s){
+            if(distTo[i] == INT_MAX)
+                path.push_back(-1);
+            else
+                path.push_back(distTo[i]);
+        }
+    }
+
+    return path;
+}
+
+===========================================================
+
+https://www.hackerrank.com/contests/week21-ms-skill-test/challenges/primsmstsub/submissions/code/1391029935
+
+int prims(int n, vector<vector<int>> edges, int start) {
+    vector<pair<int, int>> graph[n + 1];
+    
+    for (auto& edge : edges) {
+        int u = edge[0];
+        int v = edge[1];
+        int w = edge[2];
+        graph[u].push_back({v, w});
+        graph[v].push_back({u, w});
+    }
+    
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    
+    vector<bool> visited(n + 1, false);
+    visited[start] = true;
+    
+    for (auto& edge : graph[start]) {
+        pq.push({edge.second, edge.first});
+    }
+    
+    int minWeight = 0;
+    
+    while (!pq.empty()) {
+        pair<int, int> p = pq.top();
+        pq.pop();
+        int u = p.second;
+        int weight = p.first;
+    
+        if (visited[u]) {
+            continue;
+        }
+
+        visited[u] = true;
+        minWeight += weight;
+
+        for (auto& edge : graph[u]) {
+            if (!visited[edge.first]) {
+                pq.push({edge.second, edge.first});
+            }
+        }
+    }
+    
+    return minWeight;
+}
+
+=================================================
+
+https://www.hackerrank.com/contests/week22-ms-skill-test/challenges/arithmetic-expressions/submissions/code/1391288171
+
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+vector<int> a;
+string ans;
+bool found = false;
+const int MOD = 101;
+vector<vector<bool>> memo;
+ 
+int calc(int x, int y, char op) {
+    if (op == '+') return (x + y) % MOD;
+    if (op == '-') return ((x - y) % MOD + MOD) % MOD;
+    return (x * y) % MOD;
+}
+ 
+void dfs(int i, string expr, int val) {
+    if (found) return;
+    if (i == n) {
+        if (val == 0) {
+            ans = expr;
+            found = true;
+        }
+        return;
+    }
+    if (memo[i][val]) return;
+    memo[i][val] = true;
+    for (char op : {'+', '-', '*'}) {
+        int nxt = calc(val, a[i], op);
+        dfs(i + 1, expr + op + to_string(a[i]), nxt);
+        if (found) return;
+    }
+}
+ 
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n;
+    a.resize(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+    memo.assign(n + 1, vector<bool>(MOD, false));
+    dfs(1, to_string(a[0]), a[0] % MOD);
+    cout << ans << endl;
+    return 0;
+}
+
+============================================================
+
+
+https://www.hackerrank.com/contests/week23-ms-skill-test/challenges/coin-change/submissions/code/1391530613
+
+long getWays(int n, vector<long> coins) {
+    vector<long> combinations(n + 1, 0);
+    
+    combinations[0] = 1;
+    for (int coin : coins) {
+        for (int i = coin; i <= n; i++) {
+            combinations[i] += combinations[i - coin];
+        }
+    }
+    return combinations[n];
+}
+
+https://www.hackerrank.com/contests/week23-ms-skill-test/challenges/frog-in-maze
+
+
+========================================
+
+https://www.hackerrank.com/contests/week24-ms-skill-test/challenges/unbounded-knapsack/submissions/code/1391765016
+
+
+int unboundedKnapsack(int k, vector<int> arr) {
+    int n = arr.size();
+    vector<int> dp(k + 1, 0);
+
+    for (int i = 1; i <= k; i++) {
+        for (int j = 0; j < n; j++) {
+            if (arr[j] <= i) {
+                dp[i] = max(dp[i], dp[i - arr[j]] + arr[j]);
+            }
+        }
+    }
+
+    return dp[k];
+}
+
+
+========================================
+
+https://www.hackerrank.com/contests/week24-ms-skill-test/challenges/connected-cell-in-a-grid/submissions/code/1391765401
+
+int dx[8] = {-1, 0, 1, 0, 1, -1, 1, -1};
+int dy[8] = {0, -1, 0, 1, 1, -1, -1, 1};
+void dfs(int xx, int yy, int n, int m, vector<vector<int>> &matrix, vector<vector<int>> &vis, int &cnt){
+    vis[xx][yy] = 1;
+    cnt++;
+    for(int i=0; i<8; i++){
+        int x = xx + dx[i];
+        int y = yy + dy[i];
+        if(x >=0 && x<n && y>=0 && y<m && !vis[x][y] && matrix[x][y] == 1){
+            dfs(x, y, n, m, matrix, vis, cnt);
+        }
+    }
+    
+}
+
+int connectedCell(vector<vector<int>> matrix) {
+    int n = matrix.size();
+    int m = matrix[0].size();
+    vector<vector<int>> vis(n, vector<int>(m,0));
+    int count = 0;
+    
+    for(int i=0;i<n; i++){
+        for(int j=0; j<m; j++){
+            if(!vis[i][j] && matrix[i][j] == 1){
+                int cnt = 0;
+                dfs(i, j, n, m, matrix, vis, cnt);
+                count = max(count, cnt);
+            }
+        }
+    }
+    return count;
+}
+
+
+===========================================================
+
+
+https://www.hackerrank.com/contests/week25-ms-skill-test/challenges/icecream-parlor/submissions/code/1392027062
+
+vector<int> icecreamParlor(int m, vector<int> arr) {
+    unordered_map<int, int> price_map;  
+    vector<int> result;
+    
+    for (int i = 0; i < arr.size(); ++i) {
+        int complement = m - arr[i];
+        if (price_map.find(complement) != price_map.end()) {
+            result.push_back(price_map[complement] + 1);
+            result.push_back(i + 1);
+            break;
+        }
+        price_map[arr[i]] = i;
+    }
+
+    return result;
+}
+
+=============================================
+
+https://www.hackerrank.com/contests/week25-ms-skill-test/challenges/binary-search-tree-lowest-common-ancestor/submissions/code/1392027232
+
+
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int data) {
+    if (!root) {
+        return new Node(data);
+    }
+    if (data <= root->data) {
+        root->left = insert(root->left, data);
+    } else {
+        root->right = insert(root->right, data);
+    }
+    return root;
+}
+
+Node* findLCA(Node* root, int v1, int v2) {
+
+    if (!root) return nullptr;
+
+    if (v1 < root->data && v2 < root->data) {
+        return findLCA(root->left, v1, v2);
+    }
+
+    if (v1 > root->data && v2 > root->data) {
+        return findLCA(root->right, v1, v2);
+    }
+    return root;
+}
+
+int main() {
+    int n;
+    cin >> n; 
+
+    int rootData;
+    cin >> rootData;
+    Node* root = new Node(rootData);
+
+    for (int i = 1; i < n; ++i) {
+        int data;
+        cin >> data;
+        insert(root, data);
+    }
+
+    int v1, v2;
+    cin >> v1 >> v2;
+
+    Node* lcaNode = findLCA(root, v1, v2);
+
+    if (lcaNode) {
+        cout << lcaNode->data << endl;
+    }
+
+    return 0;
+}
+
+
+============================================================
+
+https://www.hackerrank.com/contests/week26-ms-skill-test/challenges/game-of-two-stacks/submissions/code/1392155846
+
+int twoStacks(int maxSum, vector<int>& a, vector<int>& b) {
+    int sum = 0;
+    int count = 0;
+
+    while (count < a.size() && sum + a[count] <= maxSum) {
+        sum += a[count];
+        count++;
+    }
+
+    int result = count;
+
+    for (int i = 0; i < b.size(); i++) {
+        sum += b[i];
+        while (sum > maxSum && count > 0) {
+            count--;
+            sum -= a[count];
+        }
+
+        if (sum <= maxSum) {
+            result = max(result, count + i + 1);
+        }
+    }
+
+    return result;
+}
+===================================================================
+
+
+https://www.hackerrank.com/contests/week26-ms-skill-test/challenges/waiter/submissions/code/1392159567
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, q, v;
+    vector<int> primes;
+    for (int i = 2; i <= 10000; i++) {
+        bool isPrime = true;
+        for (int j = 2; j * j <= i; j++) {
+            if (i % j == 0) {
+                isPrime = false;
+                break;
+            }
+        }
+        if (isPrime) {
+            primes.push_back(i);
+        }
+    }
+
+    cin >> n >> q;
+    stack<int> a, b, c;
+
+    for (int i = 0; i < n; i++) {
+        cin >> v;
+        a.push(v);
+    }
+
+    for (int i = 0; i < q; i++) {
+        if (a.empty()) {
+            break;
+        }
+
+        int currentPrime = primes[i];
+
+        while (!a.empty()) {
+            int ele = a.top();
+            a.pop();
+
+            if (ele % currentPrime == 0) {
+                b.push(ele);
+            } else {
+                c.push(ele);
+            }
+        }
+
+        while (!b.empty()) {
+            cout << b.top() << endl;
+            b.pop();
+        }
+
+        a = c;
+        while (!c.empty()) {
+            c.pop();
+        }
+    }
+
+    while (!a.empty()) {
+        cout << a.top() << endl;
+        a.pop();
+    }
+}
+
+==========================================
+
+https://www.hackerrank.com/contests/week27-ms-skill-test/challenges/priyanka-and-toys/submissions/code/1392354347
+
+int toys(vector<int> w) {
+    sort(w.begin(), w.end());
+    int n = w.size();
+    int containers = 0;
+    int i = 0;
+
+    while (i < n) {
+        int min_weight = w[i];
+        containers++;
+
+        while (i < n && w[i] <= min_weight + 4) {
+            i++;
+        }
+    }
+    return containers;
+}
+
+
+===============================================
+
+https://www.hackerrank.com/contests/week28-ms-skill-test/challenges/floyd-city-of-blinding-lights/submissions/code/1392575621
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, q;
+    cin >> n >> m;
+
+    vector<vector<int>> dist(n, vector<int>(n, INF));
+
+    for (int i = 0; i < n; i++) {
+        dist[i][i] = 0;
+    }
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        u--; v--;
+        dist[u][v] = w;
+    }
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            if (dist[i][k] == INF) continue;
+            for (int j = 0; j < n; j++) {
+                if (dist[k][j] == INF) continue;
+                if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+    }
+    
+    cin >> q;
+    while (q--) {
+        int src, dest;
+        cin >> src >> dest;
+        src--; dest--;
+        if (dist[src][dest] == INF) cout << -1 << "\n";
+        else cout << dist[src][dest] << "\n";
+    }
+
+    return 0;
+}
+
+
+=================================================
+
+https://www.hackerrank.com/contests/week28-ms-skill-test/challenges/shortest-path/submissions/code/1392574689
+
+int shortestPathSum(vector<vector<int>>& grid, pair<int,int> src, pair<int,int> dest) {
+    int n = grid.size();
+    int m = grid[0].size();
+
+    vector<vector<int>> dist(n, vector<int>(m, INT_MAX));
+    dist[src.first][src.second] = grid[src.first][src.second];
+
+    priority_queue<pair<int, pair<int,int>>,vector<pair<int, pair<int,int>>>,greater<pair<int, pair<int,int>>>> pq;
+
+    pq.push({dist[src.first][src.second], {src.first, src.second}});
+
+    vector<pair<int,int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+
+    while (!pq.empty()) {
+        auto [curDist, pos] = pq.top(); pq.pop();
+        int x = pos.first, y = pos.second;
+
+        if (x == dest.first && y == dest.second) {
+            return curDist;
+        }
+
+        if (curDist > dist[x][y]) continue;
+
+        for (auto& d : directions) {
+            int nx = x + d.first;
+            int ny = y + d.second;
+
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m) {
+                int newDist = curDist + grid[nx][ny];
+                if (newDist < dist[nx][ny]) {
+                    dist[nx][ny] = newDist;
+                    pq.push({newDist, {nx, ny}});
+                    if (nx == dest.first && ny == dest.second) {
+                        return newDist;
+                    }
+                }
+            }
+        }
+    }
+
+    return -1;
+}
+vector<int> shortestPath(vector<vector<int>> a, vector<vector<int>> queries) {
+    vector<int> res;
+    for(auto query:queries){
+        int sx = query[0], sy = query[1];
+        int dx = query[2], dy = query[3];
+        res.push_back(shortestPathSum(a, {sx, sy}, {dx, dy}));
+    }
+    return res;
+}
+
+=================================================
+
+https://www.hackerrank.com/contests/week29-ms-skill-test/challenges/red-john-is-back/submissions/code/1392871660
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+string ltrim(const string &);
+string rtrim(const string &);
+
+/*
+ * Complete the 'redJohn' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER n as parameter.
+ */
+
+const int MAX_N = 40; 
+long long ways[MAX_N + 1];
+
+int primeLimit; 
+vector<bool> isPrime;
+
+void sieve(int maxVal) {
+    isPrime.assign(maxVal + 1, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i <= maxVal; i++) {
+        if (isPrime[i]) {
+            for (int j = i * i; j <= maxVal; j += i) {
+                isPrime[j] = false;
+            }
+        }
+    }
+}
+
+int countPrimesUpTo(int x) {
+    if (x < 2) return 0;
+    int cnt = 0;
+    for (int i = 2; i <= x; i++) {
+        if (isPrime[i]) cnt++;
+    }
+    return cnt;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    // Precompute ways for all N up to MAX_N
+    ways[0] = 1;
+    for (int i = 1; i <= MAX_N; i++) {
+        ways[i] = ways[i - 1];
+        if (i >= 4) ways[i] += ways[i - 4];
+    }
+
+    int T; cin >> T;
+
+    vector<int> queries(T);
+    int maxWaysVal = 0;
+
+    for (int i = 0; i < T; i++) {
+        int n; cin >> n;
+        queries[i] = n;
+        maxWaysVal = max(maxWaysVal, (int)ways[n]);
+    }
+
+    // Sieve primes up to maxWaysVal
+    sieve(maxWaysVal);
+
+    for (int n : queries) {
+        int waysVal = (int)ways[n];
+        cout << countPrimesUpTo(waysVal) << "\n";
+    }
+
+    return 0;
+}
+
+
+===========================================================
+
+https://www.hackerrank.com/contests/week32-hes-skill-test/challenges/minimum-loss/submissions/code/1393558975
+
+int minimumLoss(vector<long> price) {
+    map<long, long> m;
+    int size = price.size();
+    for(int i = 0; i < size; ++i) {
+        m[price[i]] = i;
+    }
+    
+    map<long, long>::iterator it = m.begin();
+    unsigned long min = INT_MAX;
+    long a1 = it->first; 
+    long b1 = it->second;
+    long a2 = 0;
+    long b2 = 0;
+    ++it;
+    for (;it != m.end(); ++it) {
+        a2 = it->first; 
+        b2 = it->second;
+        if (abs(a1 - a2) < min && (b1 - b2) > 0) {
+            min = abs(a1 - a2);
+        }
+        a1 = a2;
+        b1 = b2;
+    }
+    return (int)min;
+}
+
+==============================================================
+
+https://www.hackerrank.com/contests/week32-hes-skill-test/challenges/kingdom-connectivity/submissions/code/1393561532
+
+const int MOD = 1e9;
+vector<vector<int>> adj, rev_adj;
+vector<bool> visited, in_stack, reachable;
+vector<long long> dp;
+stack<int> topo;
+
+bool dfs(int u) {
+    visited[u] = true;
+    in_stack[u] = true;
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            if (dfs(v)) return true;
+        } else if (in_stack[v]) {
+            return true;
+        }
+    }
+    in_stack[u] = false;
+    topo.push(u);
+    return false;
+}
+
+void reverse_dfs(int u) {
+    reachable[u] = true;
+    for (int v : rev_adj[u]) {
+        if (!reachable[v]) {
+            reverse_dfs(v);
+        }
+    }
+}
+
+void countPaths(int n, vector<vector<int>> edges) {
+    adj.assign(n + 1, {});
+    rev_adj.assign(n + 1, {});
+    visited.assign(n + 1, false);
+    in_stack.assign(n + 1, false);
+    reachable.assign(n + 1, false);
+    dp.assign(n + 1, 0);
+
+    for (auto &e : edges) {
+        int u = e[0], v = e[1];
+        adj[u].push_back(v);
+        rev_adj[v].push_back(u);
+    }
+    
+    bool hasCycle = dfs(1);
+
+    reverse_dfs(n);
+
+    for (int u = 1; u <= n; ++u) {
+        if (visited[u] && reachable[u]) {
+            for (int v : adj[u]) {
+                if (visited[v] && reachable[v] && in_stack[v]) {
+                    cout << "INFINITE PATHS" << endl;
+                    return;
+                }
+            }
+        }
+    }
+
+    dp[1] = 1;
+    while (!topo.empty()) {
+        int u = topo.top(); topo.pop();
+        if (!reachable[u]) continue;
+        for (int v : adj[u]) {
+            dp[v] = (dp[v] + dp[u]) % MOD;
+        }
+    }
+
+    cout << dp[n] << endl;
+}
+
+=====================================================
+
+Recursive Digit Sum:
+
+https://www.hackerrank.com/contests/week33-ms-skill-test/challenges/recursive-digit-sum/submissions/code/1393866150
+
+int sum_length(long long sum){
+    int size = 0;
+    while(sum != 0){
+        sum /= 10;
+        size++;
+    }
+    return size;
+}
+
+int superDigit(string n, int k) {
+    long long res=0;
+    long long sum=0;
+    long long num=0;
+    for(auto ch: n){
+        num += ch - 48;
+    }
+    sum = num * k;
+    while(sum_length(sum) != 1){   // (log10(sum) + 1)
+        num=0;
+        while(sum != 0){
+            res = sum%10;
+            num += res;
+            sum = sum/10;
+        }
+        sum=num;
+    }
+    return (int)sum;
+}
+
+
+=========================================================
+
+Stone Division, Revisited :
+
+https://www.hackerrank.com/contests/week33-ms-skill-test/challenges/stone-division-2/submissions/code/1393867930
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+ 
+int main() {
+    int testCases;
+    cin >> testCases;
+ 
+    while (testCases--) {
+        long long totalLength, count;
+        cin >> totalLength >> count;
+ 
+        vector<long long> segments(count + 1);
+        vector<long long> dp(count + 1, 0);
+        long long maxResult = 0;
+ 
+        for (int i = 1; i <= count; ++i) {
+            cin >> segments[i];
+        }
+        segments[0] = totalLength;
+ 
+        sort(segments.begin() + 1, segments.end(), greater<long long>());
+ 
+        for (int i = 0; i <= count; ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (segments[j] != segments[i] && segments[j] % segments[i] == 0) {
+                    if (j == 0 || dp[j] > 0) {
+                        long long candidate = dp[j] + totalLength / segments[j];
+                        if (candidate > dp[i]) {
+                            dp[i] = candidate;
+                            if (dp[i] > maxResult) {
+                                maxResult = dp[i];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+ 
+        cout << maxResult << "\n";
+    }
+ 
+    return 0;
+}
+
+=======================================================
+
+https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/submissions/1689425190/
+
+Number of ways to arrive destination
+
+
+class Solution {
+public:
+    int countPaths(int n, vector<vector<int>>& roads) {
+        const long long MOD = 1e9 + 7;
+        vector<pair<int,int>> adj[n];
+        for(auto it : roads){
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+            adj[u].push_back({v, wt});
+            adj[v].push_back({u, wt});
+        }
+        vector<long long> dis(n, LONG_MAX);
+        vector<long long> ways(n, 0);
+        ways[0] = 1;
+        dis[0] = 0;
+        priority_queue<pair<long long, long long>, 
+        vector<pair<long long, long long>>, 
+        greater<pair<long long, long long>>> pq;
+        pq.push({0, 0});
+        while(!pq.empty()){
+            long long dist = pq.top().first;
+            long long node = pq.top().second;
+            pq.pop();
+            if(dist > dis[node]) continue;
+            for(auto it : adj[node]){
+                long long adjNode = it.first;
+                long long edW = it.second;
+                if(dist + edW < dis[adjNode]){
+                    dis[adjNode] = dist + edW;
+                    pq.push({dis[adjNode], adjNode});
+                    ways[adjNode] = ways[node];
+                } 
+                else if(dist + edW == dis[adjNode]){
+                    ways[adjNode] = (ways[adjNode] + ways[node]) % MOD;
+                }
+            }
+        }
+        return ways[n-1] % MOD;
+    }
+};
+
+==============================================
+
+
+https://leetcode.com/problems/number-of-closed-islands/submissions/1690315817/
+
+DFS:
+
+class Solution {
+public:
+    int dr[4] = {1, 0, -1, 0};
+    int dc[4] = {0, 1, 0, -1};
+    bool flag = true;
+    void dfs(int r, int c, int n, int m, vector<vector<int>>& grid, vector<vector<int>>& vis){
+        vis[r][c] = 1;
+        if(r == 0 || r == n-1 || c == 0 || c == m-1) flag = false;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr >= 0 && nr < n && nc >= 0 && nc < m && grid[nr][nc] == 0 && !vis[nr][nc]){
+                dfs(nr, nc, n, m, grid, vis);
+            }
+        }
+        //return flag;
+    }
+    int closedIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int cnt = 0;
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(!vis[i][j] && grid[i][j] == 0){
+                    dfs(i, j, n, m, grid, vis);
+                    if(flag == true) cnt++;
+                    flag = true;
+                }
+            }
+        }
+        return cnt;
+    }
+};
+
+BFS:
+
+class Solution {
+public:
+    int dr[4] = {1, 0, -1, 0};
+    int dc[4] = {0, 1, 0, -1};
+    bool flag = true;
+    void bfs(int r, int c, int n, int m, vector<vector<int>>& grid, vector<vector<int>>& vis){
+        vis[r][c] = 1;
+        queue<pair<int, int>> q;
+        q.push({r, c});
+        while(!q.empty()){
+            int row = q.front().first;
+            int col = q.front().second;
+            q.pop();
+            if(row == 0 || row == n-1 || col == 0 || col == m-1) flag = false;
+            for(int i=0; i<4; i++){
+                int nr = row + dr[i];
+                int nc = col + dc[i];
+                if(nr >= 0 && nr < n && nc >= 0 && nc < m && grid[nr][nc] == 0 && !vis[nr][nc]){
+                    q.push({nr, nc});
+                    vis[nr][nc] = 1;
+                }
+            }
+        }
+    }
+    int closedIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int cnt = 0;
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(!vis[i][j] && grid[i][j] == 0){
+                    bfs(i, j, n, m, grid, vis);
+                    if(flag == true) cnt++;
+                    flag = true;
+                }
+            }
+        }
+        return cnt;
+    }
+};
+
+
+
+===========================================
+
+https://www.hackerearth.com/submission/115741764/
+
+The hydroelectric project:
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+// Directions for moving right and down
+const int dx[2] = {0, 1};
+const int dy[2] = {1, 0};
+
+bool is_valid(int x, int y, int N, int M) {
+    return x >= 0 && x < N && y >= 0 && y < M;
+}
+
+int buildDam(int N, int M, vector<string>& flow, vector<vector<int>>& cost) {
+    vector<vector<bool>> visited(N, vector<bool>(M, false));
+    queue<pair<int, int>> q;
+    
+    // Start BFS from the top-left cell
+    q.push({0, 0});
+    visited[0][0] = true;
+    
+    while (!q.empty()) {
+        int x = q.front().first;
+        int y = q.front().second;
+        q.pop();
+        
+        // Traverse right and down
+        for (int i = 0; i < 2; ++i) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            
+            if (is_valid(nx, ny, N, M) && !visited[nx][ny] && flow[nx][ny] == '.') {
+                visited[nx][ny] = true;
+                q.push({nx, ny});
+            }
+        }
+    }
+    
+    // Now, find the minimum cost dam cell which is visited
+    int min_cost = INT_MAX;
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < M; ++j) {
+            if (visited[i][j] && flow[i][j] == '.') {
+                // Temporarily block this cell and check if we can still reach the bottom-right
+                visited[i][j] = false;
+                
+                vector<vector<bool>> check_visited(N, vector<bool>(M, false));
+                queue<pair<int, int>> check_q;
+                if (i != 0 || j != 0) {  // Ensure we are not blocking the starting cell
+                    check_q.push({0, 0});
+                    check_visited[0][0] = true;
+                }
+                
+                bool can_reach = false;
+                while (!check_q.empty()) {
+                    int x = check_q.front().first;
+                    int y = check_q.front().second;
+                    check_q.pop();
+                    
+                    if (x == N-1 && y == M-1) {
+                        can_reach = true;
+                        break;
+                    }
+                    
+                    for (int k = 0; k < 2; ++k) {
+                        int nx = x + dx[k];
+                        int ny = y + dy[k];
+                        
+                        if (is_valid(nx, ny, N, M) && !check_visited[nx][ny] && flow[nx][ny] == '.' && visited[nx][ny]) {
+                            check_visited[nx][ny] = true;
+                            check_q.push({nx, ny});
+                        }
+                    }
+                }
+                
+                if (!can_reach) {
+                    min_cost = min(min_cost, cost[i][j]);
+                }
+                
+                // Restore the visited state
+                visited[i][j] = true;
+            }
+        }
+    }
+    
+    return min_cost;
+}
+
+int main() {
+    int N, M;
+    cin >> N >> M;
+    vector<string> flow(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> flow[i];
+    }
+    vector<vector<int>> cost(N, vector<int>(M));
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < M; ++j) {
+            cin >> cost[i][j];
+        }
+    }
+    
+    int result = buildDam(N, M, flow, cost);
+    cout << result << endl;
+    
+    return 0;
+}
+
+
+===================================================================
+
+https://www.hackerearth.com/submission/115742817/
+
+Shortest Path Revisited:
+
+#include <iostream>
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef pair<int, int> iPair;
+ 
+ 
+void findMinCharge(int N, int M, int K, vector<vector<iPair>>& adj) {
+    vector<vector<int>> dist(N + 1, vector<int>(K + 1, INT_MAX));
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+ 
+    for (int i = 0; i <= K; ++i) {
+        dist[1][i] = 0;
+    }
+    pq.push({0, {1, 0}}); 
+    while (!pq.empty()) {
+        int cost = pq.top().first;
+        int u = pq.top().second.first;
+        int freeRoadsUsed = pq.top().second.second;
+        pq.pop();
+ 
+        if (cost > dist[u][freeRoadsUsed]) {
+            continue;
+        }
+ 
+        for (auto& x : adj[u]) {
+            int v = x.first;
+            int toll = x.second;
+ 
+            if (cost + toll < dist[v][freeRoadsUsed]) {
+                dist[v][freeRoadsUsed] = cost + toll;
+                pq.push({dist[v][freeRoadsUsed], {v, freeRoadsUsed}});
+            }
+ 
+            if (freeRoadsUsed < K && cost < dist[v][freeRoadsUsed + 1]) {
+                dist[v][freeRoadsUsed + 1] = cost;
+                pq.push({dist[v][freeRoadsUsed + 1], {v, freeRoadsUsed + 1}});
+            }
+        }
+    }
+ 
+    for (int i = 1; i <= N; ++i) {
+        int minCost = *min_element(dist[i].begin(), dist[i].end());
+        cout << minCost << " ";
+    }
+    cout << endl;
+}
+int main() {
+	 int N, M, K;
+    cin >> N >> M >> K;
+    vector<vector<iPair>> adj(N + 1);
+    // Reading the edges
+    for (int i = 0; i < M; ++i) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].emplace_back(v, w);
+        adj[v].emplace_back(u, w); // For an undirected graph
+    }
+    findMinCharge(N, M, K, adj);
+    return 0;
+}
+
+==============================================
+
+Two Robots:
+
+int twoRobots(int m, vector<vector<int>> &queries)
+{
+    vector<int> dp(m + 1);
+    int alldist = abs(queries[0][0] - queries[0][1]);
+    for (int i = 0; i < (int)queries.size() - 1; ++i)
+    {
+        int a = queries[i][0];
+		int b = queries[i][1];
+		int c = queries[i + 1][0];
+		int d = queries[i + 1][1];
+        for (int j = 1; j <= m; ++j){
+            dp[b] = max(dp[b], dp[j] + abs(b - c) - abs(j - c));
+		}
+        alldist += abs(b - c) + abs(c - d);
+    }
+    return alldist - *max_element(dp.begin(), dp.end());
+}
+
+------------------------------------
+
+int solve(int r1, int r2, int i, int n, int meter, vector<vector<int>> &queries){
+    if(i == n) return meter;
+    if(r2 == 0 && r1 == 0){
+       meter = min(solve(r1, queries[i][1], i+1, n, meter + abs(queries[i][0] - queries[i][1]), queries), solve(queries[i][1], r2, i+1, n, meter + abs(queries[i][0] - queries[i][1]), queries));
+    } else if(r2 == 0 && r1 > 0) {
+         meter = min(solve(r1, queries[i][1], i+1, n, meter + abs(queries[i][0] - queries[i][1]), queries), solve(queries[i][1], r2, i+1, n, meter + abs(queries[i][0] - queries[i][1]) + abs(r1 - queries[i][0]), queries));
+    } else if(r2 > 0 && r1 == 0){
+        meter = min(solve(queries[i][1], r2, i+1, n, meter + abs(queries[i][0] - queries[i][1]), queries), solve(r1, queries[i][1], i+1, n, meter + abs(queries[i][0] - queries[i][1]) + abs(r2 - queries[i][0]), queries));
+    } else {
+        meter = min(solve(queries[i][1], r2, i+1, n, meter + abs(queries[i][0] - queries[i][1]) + abs(r1 - queries[i][0]), queries), solve(r1, queries[i][1], i+1, n, meter + abs(queries[i][0] - queries[i][1]) + abs(r2 - queries[i][0]), queries));
+    }
+    return meter;
+}
+
+int twoRobots(int m, vector<vector<int>> queries) {
+    int n = queries.size();
+    return solve(0, 0, 0, n, 0, queries);
+}
+
+int main()
+{
+    int T;
+    cin >> T;
+    while(T--){
+        int m, n;
+        cin >>  m >> n;
+        vector<vector<int>> queries(n);
+        for(int i=0; i<n; i++){
+            int q1, q2;
+            cin >> q1 >> q2;
+            queries.push_back({q1, q2});
+        }
+        
+        int result = twoRobots(m, queries);
+        cout << result << endl;
+    }
+    return 0;
+}
+
+
+==========================================================
+
+
+https://www.hackerrank.com/contests/week34-ms-skill-test/challenges/jack-goes-to-rapture/submissions/code/1394197082
+
+Jack goes to Rapture:
+
+void getCost(int g_nodes, vector<int> g_from, vector<int> g_to, vector<int> g_weight) {
+    // Print your answer within the function and return nothing
+    vector<vector<pair<int, int>>> adj(g_nodes + 1);
+
+    // Build undirected graph
+    for (int i = 0; i < g_from.size(); i++) {
+        adj[g_from[i]].push_back({g_to[i], g_weight[i]});
+        adj[g_to[i]].push_back({g_from[i], g_weight[i]});
+    }
+
+    vector<int> cost(g_nodes + 1, INT_MAX);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+
+    cost[1] = 0;
+    pq.push({0, 1});
+
+    while (!pq.empty()) {
+        int maxWeightSoFar = pq.top().first;
+        int node = pq.top().second;
+        pq.pop();
+
+        for (auto [adjNode, adjWt] : adj[node]) {
+            int newCost = max(maxWeightSoFar, adjWt);
+            if (newCost < cost[adjNode]) {
+                cost[adjNode] = newCost;
+                pq.push({newCost, adjNode});
+            }
+        }
+    }
+
+    if (cost[g_nodes] == INT_MAX) {
+        cout << "NO PATH EXISTS" << endl;
+    } else {
+        cout << cost[g_nodes] << endl;
+    }
+}
+
+======================================================================
+
+https://leetcode.com/problems/word-search/submissions/1694156092/
+
+Word search :
+
+class Solution {
+    int dr[4] = {1, 0, -1, 0};
+    int dc[4] = {0, 1, 0, -1};
+    int n,m;
+    bool dfs(int r, int c, int idx, vector<vector<int>> &vis, vector<vector<char>> &board, string word){
+        if(idx == word.size()) return true;
+        vis[r][c] = 1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr >= 0 && nr < n && nc >= 0 && nc < m && board[nr][nc] == word[idx] && !vis[nr][nc]){
+                if(dfs(nr, nc, idx+1, vis, board, word)) return true;
+            }
+        }
+        vis[r][c] = 0;
+        return false;
+    }
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        n = board.size();
+        m = board[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(board[i][j] == word[0] && !vis[i][j]){
+                    if(dfs(i, j, 1, vis, board, word)) return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+
+
+=========================================================
+
+https://leetcode.com/problems/word-search-ii/submissions/1694282266/
+
+
+class Solution {
+    int dr[4] = {1, 0, -1, 0};
+    int dc[4] = {0, 1, 0, -1};
+    int n,m;
+    bool dfs(int r, int c, int idx, int k, vector<vector<int>> &vis, vector<vector<char>> &board, vector<string> &words){
+        if(idx == words[k].size()) return true;
+        vis[r][c] = 1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr >= 0 && nr < n && nc >= 0 && nc < m && board[nr][nc] == words[k][idx] && !vis[nr][nc]){
+                if(dfs(nr, nc, idx+1, k, vis, board, words)) return true;
+            }
+        }
+        vis[r][c] = 0;
+        return false;
+    }
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        n = board.size();
+        m = board[0].size();
+        set<string> ans;
+        for(int k=0; k<words.size(); k++){
+            vector<vector<int>> vis(n, vector<int>(m, 0));
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(board[i][j] == words[k][0] && !vis[i][j]){
+                        if(dfs(i, j, 1, k, vis, board, words)){
+                            ans.insert(words[k]);
+                            //cout << words[k];
+                            break;
+                        }
+                    }
+                    if(ans.find(words[k]) != ans.end()) break;
+                }
+                if(ans.find(words[k]) != ans.end()) break;
+            }
+        }
+        vector<string> res;
+        for(auto it : ans) res.push_back(it);
+        return res;
+    }
+};
+
+=========================================================================
+
+#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <climits>
+ 
+using namespace std;
+ 
+class Solution {
+    int dr[4] = {1, 0, -1, 0};
+    int dc[4] = {0, 1, 0, -1};
+    int n,m;
+    bool dfs(int r, int c, int idx, int k, vector<vector<int>> &vis, vector<vector<char>> &board, vector<string> &words){
+        if(idx == words[k].size()) return true;
+        vis[r][c] = 1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr >= 0 && nr < n && nc >= 0 && nc < m && board[nr][nc] == words[k][idx] && !vis[nr][nc]){
+                if(dfs(nr, nc, idx+1, k, vis, board, words)) return true;
+            }
+        }
+        vis[r][c] = 0;
+        return false;
+    }
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        n = board.size();
+        m = board[0].size();
+        vector<string> ans;
+        for(int k=0; k<words.size(); k++){
+            vector<vector<int>> vis(n, vector<int>(m, 0));
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(board[i][j] == words[k][0] && !vis[i][j]){
+                        //cout << board[i][j];
+                        if(dfs(i, j, 1, k, vis, board, words)){
+                            ans.push_back(words[k]);
+                            //cout << words[k];
+                        }
+                    }
+                }
+                //cout << endl;
+            }
+        }
+        return ans;
+    }
+};
+ 
+int main() {
+    Solution obj;
+    vector<vector<char>> board={{'o','a','a','n'},{'e','t','a','e'},{'i','h','k','r'},{'i','f','l','v'}};
+    vector<string> words = {"oath","pea","eat","rain"};
+    vector<string> res = obj.findWords(board, words);
+    for(auto it: res){
+        cout << it << endl;
+    }
+ 
+    return 0;
+}
+
+
+====================================================
+
+battle ready : 
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int battle_ready(int n, int x, vector<int> &arr){
+    sort(arr.begin(), arr.end());
+    vector<int> vec;
+    int cnt = 0;
+    for(int i=n-1; i>=0; i--){
+        vec.push_back(arr[i]);
+        int power = vec.size() * (*min_element(vec.begin(), vec.end()));
+        if(power >= x) {
+            cnt++;
+            while(!vec.empty()){
+                vec.pop_back();
+            }
+        }
+    }
+    while(!vec.empty()){
+        vec.pop_back();
+    }
+    return cnt;
+}
+
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--){
+        int n, x;
+        cin >> n >> x;
+        vector<int> arr(n);
+        for(int i=0; i<n; i++){
+            cin >> arr[i];
+        }
+        int res = battle_ready(n, x, arr);
+        cout << res << endl;
+    }
+
+    return 0;
+}
+
+
+input : 
+n=6, x=10
+arr= [3, 2, 1, 5, 9, 100]
+
+output : 2
+
+===================================================
+
+find longest substring length:
+
+----------------------------
+https://leetcode.com/problems/longest-repeating-character-replacement/submissions/1705457074/
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        if(s.size() < 2) return s.size();
+
+        int l = 0, r = 0;
+        int maxLen = 0, maxFreq = 0;
+        vector<int> count(26, 0);
+        while(r < s.size()){
+            count[s[r] - 'A']++;
+            maxFreq = max(maxFreq, count[s[r] - 'A']);
+
+            while((r - l + 1) - maxFreq > k){
+                count[s[l] - 'A']--;
+                l++;
+            }
+
+            maxLen = max(maxLen, r - l + 1);
+            r++;
+        }
+        return maxLen;
+    }
+};
+
+-------------------------------
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int find_len_substr(string st){
+    int len = 1;
+    for(int i=0; i<st.size(); i++){
+        char ch = st[i];
+        int cnt = 1;
+        for(int j=i+1; j<st.size(); j++){
+            if(ch == st[j]){
+                cnt++;
+            } else {
+                break;
+            }
+        }
+        len = max(len, cnt);
+    }
+    return len;
+}
+
+int find_long_substr(string s, int k){
+    int n = s.size();
+    string str = "";
+    int len = 1;
+    set<char> chSet;
+    for(auto ch:s){
+        chSet.insert(ch);
+    }
+    len = find_len_substr(s);
+    if(chSet.size() == 0) return n;
+    for(int i=0; i<n-k; i++){
+        str = s;
+        for(auto ch:chSet){
+            for(int j=i; j<k+i; j++){
+                str[j] = ch;
+                string st = str.substr();
+                int st_len = find_len_substr(st);
+                len = max(len, st_len);
+            }
+        }
+    }
+    return len;
+}
+
+int main()
+{
+    int t;
+    cin >> t;
+    vector<int> ans;
+    while(t--){
+        string s = "";
+        cin >> s;
+        int k;
+        cin >> k;
+        int res = find_long_substr(s, k);
+        ans.push_back(res);
+    }
+    for(auto it : ans){
+        cout << it << endl;
+    }
+    return 0;
+}
+
+
+input:
+
+s = "AABABBA" k=1
+
+output: 4
+
+=================================================
+
+https://www.hackerrank.com/contests/week35-ms-skill-test/challenges/kingdom-division/submissions/code/1394415363
+
+#include <bits/stdc++.h>
+using namespace std;
+
+long mod = 1000000007;
+
+class Node {
+public:
+    int number;
+    long divide;
+    long loneRed;
+    Node* parent;
+    vector<Node*> children;
+    Node (int num, long div, long free, Node* par) {
+        number = num; divide = div; loneRed = free; parent = par;
+    }
+};
+
+Node* treeMaker (int n, const vector<vector<int>>& roads) {
+    Node* root = new Node(1, 0, 1, NULL);
+    vector<vector<int>> adj(n+1);
+    for (int i=0; i < roads.size(); i++) {
+        adj[roads[i][0]].push_back(roads[i][1]);
+        adj[roads[i][1]].push_back(roads[i][0]);
+    }
+    queue<Node*> Q;
+    Q.push(root);
+    while (!Q.empty()) {
+        Node* t = Q.front();
+        for (int i=0; i < adj[t->number].size(); i++) {
+            if (t == root or adj[t->number][i] != t->parent->number) {
+                Node* child = new Node(adj[t->number][i], 0, 1, t);
+                t->children.push_back(child);
+                Q.push(child);
+            }
+        }
+        Q.pop();
+    }
+    return root;
+}
+
+void dehaka (Node* current) {
+    if (current->children.empty()) return;
+    long a = 1, b = 1;
+    for (Node* child : current->children) {
+        dehaka(child);
+        b = (b * child->divide) % mod;
+        a = (a * (2 * child->divide + child->loneRed)) % mod;
+    }
+    current->loneRed = b;
+    current->divide = (a - b + mod) % mod;
+}
+
+int main()
+{
+    int n, k, l;
+    vector<vector<int>> roads;
+    cin >> n;
+    for (int i=1; i <= n-1; i++) {
+        cin >> k >> l;
+        roads.push_back({k, l});
+    }
+    Node* root = treeMaker(n, roads);
+    dehaka(root);
+    cout << (2 * root->divide) % mod;
+}
+
+=====================================================
+
+
+https://www.hackerrank.com/contests/week35-ms-skill-test/challenges/jeanies-route/submissions/code/1394414286
+
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int MAXN = 100005;
+ 
+vector<pair<int, int>> tree[MAXN];
+bool important[MAXN], used[MAXN];
+int total_weight = 0;
+int max_dist = 0;
+int far_node = 0;
+ 
+// DFS to prune the tree and keep only paths relevant to letter cities
+bool dfs(int u, int p) {
+    bool has_important = important[u];
+    for (auto [v, w] : tree[u]) {
+        if (v == p) continue;
+        if (dfs(v, u)) {
+            total_weight += w;
+            has_important = true;
+            used[u] = used[v] = true;
+        }
+    }
+    return has_important;
+}
+ 
+// DFS to find farthest node (used to find diameter)
+void dfs2(int u, int p, int dist) {
+    if (dist > max_dist) {
+        max_dist = dist;
+        far_node = u;
+    }
+    for (auto [v, w] : tree[u]) {
+        if (v != p && used[v]) {
+            dfs2(v, u, dist + w);
+        }
+    }
+}
+ 
+int jeanisRoute(vector<int> &cities, vector<vector<int>> &roads) {
+    int n = roads.size() + 1;
+    total_weight = max_dist = 0;
+ 
+    // Clear all
+    for (int i = 1; i <= n; i++) {
+        tree[i].clear();
+        important[i] = used[i] = false;
+    }
+ 
+    for (auto &r : roads) {
+        int u = r[0], v = r[1], w = r[2];
+        tree[u].push_back({v, w});
+        tree[v].push_back({u, w});
+    }
+ 
+    for (int c : cities) important[c] = true;
+ 
+    dfs(cities[0], -1);
+    dfs2(cities[0], -1, 0);
+    max_dist = 0;
+    dfs2(far_node, -1, 0);
+ 
+    return 2 * total_weight - max_dist;
+}
+ 
+// Input-output
+int main() {
+    int n, k;
+    cin >> n >> k;
+ 
+    vector<int> cities(k);
+    for (int i = 0; i < k; ++i)
+        cin >> cities[i];
+ 
+    vector<vector<int>> roads(n - 1, vector<int>(3));
+    for (int i = 0; i < n - 1; ++i)
+        cin >> roads[i][0] >> roads[i][1] >> roads[i][2];
+ 
+    cout << jeanisRoute(cities, roads) << "\n";
+    return 0;
+}
+
+
+================================================================
+
+https://leetcode.com/problems/search-in-rotated-sorted-array/submissions/1705587336/
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int left = 0, right = (int)nums.size() - 1;
+    
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+        
+            if (nums[mid] == target)
+                return mid;
+
+            if (nums[left] <= nums[mid]) {
+                if (nums[left] <= target && target < nums[mid])
+                    right = mid - 1;
+                else
+                    left = mid + 1;
+            } 
+            else { 
+                if (nums[mid] < target && target <= nums[right])
+                    left = mid + 1;
+                else
+                    right = mid - 1;
+            }
+        }
+        return -1;
+    }
+};
+
+=========================================================
+
+https://leetcode.com/problems/koko-eating-bananas/submissions/1705608318/
+
+
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int left = 1, right = *max_element(piles.begin(), piles.end());
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            long long hours = 0;
+            for (int pile : piles) {
+                hours += (pile + mid - 1) / mid;
+            }
+            if (hours <= h )
+                right = mid;
+            else
+                left = mid + 1;
+        }
+        return left;
+    }
+};
+
+
+=================================================================
+
+
+https://leetcode.com/problems/minimum-time-to-repair-cars/submissions/1705782751/
+
+class Solution {
+public:
+    bool canRepair(const vector<int>& ranks, long long time, int cars) {
+        long long total = 0;
+        for (int r : ranks) {
+            long long max_cars = sqrt(time / r);
+            total += max_cars;
+            if (total >= cars) return true;
+        }
+        return false;
+    }
+
+    long long repairCars(vector<int>& ranks, int cars) {
+        long long left = 0, right = 1e14;
+        long long ans = right;
+    
+        while (left <= right) {
+            long long mid = (left + right) / 2;
+            if (canRepair(ranks, mid, cars)) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
+
+-------------------------
+
+
+class Solution {
+public:
+    long long check(vector<int>&rank,int cars,long long time){
+        int washed=0;
+        for(int i=0; i<rank.size(); i++){
+            long long a=sqrt(time/rank[i]);
+            washed+=a;
+            if(washed>=cars)return true;
+        }
+        return false;
+    }
+    long long repairCars(vector<int>& ranks, int cars) {
+        sort(ranks.begin(),ranks.end());
+        long long ans=0;
+        long long l=1,r=1LL*cars*cars*ranks[ranks.size()-1];
+        while(l<=r){
+            long long time=(l+r)/2;
+            if(check(ranks,cars,time)){
+                ans=time;
+                r=time-1;
+            }
+            else l=time+1;
+        }
+        return ans;
+    }
+};
+
+
+
+
+==========================
+
+
+https://leetcode.com/problems/minimum-time-to-make-rope-colorful/submissions/1705796577/
+
+class Solution {
+public:
+    int minCost(string colors, vector<int>& neededTime) {
+        int totalCost = 0;
+        int maxTime = neededTime[0];
+        int n = colors.size();
+
+        for (int i = 1; i < n; i++) {
+            if (colors[i] == colors[i - 1]) {
+                totalCost += min(neededTime[i], maxTime);
+                maxTime = max(maxTime, neededTime[i]);
+            } else {
+                maxTime = neededTime[i];
+            }
+        }
+        return totalCost;
+    }
+};
+
+
+===============================================
+
+https://leetcode.com/problems/find-k-closest-elements/submissions/1705889804/
+
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        int left = 0, right = arr.size() - k;
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (x - arr[mid] > arr[mid + k] - x) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        return vector<int>(arr.begin() + left, arr.begin() + left + k);
+    }
+};
+
+==========================================
+
+https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/submissions/1705898810/
+
+
+class Solution {
+public:
+    bool canShip(const vector<int>& weights, int days, int capacity) {
+        int d = 1;
+        int currentLoad = 0;
+    
+        for (int w : weights) {
+            if (currentLoad + w <= capacity) {
+                currentLoad += w;
+            } else {
+                d++;
+                currentLoad = w;
+                if (d > days) return false;
+            }
+        }
+        return true;
+    }
+    
+    int shipWithinDays(vector<int>& weights, int days) {
+        int left = *max_element(weights.begin(), weights.end());
+        int right = accumulate(weights.begin(), weights.end(), 0);
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canShip(weights, days, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+};
+
+===================================================
+
+https://leetcode.com/problems/minimum-number-of-coins-for-fruits/submissions/1706791401/
+
+
+class Solution {
+public:
+    int solve(vector<int>& prices, int ind, vector<int>& dp){
+        if(ind >= prices.size()) return 0;
+        if(dp[ind] != -1) return dp[ind];
+        int res = INT_MAX;
+        for(int j = ind+1; j <= 2*ind + 2; ++j){
+            res = min(res, solve(prices, j, dp));
+        }
+        return dp[ind] = res + prices[ind];
+    }
+
+    int minimumCoins(vector<int>& prices) {
+        int n = prices.size();
+        vector<int> dp(n, -1);
+        return solve(prices, 0, dp);
+    }
+};
+
+class Solution {
+public:
+    int minimumCoins(vector<int>& prices) {
+        int n=prices.size();
+        vector<int> dp(n,-1);
+        dp[0]=prices[0];
+        for(int i=1;i<n;i++){
+            if(i==1){
+                dp[1]=dp[0];
+                continue;
+            }
+            int minn=INT_MAX;
+            for(int j=i;j>=0;j--){
+                if(2*j+1>=i && j-1>=0 && prices[j]+dp[j-1]<=minn){
+                    minn=prices[j]+dp[j-1];
+                    dp[i]=min(dp[i],minn);
+                }
+            }
+        }
+        return dp[n-1];
+    }
+};
+
+class Solution {
+public:
+    int solve(int ind, int n, int sum, vector<int>& prices, vector<int>& dp){
+        if(ind >= n){
+            return 0;
+        }
+        if(dp[ind] != -1) return dp[ind];
+
+        int take = prices[ind] + solve(ind + ind + 1, n, sum, prices, dp);
+        int noTake = solve(ind + 1, n, sum, prices, dp);
+        return dp[ind] = min(take, noTake);
+    }
+    int minimumCoins(vector<int>& prices) {
+        int n = prices.size();
+        vector<int> dp(n, -1);
+        dp[0] = prices[0];
+        return solve(1, n, prices[0], prices, dp);
+    }
+};
+
+==========================================
+
+
+https://leetcode.com/problems/sum-of-subarray-ranges/submissions/1706772741/
+
+class Solution {
+public:
+    long long subArrayMax(vector<int>& nums) {
+        int n = nums.size();
+        stack<int> st;
+        long long res = 0;
+        vector<int> left(n), right(n);
+
+        for (int i = 0; i < n; ++i) {
+            while (!st.empty() && nums[st.top()] < nums[i]) st.pop();
+            left[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        while (!st.empty()) st.pop();
+
+        for (int i = n - 1; i >= 0; --i) {
+            while (!st.empty() && nums[st.top()] <= nums[i]) st.pop();
+            right[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+
+        for (int i = 0; i < n; ++i) {
+            long long count = (long long)(i - left[i]) * (right[i] - i);
+            res += count * nums[i];
+        }
+        return res;
+    }
+
+    long long subArrayMin(vector<int>& nums) {
+        int n = nums.size();
+        stack<int> st;
+        long long res = 0;
+        vector<int> left(n), right(n);
+
+        for (int i = 0; i < n; ++i) {
+            while (!st.empty() && nums[st.top()] > nums[i]) st.pop();
+            left[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        while (!st.empty()) st.pop();
+
+        for (int i = n - 1; i >= 0; --i) {
+            while (!st.empty() && nums[st.top()] >= nums[i]) st.pop();
+            right[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+
+        for (int i = 0; i < n; ++i) {
+            long long count = (long long)(i - left[i]) * (right[i] - i);
+            res += count * nums[i];
+        }
+        return res;
+    }
+    long long subArrayRanges(vector<int>& nums) {
+        return subArrayMax(nums) - subArrayMin(nums);
+    }
+    
+};
+
+--------------------------
+
+
+class Solution {
+public:
+    
+    long long subArrayRanges(vector<int>& nums) {
+        int n=nums.size();
+        long long sum=0;
+        stack<int>st;
+        vector<int> minPrev(n,-1),minNext(n,n),maxPrev(n,-1),maxNext(n,n);
+        
+        for(int i=0;i<n;i++)
+        {
+            while(!st.empty()&&nums[st.top()]>=nums[i]){st.pop();}
+            if(!st.empty()){minPrev[i]=st.top();}
+            st.push(i);
+        }
+        while(!st.empty()){st.pop();}
+        for(int i=n-1;i>=0;i--)
+        {
+            while(!st.empty()&&nums[st.top()]>nums[i]){st.pop();}
+            if(!st.empty()){minNext[i]=st.top();}
+            st.push(i);
+        }
+        
+         for(int i=0;i<n;i++)
+         {
+            while(!st.empty()&&nums[st.top()]<=nums[i]){st.pop();}
+            if(!st.empty()){maxPrev[i]=st.top();}
+            st.push(i);
+         }
+         while(!st.empty()){st.pop();}
+         for(int i=n-1;i>=0;i--)
+         {
+            while(!st.empty()&&nums[st.top()]<nums[i]){st.pop();}
+            if(!st.empty()){maxNext[i]=st.top();}
+            st.push(i);
+         }
+        
+        for(int i=0;i<n;i++)
+        {
+            long long leftMin=i-minPrev[i],rightMin=minNext[i]-i;
+            long long leftMax=i-maxPrev[i],rightMax=maxNext[i]-i;
+            sum+=(leftMax*rightMax-leftMin*rightMin)*nums[i];
+            
+        }
+        return sum;
+    }
+
+
+    Solution(){
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+    }
+};
+ 
+
+==============================================
+
+https://leetcode.com/problems/non-overlapping-intervals/submissions/1708038412/
+
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end(), 
+            [&](vector<int> a, vector<int> b) {
+                if (a[1] == b[1])
+                    return a[0] < b[0];
+                else
+                    return a[1] < b[1];
+            });
+        int n = intervals.size();
+        int cnt=1;
+        int endTime = intervals[0][1];
+        int i=1;
+        while(i<n){
+            if(intervals[i][0] >= endTime){
+                endTime = intervals[i][1];
+                cnt++;
+            }
+            i++;
+        }
+        return n - cnt;
+    }
+};
+
+===============================================================
+
+https://leetcode.com/problems/task-scheduler/submissions/1708091226/
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        priority_queue<int> pq;
+        vector<int>mp(26,0);
+
+        for(char i:tasks){
+            mp[i-'A']++;
+        }   
+        for(int i=0;i<26;++i){
+            if(mp[i]) 
+            pq.push(mp[i]);
+        }
+
+        int time=0;
+        while(!pq.empty()){
+            vector<int> remain;
+            int cycle=n+1;
+
+            while(cycle && !pq.empty()){
+                int max_freq=pq.top();
+                pq.pop();
+                if(max_freq>1){
+                    remain.push_back(max_freq-1);
+                }
+                ++time; 
+                --cycle; 
+            }
+
+            for(int count:remain){
+                pq.push(count); 
+            }
+            if(pq.empty())break;
+            time+=cycle;
+        }
+        return time;
+    }
+};
+
+-------------------
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int s = tasks.size();
+        vector<int> freq(26, 0);
+
+        for(auto task : tasks){
+            freq[task - 'A']++;
+        }
+        int maxFreq = *max_element(freq.begin(), freq.end());
+        int counts = count(freq.begin(), freq.end(), maxFreq);
+
+        int rows = maxFreq - 1;
+        int new_n = n - (counts - 1);
+
+        int remTask = s - (maxFreq * counts);
+        int idleTime = max(0, rows * new_n - remTask);
+
+        return (s + idleTime);
+    }
+};
+
+
+======================================================
+
+https://www.hackerrank.com/contests/week36-ms-skill-test/challenges/count-luck/submissions/code/1394743035
+
+bool solve(int r, int c, int n, int m, vector<string> matrix, int& countWaves, vector<vector<int>>& vis){
+    if(matrix[r][c] == '*') return true;
+    vis[r][c] = 1;
+    vector<pair<int, int>> path;
+    int dr[] = {1, 0, -1, 0};
+    int dc[] = {0, 1, 0, -1};
+    for(int i=0; i<4; i++){
+        int nr = r + dr[i];
+        int nc = c + dc[i];
+        if(nr >= 0 && nr < n && nc >= 0 && nc < m && matrix[nr][nc] != 'X' && !vis[nr][nc]){
+            path.push_back({nr, nc});
+        }
+    }
+    if(path.size()>1) countWaves++;
+    for(auto it : path){
+        if(solve(it.first, it.second, n, m, matrix, countWaves, vis)){
+            return true;
+        }
+    }
+    if(path.size()>1) countWaves--;
+    return false; 
+}
+
+string countLuck(vector<string> matrix, int k) {
+    int n=matrix.size();
+    int m=matrix[0].size();
+    int startr=0, startc=0;
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(matrix[i][j] == 'M'){
+                startr=i;
+                startc=j;
+                vis[i][j]=1;
+            }
+            if(matrix[i][j] == 'X'){
+                vis[i][j] = 1;
+            }
+        }
+    }
+    int countWaves=0;
+    solve(startr, startc, n, m, matrix, countWaves, vis);
+    return (countWaves == k) ? "Impressed" : "Oops!";
+}
+
+
+------------------------------
+
+int solve(int r, int c, int n, int m, vector<string> matrix, vector<vector<int>>& vis){
+    if(matrix[r][c] == '*') return 0;
+    vis[r][c] = 1;
+    int possibleMoves=0;
+    int dr[] = {1, 0, -1, 0};
+    int dc[] = {0, 1, 0, -1};
+    for(int i=0; i<4; i++){
+        int nr = r + dr[i];
+        int nc = c + dc[i];
+        if(nr >= 0 && nr < n && nc >= 0 && nc < m && matrix[nr][nc] != 'X' && !vis[nr][nc]){
+            possibleMoves++;
+        }
+    }
+    
+    for(int i=0; i<4; i++){
+        int nr = r + dr[i];
+        int nc = c + dc[i];
+        if(nr >= 0 && nr < n && nc >= 0 && nc < m && matrix[nr][nc] != 'X' && !vis[nr][nc]){
+            int waves = solve(nr, nc, n, m, matrix, vis);
+            if(waves != -1){
+                return waves + ((possibleMoves > 1) ? 1 : 0);
+            }
+        }
+    }
+
+    return -1; 
+}
+
+string countLuck(vector<string> matrix, int k) {
+    int n=matrix.size();
+    int m=matrix[0].size();
+    int startr=0, startc=0;
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(matrix[i][j] == 'M'){
+                startr=i;
+                startc=j;
+                vis[i][j]=1;
+            }
+            if(matrix[i][j] == 'X'){
+                vis[i][j] = 1;
+            }
+        }
+    }
+    int countWaves=solve(startr, startc, n, m, matrix, vis);
+    cout << countWaves <<  endl;
+    return (countWaves == k) ? "Impressed" : "Oops!";
+}
+
+----------------------------
+
+string countLuck(vector<string> matrix, int k) {
+    int n=matrix.size();
+    int m=matrix[0].size();
+    int sx=0, sy=0, dx=0, dy=0;
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(matrix[i][j] == 'M'){
+                sx=i;
+                sy=j;
+                vis[i][j]=1;
+            }
+            if(matrix[i][j] == 'X'){
+                vis[i][j] = 1;
+            }
+            if(matrix[i][j] == '*'){
+                dx=i;
+                dy=j;
+            }
+        }
+    }
+    queue<pair<pair<int, int>, int>> q;
+    q.push({{sx, sy}, 0});
+    vis[sx][sy] = 1;
+    int ans = -1;
+    while(!q.empty()){
+        auto it = q.front();
+        q.pop();
+        int cx = it.first.first;
+        int cy = it.first.second;
+        int ck = it.second;
+        if(cx == dx && cy == dy){
+            ans = ck;
+            break;
+        }
+        int cnt = 0;
+        vector<pair<int, int>> next;
+        vector<int> dxs = {-1, 1, 0, 0};
+        vector<int> dys = {0, 0, -1, 1};
+        for(int d = 0; d < 4; d++){
+            int nx = cx + dxs[d];
+            int ny = cy + dys[d];
+            if(nx >= 0 && nx < n && ny >= 0 && ny < m && matrix[nx][ny] != 'X' && !vis[nx][ny]){
+                cnt++;
+                next.push_back({nx, ny});
+            }
+        }
+        for(auto &p : next){
+            int nx = p.first, ny = p.second;
+            vis[nx][ny] = 1;
+            q.push({{nx, ny}, ck + (cnt > 1)});
+        }
+    }
+    return (ans == k)?"Impressed":"Oops!";
+}
+
+========================================
+
+https://codeforces.com/contest/996/submission/330601728
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution{
+public:
+    int find_bills(int money){
+        int bill[] = {100, 20, 10, 5, 1};
+        int cnt=0, i=0;
+        while(money > 0 && i<5){
+            if(money < bill[i]){
+                i++;
+            } else {
+                money = money - bill[i];
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+};
+
+int main()
+{
+    Solution obj;
+    int money;
+    cin >> money;
+    int bills = obj.find_bills(money);
+    cout << bills << endl;
+
+    return 0;
+}
+
+===========================================
+
+https://codeforces.com/problemset/submission/703/330603067
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main()
+{
+    int n;
+    cin >> n;
+    int m=0, c=0;
+    for(int i=0; i<n; i++){
+        int a, b;
+        cin >> a >> b;
+        if(a>b) m++;
+        else if(b>a) c++;
+    }
+    if(m > c) cout << "Mishka" << endl;
+    else if(c > m) cout << "Chris" << endl;
+    else cout << "Friendship is magic!^^" << endl;
+ 
+    return 0;
+}
+
+===================================
+
+https://codeforces.com/problemset/submission/1091/330608938
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+class Solution{
+public:
+    pair<long long, long long> find_treasure(int n, vector<pair<int, int>>& obelisk, vector<pair<int, int>>& clue){
+        pair<long long, long long> t;
+        long long x=0, y=0;
+        for(int i=0; i<n; i++){
+            x += obelisk[i].first + clue[i].first;
+            y += obelisk[i].second + clue[i].second;
+        }
+        t.first = x/n;
+        t.second = y/n;
+        return t;
+    }
+};
+ 
+int main()
+{
+    Solution obj;
+    int n;
+    cin >> n;
+    vector<pair<int, int>> obelisk(n), clue(n);
+    for(int i=0; i<n; i++){
+        cin >> obelisk[i].first >> obelisk[i].second;
+    }
+    for(int i=0; i<n; i++){
+        cin >> clue[i].first >> clue[i].second;
+    }
+    
+    pair<long long, long long> treasure = obj.find_treasure(n, obelisk, clue);
+    cout << treasure.first << " " << treasure.second << endl;
+    
+    return 0;
+}
+
+=====================================================================
+
+https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/
+
+class Solution {
+    int dr[4] = {0, 0, 1, -1};
+    int dc[4] = {1, -1, 0, 0};
+    int len=1;
+public:
+    void solve(int r, int c, int n, int m, vector<vector<int>>& matrix, vector<vector<int>>& vis, vector<vector<int>>& ans, int& cnt){
+        vis[r][c] = 1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr>=0 && nr<n && nc>=0 && nc<m && !vis[nr][nc] && ans[r][c] < matrix[nr][nc]) {
+                ans[nr][nc] = matrix[nr][nc];
+                cnt++;
+                len = max(len, cnt);
+                solve(nr, nc, n, m, matrix, vis, ans, cnt);
+            }
+            
+        }
+        cnt--;
+        vis[r][c]=0;
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        int max_cnt = 0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(!vis[i][j]){
+                    vector<vector<int>> ans(n, vector<int> (m, -1));
+                    ans[i][j] = matrix[i][j];
+                    int cnt=1;
+                    solve(i, j, n, m, matrix, vis, ans, cnt);
+                    max_cnt = max(max_cnt, len);
+                    //cout << max_cnt << " ";
+                }
+            }
+            //cout << endl;
+        }
+        return max_cnt;
+    }
+};
+
+----------------------------------------------
+
+DFS + DP:
+
+class Solution {
+    int dr[4] = {0, 0, 1, -1};
+    int dc[4] = {1, -1, 0, 0};
+public:
+    int solve(int r, int c, int n, int m, vector<vector<int>>& matrix, vector<vector<int>>& dp){
+        if(dp[r][c] != 0) return dp[r][c];
+        int len=1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr>=0 && nr<n && nc>=0 && nc<m && matrix[r][c] < matrix[nr][nc]) {
+                len = max(len, solve(nr, nc, n, m, matrix, dp)+1);
+                cout<<len<<endl;
+            } 
+        }
+        return dp[r][c]=len;
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        vector<vector<int>> dp(n, vector<int>(m, 0));
+        int max_cnt = 1;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                max_cnt = max(max_cnt, solve(i, j, n, m, matrix, dp));
+                //cout << max_cnt << " ";
+            }
+            //cout << endl;
+        }
+        return max_cnt;
+    }
+};
+
+---------------------------------
+
+https://leetcode.com/problems/longest-increasing-path-in-a-matrix/submissions/1710653360/
+
+Topological sort + BFS:
+
+class Solution {
+public:
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int dr[4] = {0, 0, 1, -1};
+        int dc[4] = {1, -1, 0, 0};
+        vector<vector<int>> indeg(n, vector<int>(m, 0));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                for(int k=0; k<4; k++){
+                    int nr = i + dr[k];
+                    int nc = j + dc[k];
+                    if(nr>=0 && nr<n && nc>=0 && nc<m && matrix[i][j] < matrix[nr][nc]) {
+                        indeg[nr][nc]++;
+                    }
+                }
+            }
+        }
+        queue<pair<int,int>> q;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(indeg[i][j] == 0){
+                    q.push({i, j});
+                }
+            }
+        }
+        int max_cnt = 0;
+        while(!q.empty()){
+            max_cnt++;
+            int t = q.size();
+            for(int i=0; i<t; i++){
+                int r=q.front().first;
+                int c=q.front().second;
+                q.pop();
+                for(int k=0; k<4; k++){
+                    int nr = r + dr[k];
+                    int nc = c + dc[k];
+                    if(nr>=0 && nr<n && nc>=0 && nc<m && matrix[r][c] < matrix[nr][nc]) {
+                        indeg[nr][nc]--;
+                        if(indeg[nr][nc] == 0){
+                            q.push({nr,nc});
+                        }
+                    }
+                }
+            }
+        }
+        return max_cnt;
+    }
+};
+
+
+========================================
+
+https://www.geeksforgeeks.org/problems/covid-spread--141631/1
+
+class Solution {
+  public:
+    int helpaterp(vector<vector<int>> hospital) {
+        // code here
+        int n = hospital.size();
+        int m = hospital[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        int uninfected = 0;
+        queue<pair<pair<int, int>, int>> q;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(hospital[i][j] == 2) {
+                    q.push({{i, j}, 0});
+                    vis[i][j] = 2;
+                }
+                if(hospital[i][j] == 1) {
+                    uninfected++;
+                }
+            }
+        }
+
+        int tm = 0;
+        int dr[] = {0, 1, 0, -1};
+        int dc[] = {1, 0, -1, 0};
+        int cnt = 0;
+        while(!q.empty()){
+            int r = q.front().first.first;
+            int c = q.front().first.second;
+            int t = q.front().second;
+            tm = max(tm, t);
+            q.pop();
+            for(int i=0; i<4; i++){
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+                if(nr >= 0 && nr < n && nc >= 0 && nc < m && hospital[nr][nc] == 1 && !vis[nr][nc]){
+                    q.push({{nr, nc}, t+1});
+                    vis[nr][nc] = 2;
+                    cnt++;
+                }
+            }
+        }
+        if(cnt != uninfected) return -1;
+        return tm;
+    }
+};
+
+=================================================
+
+Make a large island:
+
+class Solution {
+    int dr[4] = {0, 0, 1, -1};
+    int dc[4] = {1, -1, 0, 0};
+    
+public:
+    int solve(int r, int c, int n, int m, vector<vector<int>>& grid, vector<vector<int>>& vis, int len){
+        vis[r][c]=1;
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(nr>=0 && nr<n && nc>=0 && nc<m && grid[nr][nc] == 1 && !vis[nr][nc]){
+                len = max(len, solve(nr, nc, n, m, grid, vis, len+1));
+            } 
+        }
+        return len;
+    }
+
+    int largestIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int max_len=0, cnt=0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                vector<vector<int>> vis(n, vector<int>(m, 0));
+                if(grid[i][j] == 0 && !vis[i][j]){
+                    grid[i][j] = 1;
+                    cnt++;
+                    int len=1;
+                    max_len = max(max_len, solve(i, j, n, m, grid, vis, len));
+                    grid[i][j] = 0;
+                }
+            }
+        }
+        return cnt == 0 ? n*m : max_len;
+    }
+};
+
+
+----------------------------------------------------
+
+https://leetcode.com/problems/making-a-large-island/submissions/1710968103/
+
+class Solution {
+public:
+    int n;
+    int dr[4] = {0, 0, 1, -1};
+    int dc[4] = {1, -1, 0, 0};
+    bool isvalid(int i, int j) {
+        return i >= 0 && j >= 0 && i < n && j < n;
+    }
+    int solve(int r, int c, int n, vector<vector<int>>& grid, int id, vector<vector<int>>& vis){
+        vis[r][c] = id;
+        int area = 1;
+        for(int i = 0; i < 4; i++){
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if(isvalid(nr, nc) && grid[nr][nc] == 1 && !vis[nr][nc]){
+                area += solve(nr, nc, n, grid, id, vis);
+            } 
+        }
+        return area;
+    }
+
+    int largestIsland(vector<vector<int>>& grid) {
+        n = grid.size();
+        unordered_map<int, int> areaMap;
+        vector<vector<int>> vis(n, vector<int>(n, 0));
+        int id=2, max_area = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1 && vis[i][j] == 0) {
+                    int area = solve(i, j, n, grid, id, vis);
+                    areaMap[id] = area;
+                    max_area = max(max_area, area);
+                    id++;
+                }
+            }
+        }
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(grid[i][j] == 0){
+                    unordered_set<int> neighbor_ids;
+                    for (int d = 0; d < 4; d++) {
+                        int ni = i + dr[d], nj = j + dc[d];
+                        if (isvalid(ni, nj) && vis[ni][nj] > 1) {
+                            neighbor_ids.insert(vis[ni][nj]);
+                        }
+                    }
+                    int area = 1;
+                    for (int nid : neighbor_ids) {
+                        area += areaMap[nid];
+                    }
+                    max_area = max(max_area, area);
+                }
+            }
+        }
+        return max_area == 0 ? n * n : max_area;
+    }
+};
+
+====================================================
+
+
+https://leetcode.com/problems/number-of-operations-to-make-network-connected/submissions/1714123504/
+
+class Solution {
+public:
+    void solve(int node, vector<vector<int>>& adj, vector<int>& vis){
+        vis[node] = 1;
+        for(auto it : adj[node]){
+            if(!vis[it]){
+                solve(it, adj, vis);
+            }
+        }
+    }
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        if(connections.size() < n-1) return -1;
+        vector<vector<int>> adj(n);
+        for(auto it : connections){
+            adj[it[0]].push_back(it[1]);
+            adj[it[1]].push_back(it[0]);
+        }
+        int cnt=0;
+        vector<int> vis(n, 0);
+        for(int i=0; i<n; i++){
+            if(!vis[i]){
+                cnt++;
+                solve(i, adj, vis);
+            }
+        }
+        return cnt-1;
+    }
+    
+};
+
+---------------------------------
+
+
+class unionFind{   
+public:
+    vector<int> size, parent;
+    int count;
+    unionFind(int n){
+        size.resize(n, 1);
+        parent.resize(n);
+        for(int i=0; i<n; i++) {
+            parent[i] = i;
+        }
+        count = n;
+    }
+
+    int findParent(int node){
+        while(node == parent[node])
+            return node;
+        return parent[node] = findParent(parent[node]);
+    }
+    void unionBySize(int u, int v) {
+        int u_par = findParent(u);
+        int v_par = findParent(v);
+        if (u_par == v_par) return;
+        if (size[u_par] < size[v_par]) {
+            parent[u_par] = v_par;
+			size[v_par] += size[u_par];
+        }
+        else {
+            parent[v_par] = u_par;
+			size[u_par] += size[v_par];
+        }
+        count--;
+    }
+};
+
+
+class Solution {
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        if(connections.size() < n-1) return -1;
+        unionFind uf(n);
+        for(auto it: connections){
+            uf.unionBySize(it[0], it[1]);
+        }
+        return uf.count - 1;
+    }
+};
+
+=====================================================
+
+
+https://leetcode.com/problems/regions-cut-by-slashes/submissions/1714352360/
+
+class Solution {
+public:
+    int regionsBySlashes(vector<string>& grid) {
+        int n = grid.size();
+        int size = n * 3;
+        vector<vector<int>> matrix(size, vector<int>(size, 0));
+        for (int r = 0; r < n; ++r) {
+            for (int c = 0; c < n; ++c) {
+                if (grid[r][c] == '/') {
+                    matrix[r * 3][c * 3 + 2] = 1;
+                    matrix[r * 3 + 1][c * 3 + 1] = 1;
+                    matrix[r * 3 + 2][c * 3] = 1;
+                } else if (grid[r][c] == '\\') {
+                    matrix[r * 3][c * 3] = 1;
+                    matrix[r * 3 + 1][c * 3 + 1] = 1;
+                    matrix[r * 3 + 2][c * 3 + 2] = 1;
+                }
+            }
+        }
+
+        vector<int> dr = {-1, 1, 0, 0};
+        vector<int> dc = {0, 0, -1, 1};
+
+        int regions = 0;
+        vector<vector<bool>> visited(size, vector<bool>(size, false));
+
+        for (int r = 0; r < size; ++r) {
+            for (int c = 0; c < size; ++c) {
+                if (matrix[r][c] == 0 && !visited[r][c]) {
+                    regions++;
+                    queue<pair<int, int>> q;
+                    q.push({r, c});
+                    visited[r][c] = true;
+
+                    while (!q.empty()) {
+                        auto [x, y] = q.front(); q.pop();
+                        for (int d = 0; d < 4; ++d) {
+                            int nx = x + dr[d], ny = y + dc[d];
+                            if (nx >= 0 && ny >= 0 && nx < size && ny < size &&
+                                matrix[nx][ny] == 0 && !visited[nx][ny]) {
+                                visited[nx][ny] = true;
+                                q.push({nx, ny});
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return regions;
+    }
+};
+
+========================================================================
+
+https://leetcode.com/problems/word-ladder/submissions/1714410117
+
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> st(wordList.begin(), wordList.end());
+        queue<pair<string, int>> q;
+        q.push({beginWord, 1});
+        st.erase(beginWord);
+        while(!q.empty()){
+            string word = q.front().first;
+            int step = q.front().second;
+            q.pop();
+            if(word == endWord) return step;
+            for(int i=0; i<word.size(); i++){
+                char original = word[i];
+                for(char ch='a'; ch <= 'z'; ch++){
+                    word[i] = ch;
+                    if(st.find(word) != st.end()){
+                        q.push({word, step+1});
+                        st.erase(word);
+                    }
+                }
+                word[i] = original; 
+            }
+        }
+        return 0;
+    }
+};
+
+==============================================
+
+https://leetcode.com/problems/pacific-atlantic-water-flow/submissions/1714444084/
+
+
+class Solution {
+    int n, m;
+    vector<vector<int>> directions{{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    void dfs(const vector<vector<int>>& heights, vector<vector<bool>>& visited, int r, int c) {
+        visited[r][c] = true;
+        for (auto& dir : directions) {
+            int nr = r + dir[0], nc = c + dir[1];
+            if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
+            if (visited[nr][nc]) continue;
+            if (heights[nr][nc] < heights[r][c]) continue;
+            dfs(heights, visited, nr, nc);
+        }
+    }
+    
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        if (heights.empty() || heights[0].empty()) return {};
+        n = heights.size();
+        m = heights[0].size();
+        
+        vector<vector<bool>> pacific(n, vector<bool>(m, false));
+        vector<vector<bool>> atlantic(n, vector<bool>(m, false));
+        
+        for (int c = 0; c < m; c++) dfs(heights, pacific, 0, c);
+        for (int r = 0; r < n; r++) dfs(heights, pacific, r, 0);
+        
+        for (int c = 0; c < m; c++) dfs(heights, atlantic, n - 1, c);
+        for (int r = 0; r < n; r++) dfs(heights, atlantic, r, m - 1);
+        
+        vector<vector<int>> result;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (pacific[r][c] && atlantic[r][c]) {
+                    result.push_back({r, c});
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+----------------------------------------
+
+class Solution {
+    int n, m;
+    vector<vector<int>> directions{{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    void bfs(const vector<vector<int>>& heights, vector<vector<bool>>& visited, queue<pair<int,int>>& q) {
+        while (!q.empty()) {
+            auto [r, c] = q.front();
+            q.pop();
+            for (auto& dir : directions) {
+                int nr = r + dir[0], nc = c + dir[1];
+                if (nr < 0 || nr >= n || nc < 0 || nc >= m || visited[nr][nc] || heights[nr][nc] < heights[r][c]) continue;
+                visited[nr][nc] = true;
+                q.push({nr, nc});
+            }
+        }
+    }
+    
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        if (heights.empty() || heights[0].empty()) return {};
+        n = heights.size();
+        m = heights[0].size();
+        
+        vector<vector<bool>> pacific(n, vector<bool>(m, false));
+        vector<vector<bool>> atlantic(n, vector<bool>(m, false));
+        
+        queue<pair<int,int>> pacificQ, atlanticQ;
+
+        for (int r = 0; r < n; r++) {
+            pacific[r][0] = true;
+            pacificQ.push({r, 0});
+            atlantic[r][m-1] = true;
+            atlanticQ.push({r, m-1});
+        }
+        for (int c = 0; c < m; c++) {
+            pacific[0][c] = true;
+            pacificQ.push({0, c});
+            atlantic[n-1][c] = true;
+            atlanticQ.push({n-1, c});
+        }
+        
+        bfs(heights, pacific, pacificQ);
+        bfs(heights, atlantic, atlanticQ);
+        
+        vector<vector<int>> result;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (pacific[r][c] && atlantic[r][c]) {
+                    result.push_back({r, c});
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+========================================================================
+
+https://leetcode.com/problems/k-highest-ranked-items-within-a-price-range/submissions/1715362201/
+
+class Solution {
+public:
+    vector<vector<int>> highestRankedKItems(vector<vector<int>>& grid, vector<int>& pricing, vector<int>& start, int k) {
+        int n = grid.size();
+        int m = grid[0].size();
+        priority_queue<tuple<int, int, int, int>, vector<tuple<int, int, int, int>>, greater<>> pq;
+        int x = start[0], y = start[1];
+        pq.push({0, grid[x][y], x, y});
+        int dr[4] = {0, 0, 1, -1};
+        int dc[4] = {1, -1, 0, 0};
+        vector<vector<int>> result;
+        int cnt = 0;
+        int low = pricing[0], high = pricing[1];
+        grid[x][y] = 0;
+        while(!pq.empty() && result.size() < k){
+            auto [dist , price , r , c] = pq.top(); pq.pop();
+            if(price >= low && price <= high) result.push_back({r , c});
+            for(int d = 0; d < 4; ++d){
+                int nr = r + dr[d], nc = c + dc[d];
+                if(nr < 0 || nc < 0 || nr == n || nc == m || grid[nr][nc] == 0) continue;
+                pq.push({dist + 1 , grid[nr][nc] , nr , nc});
+                grid[nr][nc] = 0;
+            }
+        }
+        return result;
+    }
+};
+
+------------------------------
+
+
+==========================================
+
+https://www.geeksforgeeks.org/problems/distance-of-nearest-cell-having-1-1587115620/1
+
+class Solution {
+  public:
+    // Function to find distance of nearest 1 in the grid for each cell.
+    vector<vector<int>> nearest(vector<vector<int>>& grid) {
+        // Code here
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> dist(m, vector<int>(n, -1));
+        queue<pair<int, int>> q;
+
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] == 1) {
+                    dist[i][j] = 0;
+                    q.push({i, j});
+                }
+            }
+        }
+        
+        int dr[4] = {0, 0, 1, -1};
+        int dc[4] = {1, -1, 0, 0};
+
+        while (!q.empty()) {
+            auto [r, c] = q.front(); q.pop();
+            for (int i=0; i<4; i++) {
+                int nr = r + dr[i], nc = c + dc[i];
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n && dist[nr][nc] == -1) {
+                    dist[nr][nc] = dist[r][c] + 1;
+                    q.push({nr, nc});
+                }
+            }
+        }
+
+        return dist;
+    }
+};
+
+=======================================
+
+
+https://leetcode.com/problems/n-queens/submissions/1716623960/
+
+
+class Solution {
+public:
+    bool isSafe(int row, int col, int n, vector<string>& board) {
+        for (int i = 0; i < row; i++) {
+            if (board[i][col] == 'Q') return false;
+            if (col - (row - i) >= 0 && board[i][col - (row - i)] == 'Q') return false;
+            if (col + (row - i) < n && board[i][col + (row - i)] == 'Q') return false;
+        }
+        return true;
+    }
+    void solve(int row, int n, vector<string>& board, vector<vector<string>>& queen){
+        if(row == n){
+            queen.push_back(board);
+            return;
+        }
+        for (int col = 0; col < n; col++) {
+            if (isSafe(row, col, n, board)) {
+                board[row][col] = 'Q';
+                solve(row + 1, n, board, queen);
+                board[row][col] = '.';
+            }
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> queen;
+        vector<string> board(n, string(n, '.'));
+        solve(0, n, board, queen);
+        return queen;
+    }
+};
+
+
+---------------------------
+
+class Solution {
+public:
+    bool isSafe(int row, int col, int n, vector<string>& board) {
+        int orow = row;
+        int ocol = col;
+        while(col >= 0){
+            if (board[row][col] == 'Q') return false;
+            col--;
+        }
+        row = orow;
+        col = ocol;
+        while(row >= 0 && col >= 0){
+            if (board[row][col] == 'Q') return false;
+            row--;
+            col--;
+        }
+        while(orow < n && ocol >= 0){
+            if (board[orow][ocol] == 'Q') return false;
+            orow++;
+            ocol--;
+        }    
+        return true;
+    }
+    void solve(int col, int n, vector<string>& board, vector<vector<string>>& queen){
+        if(col == n){
+            queen.push_back(board);
+            return;
+        }
+        for (int row = 0; row < n; row++) {
+            if (isSafe(row, col, n, board)) {
+                board[row][col] = 'Q';
+                solve(col + 1, n, board, queen);
+                board[row][col] = '.';
+            }
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> queen;
+        vector<string> board(n, string(n, '.'));
+        solve(0, n, board, queen);
+        return queen;
+    }
+};
+
+
+========================================
+
+https://leetcode.com/problems/sudoku-solver/submissions/1716698755/
+
+class Solution {
+public:
+    bool isSafe(char c, int row, int col, vector<vector<char>>& board){
+        for(int i=0; i<9; i++){
+            if(board[row][i] == c) return false;
+            if(board[i][col] == c) return false;
+        }
+        int sr = (row/3) * 3;
+        int sc = (col/3) * 3;
+        for(int i=0; i<3; i++){
+            for(int j=0; j<3; j++){
+                if (board[i+sr][j+sc] == c) return false;
+            }
+        }
+        return true;
+    }
+
+    bool solve(vector<vector<char>>& board) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (board[row][col] == '.' || board[row][col] == '0') {
+                    for (char c = '1'; c <= '9'; c++) {
+                        if (isValid(board, row, col, c)) {
+                            board[row][col] = c;
+                            if (solve(board)) return true;
+                            board[row][col] = '.';
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board);
+    }
+
+    
+};
+
+====================================================================
+
+https://www.hackerrank.com/contests/week37-ms-skill-test/challenges/largest-rectangle/submissions/code/1395094798
+https://www.hackerrank.com/challenges/largest-rectangle/submissions/code/441696073
+
+
+long largestRectangle(vector<int> h) {
+    stack<int> st;
+    long maxArea = 0;
+    int n = h.size();
+    long sum = 0;
+    
+    for (int i = 0; i <= n; i++) {
+        int currHeight = (i == n) ? 0 : h[i];
+        while (!st.empty() && currHeight < h[st.top()]) {
+            int height = h[st.top()];
+            st.pop();
+            int width = st.empty() ? i : (i - st.top() - 1);
+            sum = height * width;
+            maxArea = max(maxArea, sum);
+        }
+        st.push(i);
+    }
+    
+    return maxArea;
+}
+
+=================================================
+
+https://www.hackerrank.com/contests/week37-ms-skill-test/challenges/poisonous-plants/submissions/code/1395102298
+
+
+int poisonousPlants(vector<int> p) {
+    int n = p.size();
+    vector<int> days(n, 0);
+    stack<int> st;
+
+    int maxDays = 0;
+
+    for (int i = 0; i < n; i++) {
+        int day = 0;
+        while (!st.empty() && p[i] <= p[st.top()]) {
+            day = max(day, days[st.top()]);
+            st.pop();
+        }
+
+        if (!st.empty()) {
+            days[i] = day + 1;
+            maxDays = max(maxDays, days[i]);
+        }
+
+        st.push(i);
+    }
+
+    return maxDays;
+}
+
+
+=================================================================
+
+https://codeforces.com/group/MWSDmqGsZm/contest/223206/problem/K
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool isPrime(long long n) {
+    if (n < 2) return false;
+    for (long long i = 2; i * i <= n; ++i)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+ 
+vector<long long> fibonacci(int n) {
+    vector<long long> fib(n);
+    fib[0] = 0;
+    fib[1] = 1;
+ 
+    for (int i = 2; i < n; ++i) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+ 
+    return fib;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    vector<int> queries(T);
+    int maxN = 0;
+
+    for (int i = 0; i < T; ++i) {
+        cin >> queries[i];
+        if (queries[i] > maxN)
+            maxN = queries[i];
+    }
+
+    vector<long long> fib = fibonacci(maxN);
+
+    for (int i = 0; i < T; ++i) {
+        long long fibN = fib[queries[i]-1];
+        cout << fibN << " ";
+        cout << (isPrime(fibN) ? "prime" : "not prime") << "\n";
+    }
+    return 0;
+}
+
+--------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPrime(long long num) {
+    if(num <= 1) return false;
+    if(num == 2) return true;
+    if(num % 2 == 0) return false;
+    for(long long i = 3; i<=sqrt(num); i += 2) {
+        if(num % i == 0) return false;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    vector<long long> fib(50, 0);
+    fib[1] = 1;
+    for(int i = 2; i < 50; i++) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+
+    vector<bool> isFibPrime(50, false);
+    for(int i = 0; i < 50; i++) {
+        isFibPrime[i] = isPrime(fib[i]);
+    }
+
+    int t;
+    cin >> t;
+    while(t--) {
+        int ind;
+        cin >> ind;
+        ind--;
+        if(isFibPrime[ind]) cout << "prime\n";
+        else cout << "not prime\n";
+    }
+}
+
+=======================================
+
+https://leetcode.com/problems/coin-change-ii/submissions/1717956529/
+
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<unsigned long long> dp(amount + 1, 0); 
+        dp[0] = 1;
+        
+        for (int c : coins) {
+            for (int a = c; a <= amount; a++) {
+                dp[a] += dp[a - c];
+            }
+        }
+        
+        return dp[amount];
+    }
+};
+
+-----------------------
+
+class Solution {
+    int n;
+public:
+    int solve(int ind, int target, vector<int>& coins, vector<vector<int>>& dp){
+        if(target == 0) return 1;
+        if(ind == n) return 0;
+        if(dp[ind][target] != -1) return dp[ind][target];
+        int pick = 0;
+        if(target >= coins[ind]){
+            pick = solve(ind, target-coins[ind], coins, dp);
+        }
+        int notPick = solve(ind+1, target, coins, dp);
+        return dp[ind][target] = pick + notPick;
+    }
+    int change(int amount, vector<int>& coins) {
+        n = coins.size();
+        vector<vector<int>> dp(n, vector<int>(amount+1, -1));
+        for(int i=0; i<n; i++) dp[i][0] = 0;
+        return solve(0, amount, coins, dp);
+    }
+};
+
+================================================
+
+https://leetcode.com/problems/maximal-rectangle/submissions/1718241138/
+
+
+class Solution {
+public:
+-----------------------------------
+
+	int largestRectangleArea(vector<int>& heights) {
+        stack<int> s;
+        int maxArea = 0;
+        heights.push_back(0);
+        int n = heights.size();
+        for (int i = 0; i < n; ++i) {
+            while (!s.empty() && heights[i] < heights[s.top()]) {
+                int height = heights[s.top()];
+                s.pop();
+                int width = s.empty() ? i : i - s.top() - 1;
+                maxArea = max(maxArea, height * width);
+            }
+            s.push(i);
+        }
+        heights.pop_back();
+        return maxArea;
+    }
+	
+---------------------------------------------------------------------
+
+    int largestRectangleArea(const vector<int>& heights) {
+        stack<int> s;
+        int maxArea = 0;
+        int n = heights.size();
+        for (int i = 0; i <= n; ++i) {
+            int h = (i == n) ? 0 : heights[i];
+            while (!s.empty() && h < heights[s.top()]) {
+                int height = heights[s.top()];
+                s.pop();
+                int width = s.empty() ? i : i - s.top() - 1;
+                maxArea = max(maxArea, height * width);
+            }
+            s.push(i);
+        }
+        return maxArea;
+    }
+
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        int maxArea = 0;
+        int cols = matrix[0].size();
+        vector<int> heights(cols, 0);
+
+        for (auto& row : matrix) {
+            for (int i = 0; i < cols; ++i) {
+                heights[i] = (row[i] == '1') ? heights[i] + 1 : 0;
+            }
+            maxArea = max(maxArea, largestRectangleArea(heights));
+        }
+        return maxArea;
+    }
+};
+
+===================================================
+
+https://leetcode.com/problems/partition-equal-subset-sum/submissions/1719119141/
+
+class Solution {
+    int n;
+public:
+    bool solve(int ind, int target, vector<vector<int>>& dp, vector<int>& nums){
+        if(target == 0) return true;
+        if(ind == n) return false;
+        if(dp[ind][target] != -1) return dp[ind][target];
+
+        bool take = false;
+        if(target >= nums[ind]){
+            take = solve(ind + 1, target - nums[ind], dp, nums);
+        }
+        bool notTake = solve(ind + 1, target, dp, nums);
+
+        return dp[ind][target] = take || notTake;
+    }
+    bool canPartition(vector<int>& nums) {
+        n = nums.size();
+        int total = 0;
+        for(int num : nums) total += num;
+        if(total % 2 != 0) return false;
+        int target = total / 2;
+        vector<vector<int>> dp(n, vector<int>(target + 1, -1));
+        return solve(0, target, dp, nums);
+    }
+};
+
+=============================================
+
+https://leetcode.com/problems/edit-distance/submissions/1722604378/
+
+class Solution {
+    int n, m;
+public:
+    int solve(int s1, int s2, string word1, string word2, vector<vector<int>>& dp){
+        if(s2 < 0) return s1+1;
+        if(s1 < 0) return s2+1;
+        if(dp[s1][s2] != -1) return dp[s1][s2];
+        if(word1[s1] == word2[s2]) {
+            return dp[s1][s2] = solve(s1-1, s2-1, word1, word2, dp);
+        }
+        else
+        {
+            int insert = 1 + solve(s1, s2-1, word1, word2, dp);
+            int del = 1 + solve(s1-1, s2, word1, word2, dp);
+            int rep = 1 + solve(s1-1, s2-1, word1, word2, dp);
+            return dp[s1][s2] = min(insert, min(del, rep));
+        }
+    }
+    int minDistance(string word1, string word2) {
+        n = word1.size();
+        m = word2.size();
+        if(m == 0) return n;
+        if(n == 0) return m;
+        vector<vector<int>> dp(n, vector<int>(m, -1));
+        return solve(n-1, m-1, word1, word2, dp);
+    }
+};
+
+------------------------------
+
+class Solution {
+public:
+
+    int minDistance(string word1, string word2) {
+        int n=word1.length();
+        int m=word2.length();
+        vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+        for(int i=0;i<=n;i++){
+            dp[i][0]=i;
+        }
+        for(int i=0;i<=m;i++){
+            dp[0][i]=i;
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                if(word1[i-1]==word2[j-1]){
+                    dp[i][j]=dp[i-1][j-1];
+                }
+                else {
+                    dp[i][j]=1+min(dp[i][j-1],min(dp[i-1][j],dp[i-1][j-1]));
+                }
+            }
+        }
+        return dp[n][m];
+    }
+};
+
+====================================
+
+https://leetcode.com/problems/longest-common-subsequence/submissions/1722625070/
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int n = text1.size(), m = text2.size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+ 
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (text1[i - 1] == text2[j - 1])
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[n][m];
+    }
+};
+
+------------------------------
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int n=text1.size();
+        int m=text2.size();
+        vector<int>pre(m+1,0),cur(m+1,0);
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                if(text1[i-1]==text2[j-1]) cur[j]=pre[j-1]+1;
+                else{
+                    cur[j]=max(pre[j],cur[j-1]);
+                }
+            }
+            pre=cur;
+        }
+        return pre[m];
+    }
+};
+
+===================================
+
+Happy fruit:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int rob(vector<int>& type, vector<int>& nums) {
+        vector<int> num1, num2;
+        if(nums.size() == 1) return nums[0];
+        num1.push_back(type[0]);
+        num2.push_back(nums[0]);
+        for(int i=1; i<nums.size(); i++){
+            if(num1[num1.size()-1] != type[i]) {
+                num1.push_back(type[i]);
+                num2.push_back(nums[i]);
+            }
+            else if(num2[num2.size()-1] < nums[i]) {
+                num1.pop_back();
+                num2.pop_back();
+                num1.push_back(type[i]);
+                num2.push_back(nums[i]);
+            }
+        }
+        int sum = num2[0];
+        int res = num2[0];
+        for(int i=1; i<num2.size(); i++){
+            sum = max(num2[i], sum+num2[i]);
+            res = max(res, sum);
+        }
+        return res;
+    }
+};
+
+int main()
+{
+    int N=5;
+    vector<int> type = {3, 2, 3, 2, 4};
+    vector<int> nums = {1, 3, -3, 8, -5};
+    Solution obj;
+    int res = obj.rob(type, nums);
+    cout << res << endl;
+
+    return 0;
+}
+
+=====================================
+
+islands:
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int n=8;
+    int count = 0;
+    for (int i = 1; i * i <= n; ++i) {
+        if (n % i == 0) {
+            count += (i * i == n) ? 1 : 2;
+        }
+    }
+    cout << count-1 << endl;
+}
+
+
+==================================================
+
+https://leetcode.com/problems/predict-the-winner/submissions/1723907215/
+
+class Solution {
+public: 
+    int solve(int i, int j, vector<int>& nums, vector<vector<int>>& dp) {
+        if (i == j) return nums[i];
+        if (dp[i][j] != -1) return dp[i][j];
+        
+        int leftPick = nums[i] - solve(i + 1, j, nums, dp);
+        int rightPick = nums[j] - solve(i, j - 1, nums, dp);
+        
+        dp[i][j] = max(leftPick, rightPick);
+        return dp[i][j];
+    }
+    
+    bool predictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(21, vector<int>(21, -1));
+        int diff = solve(0, n - 1, nums, dp);
+        return diff >= 0;
+    }
+};
+
+======================================
+
+
+https://leetcode.com/problems/most-profitable-path-in-a-tree/submissions/1723968934/
+
+class Solution {
+public:
+    vector<vector<int>> graph;
+    vector<int> parent, depth;
+
+    void dfs(int node, int par, int d){
+        depth[node] = d;
+        parent[node] = par;
+        for(int adjNode : graph[node]){
+            if(adjNode != par) dfs(adjNode, node, d+1);
+        }
+    }
+
+    int dfs2(int node, int par, vector<int>& amount){
+        int total = amount[node], maxChildProfit = INT_MIN;
+        for(int adjNode : graph[node]){
+            if(adjNode != par) maxChildProfit = max(maxChildProfit, dfs2(adjNode, node, amount));
+        }
+        return maxChildProfit == INT_MIN ? total : total + maxChildProfit;
+    }
+
+    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
+        int n=amount.size();
+        graph.resize(n);
+        parent.resize(n);
+        depth.resize(n);
+        for(int i=0; i<edges.size(); i++){
+            graph[edges[i][0]].push_back(edges[i][1]);
+            graph[edges[i][1]].push_back(edges[i][0]);
+        }
+        dfs(0, -1, 0);
+        int current = bob, bobDepth = 0;
+        while(current != -1){
+            if(depth[current] > bobDepth) {
+                amount[current] = 0;
+            } else if(depth[current] == bobDepth){
+                amount[current] /= 2;
+            }
+            current = parent[current];
+            bobDepth++;
+        }
+        return dfs2(0, -1, amount);
+    }
+};
+
+==========================================
+
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock/submissions/1724321853/
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minPrice = INT_MAX;
+        int maxProfit = 0;
+
+        for (int price : prices) {
+            minPrice = min(minPrice, price);
+            maxProfit = max(maxProfit, price - minPrice);
+        }
+
+        return maxProfit;
+    }
+};
+
+=========================================
+
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/submissions/1724324432/
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        for (int i = 1; i < (int)prices.size(); i++) {
+            if (prices[i] > prices[i - 1]) {
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+        return profit;
+    }
+};
+
+=========================================
+
+
+
+https://www.hackerearth.com/challenges/test/lgsoft-swpct-pretest-sep-2025-01/?login=cb34b6a52f586cd658acc4eb316620c7
+
+=========================
+
+https://www.hackerrank.com/contests/week38-ms-skill-test/challenges/angry-children/submissions/code/1395490556
+
+int maxMin(int k, vector<int> arr) {
+    sort(arr.begin(), arr.end());
+    int unfairness = INT_MAX;
+
+    for (int i = 0; i <= arr.size() - k; ++i) {
+        int current = arr[i + k - 1] - arr[i];
+        unfairness = min(unfairness, current);
+    }
+
+    return unfairness;
+}
+
+==================================================
+
+
+https://leetcode.com/problems/network-delay-time/submissions/1741733845/
+
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int, int>>> adj(n+1);
+        for(auto it : times){
+            adj[it[0]].push_back({it[1], it[2]});
+        }
+        vector<int> time(n, INT_MAX);
+        time[k-1] = 0;
+        queue<pair<int, int>> q;
+        q.push({k, 0});
+        while(!q.empty()){
+            int node = q.front().first;
+            int t = q.front().second;
+            q.pop();
+            for(auto [adjNode, t1]: adj[node]){
+                if(t + t1 < time[adjNode-1]){
+                    time[adjNode-1] = t+t1;
+                    q.push({adjNode, t+t1});
+                }
+            }
+        }
+        for(int i=0; i<time.size(); i++){
+            if(time[i] == INT_MAX) return -1;
+        }
+        return *max_element(time.begin(), time.end());
+    }
+};
+
+===============================================
+
+https://leetcode.com/problems/cheapest-flights-within-k-stops/submissions/1695240471/
+
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        for(int i=0; i<flights.size();i++){
+            n = max(n,max(flights[i][0],flights[i][1]));
+        }
+        vector<pair<int, int>> adj[n];
+        for (auto it : flights)
+        {
+            adj[it[0]].push_back({it[1], it[2]});
+        }
+        queue<pair<int, pair<int, int>>> q;
+        
+        q.push({0, {src, 0}});
+        vector<int> dist(n+1, INT_MAX);
+        dist[src] = 0;
+        while (!q.empty())
+        {
+            auto it = q.front();
+            q.pop();
+            int stops = it.first;
+            int node = it.second.first;
+            int cost = it.second.second;
+
+            if (stops > k)
+                continue;
+            for (auto iter : adj[node])
+            {
+                int adjNode = iter.first;
+                int edW = iter.second;
+
+                if (cost + edW < dist[adjNode] && stops <= k)
+                {
+                    dist[adjNode] = cost + edW;
+                    q.push({stops + 1, {adjNode, cost + edW}});
+                }
+            }
+        }
+        return dist[dst] != INT_MAX ? dist[dst] : -1;
+    }
+};
+
+
+==========================================
+
+https://leetcode.com/problems/path-with-maximum-probability/submissions/1741773844/
+
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start_node, int end_node) {
+        vector<vector<pair<int, double>>> adj(n);
+        for(int i=0; i<edges.size(); i++){
+            auto it = edges[i];
+            adj[it[0]].push_back({it[1], succProb[i]});
+            adj[it[1]].push_back({it[0], succProb[i]});
+        }
+        queue<pair<int, double>> q;
+        vector<double> prob(n, 0.0);
+        q.push({start_node, 1});
+        while(!q.empty()){
+            int node = q.front().first;
+            double p = q.front().second;
+            q.pop();
+            if(node == end_node) continue;
+            for(auto [adjNode, ap] : adj[node]){
+                if((ap * p) > prob[adjNode]){
+                    prob[adjNode] = ap * p;
+                    q.push({adjNode, ap * p});
+                }
+            }
+        }
+        return prob[end_node];
+    }
+};
+
+=========================================
+
+https://www.hackerrank.com/contests/week39-ms-skill-test/challenges/beautiful-path/submissions/code/1396218328
+
+Minimum Penalty Path:
+
+int beautifulPath(vector<vector<int>> edges, int A, int B, int n) {
+    vector<vector<pair<int, int>>> graph(n+1);
+
+    for(auto e: edges) {
+        int u=e[0];
+        int v=e[1];
+        int c=e[2]; 
+        graph[u].push_back({v, c});
+        graph[v].push_back({u, c});
+    }
+    vector<int> dist(n+1, INT_MAX);
+    dist[A] = 0;
+
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+    pq.push({0, A});
+
+    while(!pq.empty()) {
+        auto [penalty, u] = pq.top();
+        pq.pop();
+
+        if (penalty > dist[u]) continue;
+        if (u == B) break;
+
+        for (auto e : graph[u]) {
+            int new_penalty = penalty | e.second;
+            if (new_penalty < dist[e.first]) {
+                dist[e.first] = new_penalty;
+                pq.push({new_penalty, e.first});
+            }
+        }
+    }
+
+    return dist[B] == INT_MAX ? -1 : dist[B];
+    
+}
+
+
