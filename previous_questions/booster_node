@@ -23,16 +23,16 @@ int solve(int n, int m, int k, vector<int>& power, vector<vector<int>>& edges){
         auto p=q.front();
         q.pop();
         int node=p[0];
-        int currdis=p[1];
-        int currmin=p[2];
-        if(node==n) ans=min(ans,currmin);
+        int currDis=p[1];
+        int currMin=p[2];
+        if(node==n) ans=min(ans,currMin);
         for(auto &child:adjlist[node]){
-            if(mpp[child] && currdis+currdis < dist[child]){
+            if(mpp[child] && currDis+1 < dist[child]){
                 dist[child]=0;
-                q.push({child,0,max(currdis,currmin)});
-            } else if(currdis+currdis < dist[child]){
-                dist[child] = currdis+currdis;
-                q.push({child,currdis+1,max(currdis,currmin)});
+                q.push({child,0,max(currDis,currMin)});
+            } else if(currDis+1 < dist[child]){
+                dist[child] = currDis+1;
+                q.push({child,currDis+1,max(currDis,currMin)});
             }
         }
     }
