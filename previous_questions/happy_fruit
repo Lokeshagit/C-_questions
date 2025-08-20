@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int rob(vector<int>& type, vector<int>& nums) {
+        vector<int> num1, num2;
+        if(nums.size() == 1) return nums[0];
+        num1.push_back(type[0]);
+        num2.push_back(nums[0]);
+        for(int i=1; i<nums.size(); i++){
+            if(num1[num1.size()-1] != type[i]) {
+                num1.push_back(type[i]);
+                num2.push_back(nums[i]);
+            }
+            else if(num2[num2.size()-1] < nums[i]) {
+                num1.pop_back();
+                num2.pop_back();
+                num1.push_back(type[i]);
+                num2.push_back(nums[i]);
+            }
+        }
+        int sum = num2[0];
+        int res = num2[0];
+        for(int i=1; i<num2.size(); i++){
+            sum = max(num2[i], sum+num2[i]);
+            res = max(res, sum);
+        }
+        return res;
+    }
+};
+
+int main()
+{
+    int N=5;
+    vector<int> type = {3, 2, 3, 2, 4};
+    vector<int> nums = {1, 3, -3, 8, -5};
+    Solution obj;
+    int res = obj.rob(type, nums);
+    cout << res << endl;
+
+    return 0;
+}
