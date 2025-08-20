@@ -1,0 +1,54 @@
+Seat Booking
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int solve(int N, int M, vector<int> A, vector<int> B){
+    sort(A.begin(), A.end());
+    int sum = 0, maxi = INT_MIN;
+    int size = 0;
+    for(int i=0; i<M; i++) size += B[i];
+    for(int i=0; i<N; i++){
+        if(i+size <= N){
+            for(int j=i; j<size+i; j++){
+                sum += A[j];
+            }
+        } else {
+            break;
+        }
+        maxi = max(sum, maxi);
+        sum=0;
+    }
+    return maxi;
+}
+
+int main()
+{
+    int N, M;
+    cin >> N >> M;
+    vector<int> A(N), B(M);
+    for(int i=0; i<N; i++){
+        cin >> A[i];
+    }
+    for(int i=0; i<M; i++){
+        cin >> B[i];
+    }
+    
+    int res = solve(N, M, A, B);
+    cout << res << endl;
+    return 0;
+}
+
+-------------------------
+
+int solve(int N, int M, vector<int> A, vector<int> B){
+    sort(A.rbegin(), A.rend());
+    int sum = 0, size = 0;
+    for(int i=0; i<M; i++) size += B[i];
+    for(int i=0; i<size; i++){
+        sum += A[i];
+    }
+    return sum;
+}
