@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int n, int m, int k, vector<int>& power, vector<vector<int>>& edges){
+    if(m==0 && n==1) return 0;
+    if(m==0) return -1;
+    map<int, vector<int>> adjlist;
+    for(auto &edge:edges){
+        int u=edge[0], v=edge[1];
+        adjlist[u].push_back(v);
+        adjlist[v].push_back(u);
+    }
+    map<int, int> mpp;
+    for(auto &p:power){
+        mpp[p] = 1;
+    }
+    vector<int> dist(n+1, INT_MAX);
+    int ans = INT_MAX;
+    queue<vector<int>> q;
+    q.push({1,0,0});
+    dist[1]=0;
+    while(!q.empty()){
+        auto p=q.front();
+        q.pop();
+        int node=p[0];
+        int currdis=p[1];
+        int currmin=p[2];
+        if(node==n) ans=min(ans,currmin);
+        for(auto &child:adjlist[node]){
+            if(mpp[child] && currdis+currdis < dist[child]){
+                dist[child]=0;
+                q.push({child,0,max(currdis,currmin)});
+            } else if(currdis+currdis < dist[child]){
+                dist[child] = currdis+currdis;
+                q.push({child,currdis+1,max(currdis,currmin)});
+            }
+        }
+    }
+    if(ans==INT_MAX) return -1;
+    else return ans+1;
+}
+
+int main()
+{
+    int N, M, K;
+    cin >> N >> M >> K;
+    vector<int> power(K);
+    for(int i=0; i<K; i++) cin >> power[i];
+    vector<vector<int>> edges(M);
+    for(int i=0; i<M; i++) {
+        int u, v;
+        cin >> u >> v;
+        edges[i].push_back(u);
+        edges[i].push_back(v);
+    }
+    cout << solve(N, M, K, power, edges) << endl;
+
+    return 0;
+}
