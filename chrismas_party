@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int find_min_cost(int N, int M, int MOD, int OFF){
+    vector<vector<vector<int>>> cost(N-M+1, vector<vector<int>>(N+1, vector<int>(N+1, INT_MAX)));
+    int min_val=INT_MAX;
+    for(int Z=1; Z<=N-M; Z++){
+        for(int X=1; X<=N; X++){
+            for(int Y=1; Y<=N; Y++){
+                if(X != Y){
+                    cost[Z][X][Y] = ((X+OFF)*(X+Y+OFF)*(X+Y+Z+OFF))%MOD+1;
+                }
+                min_val = min(min_val, cost[Z][X][Y]);
+                cout << cost[Z][X][Y] << " ";
+            }
+            cout << endl;
+        }
+    }
+    return min_val;
+}
+
+int main()
+{
+    int N, M, MOD, OFF;
+    cin >> N >> M >> MOD >> OFF;
+    cout << find_min_cost(N, M, MOD, OFF) << endl;
+    return 0;
+}
