@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+
+long long dist(int a, int b) {
+    return abs(a - b);
+}
+
+long long solve(int idx, int pos1, int pos2, vector<vector<int>>& queries, map<tuple<int,int,int>, long long>& dp) {
+    if (idx == n) return 0;
+
+    auto key = make_tuple(idx, pos1, pos2);
+    if (dp.count(key)) return dp[key];
+
+    int a = queries[idx][0];
+    int b = queries[idx][1];
+
+    long long cost1 = 0;
+    if(pos1 == 1)
+        cost1 = dist(a, b) + solve(idx+1, b, pos2, queries, dp);
+    else
+        cost1 = dist(pos1, a) + dist(a, b) + solve(idx+1, b, pos2, queries, dp);
+    long long cost2=0;
+    if(pos2 == 1)
+        cost2 = dist(a, b) + solve(idx+1, pos1, b, queries, dp);
+    else
+        cost2 = dist(pos2, a) + dist(a, b) + solve(idx+1, pos1, b, queries, dp);
+
+    return dp[key] = min(cost1, cost2);
+}
+
+long long twoRobots(int m, vector<vector<int>> queries) {
+    n = queries.size();
+    map<tuple<int,int,int>, long long> dp;
+    return solve(0, 1, 1, queries, dp);
+}
+
+int main()
+{   
+    int T; cin >> T;
+    while (T--) {
+        int m, q; cin >> m >> q;
+        vector<vector<int>> queries(q, vector<int>(2));
+        for (int i = 0; i < q; i++) {
+            cin >> queries[i][0] >> queries[i][1];
+        }
+        cout << twoRobots(m, queries) << "\n";
+    }
+
+    return 0;
+}
