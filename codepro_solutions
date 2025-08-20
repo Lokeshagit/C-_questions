@@ -1,0 +1,486 @@
+Planet travel:-
+
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+int N; // Number of planets
+int W[100000 + 10]; // Mass of planets
+
+void InputData() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> N;
+    for (int i = 0; i < N; i++) {
+        cin >> W[i];
+    }
+}
+
+int main() {
+    InputData();
+
+    int ans = 0;
+    vector<int> wp;   // to store unique consecutive masses
+    vector<int> occ;  // to store occurrences of consecutive masses
+
+    for (int i = 0; i < N; i++) {
+        if (wp.empty() || W[i] != wp.back()) {
+            wp.push_back(W[i]);
+            occ.push_back(1);
+        } else {
+            occ.back()++;
+        }
+    }
+
+    for (int count : occ) {
+        ans += count - 1;
+    }
+
+    stack<int> st;
+    for (int val : wp) {
+        while (!st.empty() && st.top() < val) {
+            int last = st.top();
+            st.pop();
+            if (!st.empty() && last != st.top()) {
+                ans += 2;
+            } else {
+                ans += 1;
+            }
+        }
+        st.push(val);
+    }
+
+    ans += (int)st.size() - 1;
+
+    cout << ans << "\n";
+
+    return 0;
+}
+
+
+================================================
+
+Hopscotch:-
+
+int dr[] = { -1, 1, 0, 0,-1, 1,-1,1};
+int dc[] = { 0, 0, -1, 1 ,-1,-1,1,1};
+
+void Touch(int r, int c) {
+	int V;
+
+	if (A[r][c] == 0) V = 1;
+	else V = 0; 
+	A[r][c] = V;
+	for (int k = 0; k < 8; k++) {
+		int nr = r;
+		int nc = c;
+		int flag = 0;
+
+		for (;;) {
+			nr = nr + dr[k];
+			nc = nc + dc[k];
+			if (nr < 0 || nr >= H || nc < 0 || nc >= W) break;
+			if (A[nr][nc] == V) {
+				flag = 1;
+				break;
+			}
+		}
+		if (flag == 1) {
+			nr = r;
+			nc = c;
+			for (;;) {
+				nr = nr + dr[k];
+				nc = nc + dc[k];
+				if(nr >= H || nr < 0 || nc >= W || nc < 0) break;
+				if(A[nr][nc]==2){
+					//found bomb
+					A[nr][nc]=V;
+					//find direction
+					int i = 1;
+					for(;;) {
+						int inr = i*dr[k] + r;
+						int inc = i*dc[k] + c;
+						if(inr<0 || inc<0 || inr >= H || inc >= W) break;
+						A[inr][inc] = V;
+						i++;
+					}
+					break;
+				}
+				if (A[nr][nc] == V) break;
+				A[nr][nc] = V;	
+			}
+		}
+	}
+	/*
+	for(int i=0;i<H;i++){
+	 	for(int j=0;j<W;j++)
+	 		cout << A[i][j] << " ";
+	 	cout << endl;
+	}*/
+	
+}
+
+
+==========================================
+
+Running :
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;				// number of playersnumber of players
+long long T;		// time
+long long P[100000 + 10];		// player initial position
+long long S[100000 + 10];		// player speed
+int group_first[100000 + 10];	// leader of each group
+
+
+void InputData() {
+	cin >> N >> T;
+	for (int i = 0; i < N; i++) {
+		cin >> P[i] >> S[i];
+	}
+}
+
+struct Player{
+	long long p,s;
+	int id;
+	Player(long long p,long long s,int id){
+		this->p=p;
+		this->s=s;
+		this->id=id;
+	}
+};
+
+int main() {
+	InputData();// Input
+
+	// Write the code
+	vector<Player> players;
+	for (int i = 0; i < N; i++) {
+		players.emplace_back(P[i], S[i], i + 1);
+	}
+	
+	sort(players.begin(), players.end(), [](const Player &a, const Player &b) {
+		return a.p > b.p;
+	});
+	
+	Player leader = players[0];
+	int ans = 0;
+	for (int i = 1; i < N; i++) {
+		long long leader_pos = leader.p + leader.s * T;
+		long long curr_pos = players[i].p + players[i].s * T;
+		if (leader_pos > curr_pos) {
+			group_first[ans++] = leader.id;
+			leader = players[i];
+		}
+	}
+	group_first[ans++] = leader.id;
+	cout << ans << endl;
+	for (int i = 0; i < ans; i++) cout << group_first[i] << " ";
+	return 0;
+}
+
+
+=================================
+
+Dividing an Area:-
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+string Info;
+int sol = -1;
+
+void InputData(void) {
+	cin >> N;
+	cin >> Info;
+}
+
+string getEdge(int x, int y, int nx, int ny){
+	string s1 = to_string(x)+","+to_string(y);
+	string s2 = to_string(nx)+","+to_string(ny);
+	if(s1 > s2) swap(s1, s2);
+	return s1+"-"+s2;
+}
+
+int main(void) {
+	InputData();
+	
+	map<char, pair<int,int>> mpp;
+	mpp['0'] = {1, 0};
+	mpp['1'] = {-1, 0};
+	mpp['2'] = {0, 1};
+	mpp['3'] = {0, -1};
+	
+	set<string> point;
+	set<string> edge;
+	
+	int x=0, y=0;
+	point.insert(to_string(x)+","+to_string(y));
+	int sol=0;
+	for(int i=0; i<N; i++){
+		char ch = Info[i];
+		int dx = mpp[ch].first;
+		int dy = mpp[ch].second;
+		
+		int nx = x + dx;
+		int ny = y + dy;
+		
+		string curPoint = to_string(nx)+","+to_string(ny);
+		string curEdge = getEdge(x, y, nx, ny);
+		if(point.count(curPoint)){
+			if(!edge.count(curEdge)){
+				sol++;
+			}
+		} else {
+			point.insert(curPoint);
+		}
+		if(!edge.count(curEdge)){
+			edge.insert(curEdge);
+		}
+		x=nx;
+		y=ny;
+ 	}
+	
+	cout << sol << "\n";
+	return 0;
+}
+
+============================================
+
+Product Display:-
+
+#include <iostream>
+using namespace std;
+#define MAXN (1000)
+
+int N;
+int ID[MAXN + 10];
+
+int CalLargestBlock(int id_ignore){
+	int max_block_size = 1;
+	int cur_size = 1;
+	int prev=ID[0];
+	for (int i = 1; i < N; i++){
+		if(ID[i]==id_ignore) continue;
+		if (ID[i] == prev) cur_size++;
+		else cur_size = 1;
+		prev=ID[i];
+		if (max_block_size < cur_size) {
+			max_block_size = cur_size;
+		}
+	}
+	return max_block_size;
+}
+
+int Solve(){
+	int sol = (int)1e7, max_cnt = 0;
+	for (int i = 0; i < N; i++){
+		int ret = CalLargestBlock(ID[i]);
+		if ((max_cnt < ret) || ((max_cnt == ret) && (sol < ID[i]))) {
+			max_cnt = ret;
+			sol = ID[i];
+		}
+	}
+	return sol;
+}
+
+void InputData(){
+	cin >> N;
+	for (int i = 0; i < N; i++){
+		cin >> ID[i];
+	}
+}
+
+int main(){
+	int ans;
+	InputData();
+
+	ans = Solve();
+
+	cout << ans << "\n";
+	return 0;
+}
+
+
+=========================================
+
+Balancing:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<vector<int>> Box;
+
+void InputData() {
+    cin >> N;
+    Box.assign(N, vector<int>(N));
+    for (int i = 0; i < N; ++i){
+        for (int j = 0; j < N; ++j){
+            cin >> Box[i][j];
+        }
+    }
+}
+
+int main() {
+    InputData();  // Input
+
+    int ans = 0;
+    int maxElement = 0;
+    int rowMax = 0;
+    int colMax = 0;
+    vector<int> rowSums;
+
+    // Row sum
+    for (int i = 0; i < N; ++i){
+        int rowSum = 0;
+        for (int j = 0; j < N; ++j){
+            rowSum += Box[i][j];
+        }
+        rowSums.push_back(rowSum);
+        rowMax = max(rowMax, rowSum);
+    }
+
+    // Column sum
+    for (int j = 0; j < N; ++j){
+        int colSum = 0;
+        for (int i = 0; i < N; ++i){
+            colSum += Box[i][j];
+        }
+        colMax = max(colMax, colSum);
+    }
+
+    maxElement = max(rowMax, colMax);
+
+    for (int i = 0; i < N; ++i){
+        ans += (maxElement - rowSums[i]);
+    }
+
+    cout << ans << endl;  // Output
+    return 0;
+}
+
+
+
+==========================================
+
+
+Setting the Exploration Route:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int INF = 1000000;
+
+struct Point {
+    int x, y;
+    Point(int _x=0, int _y=0) : x(_x), y(_y) {}
+};
+
+int R, C;
+vector<string> grid;
+
+vector<vector<int>> bfs(const vector<string> &grid, const Point &start) {
+    int rows = (int)grid.size();
+    int cols = (int)grid[0].size();
+    vector<vector<int>> dist(rows, vector<int>(cols, INF));
+    queue<Point> q;
+    dist[start.x][start.y] = 0;
+    q.push(start);
+	int dr[] = { -1, 1, 0, 0};
+	int dc[] = { 0, 0, -1, 1};
+    while (!q.empty()) {
+        Point cur = q.front(); q.pop();
+        for (int i=0; i<4; i++) {
+            int nx = cur.x + dr[i], ny = cur.y + dc[i];
+            if (nx >= 0 && ny >= 0 && nx < rows && ny < cols
+                && grid[nx][ny] != '*' && dist[nx][ny] == INF) {
+                dist[nx][ny] = dist[cur.x][cur.y] + 1;
+                q.push(Point(nx, ny));
+            }
+        }
+    }
+    return dist;
+}
+
+int solveTSP(const vector<vector<int>> &dist) {
+    int n = (int)dist.size();
+    int maxMask = 1 << n;
+    vector<vector<int>> dp(maxMask, vector<int>(n, INF));
+    dp[1][0] = 0;
+
+    for (int mask = 1; mask < maxMask; mask++) {
+        for (int j = 0; j < n; j++) {
+            if ((mask & (1 << j)) == 0) continue;
+            if (dp[mask][j] == INF) continue;
+            for (int k = 0; k < n; k++) {
+                if ((mask & (1 << k)) != 0) continue;
+                int nextMask = mask | (1 << k);
+                dp[nextMask][k] = min(dp[nextMask][k], dp[mask][j] + dist[j][k]);
+            }
+        }
+    }
+
+    int res = INF;
+    for (int i = 0; i < n; i++) {
+        res = min(res, dp[maxMask - 1][i] + dist[i][0]);
+    }
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> R >> C;
+    grid.resize(R);
+    for (int i = 0; i < R; i++) {
+        cin >> grid[i];
+    }
+
+    // Find nodes 'S' and digits '0'..'9'
+    unordered_map<char, Point> nodeMap;
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            char c = grid[i][j];
+            if (c == 'S' || (c >= '0' && c <= '9')) {
+                nodeMap[c] = Point(i, j);
+            }
+        }
+    }
+
+    int size = (int)nodeMap.size();
+    vector<Point> ordered(size);
+    ordered[0] = nodeMap['S'];
+    for (int i = 1; i < size; i++) {
+        ordered[i] = nodeMap[(char)('0' + i)];
+    }
+
+    vector<vector<int>> dist(size, vector<int>(size, INF));
+    for (int i = 0; i < size; i++) {
+        auto d = bfs(grid, ordered[i]);
+        for (int j = 0; j < size; j++) {
+            dist[i][j] = d[ordered[j].x][ordered[j].y];
+        }
+    }
+
+    int ans = solveTSP(dist);
+    cout << ans << "\n";
+
+    return 0;
+}
+
+=================================
+
+
+
+
+
+
+
+
