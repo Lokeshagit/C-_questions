@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void computeDistances(int s, vector<vector<int>>& adj, vector<int>& dist) {
+    queue<int> q;
+    dist[s] = 0;
+    q.push(s);
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+
+        for (int neighbor : adj[node]) {
+            if (dist[neighbor] == -1) {
+                dist[neighbor] = dist[node] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+int find_dist(int n, vector<vector<int>>& adj, int k, vector<int>& special_nodes){
+    vector<int> dist1(n+1, -1), dist2(n+1, -1);
+    computeDistances(1, adj, dist1);
+    computeDistances(n, adj, dist2);
+    int min_val = INT_MAX;
+    for(int i=0; i<k-1; i++){
+        for(int j=i+1; j<k; j++){
+            int val1 = 1 + dist1[special_nodes[i]] + dist2[special_nodes[j]];
+            int val2 = 1 + dist2[special_nodes[i]] + dist1[special_nodes[j]];
+            min_val = min({min_val, val1, val2, dis1[n]});
+        }
+    }
+    return min_val;
+}
+
+int main() {
+    int n = 7;
+    vector<pair<int, int>> edges = {
+        {1, 2},
+        {1, 3},
+        {3, 4},
+        {2, 5},
+        {4, 6},
+        {4, 7}
+    };
+
+    vector<vector<int>> adj(n + 1);
+    for (auto [u, v] : edges) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    int k = 3;
+    vector<int> special_nodes = {6, 4, 3};
+    
+    int res = find_dist(n, adj, k, special_nodes);
+    cout << res << endl;
+
+    return 0;
+}
