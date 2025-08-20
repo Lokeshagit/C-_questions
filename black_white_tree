@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+long long power(long long base, long long exponent) {
+    if(base==0 or base==1)return 0;
+    long long result = 1;
+    while (exponent > 0) {
+        if (exponent % 2 == 1) {
+            result *= base;
+        }
+        base *= base;
+        exponent /= 2;
+    }
+    return result;
+}
+long long dfs(int node,vector<long long >&nnodes,map<int,bool>&vis,unordered_map<int,vector<int>>&adjlist){
+    vis[node]=true;
+    long long temp=1;
+    for(auto nextnode:adjlist[node]){
+        if(!vis[nextnode]){
+            temp=temp+dfs(nextnode,nnodes,vis,adjlist);
+        }
+    }
+    return nnodes[node]=temp;
+}
+ 
+int numzeros(int node,vector<long long >&zeros,string &color,map<int,bool>&vis,unordered_map<int,vector<int>>&adjlist){
+    vis[node]=true;
+    long long temp=0;
+    for(auto nextnode:adjlist[node]){
+        if(!vis[nextnode]){
+            temp=temp+((color[nextnode-1]=='0')+numzeros(nextnode,zeros,color,vis,adjlist));
+        }
+    }
+    return zeros[node]=temp;
+}
+ 
+ 
+vector<long long> solve(int n,string &color,vector<vector<int>>&edges){
+    vector<long long>nnodes(n+1,0);
+    vector<long long>zeros(n+1,0);
+    unordered_map<int,vector<int>>adjlist;
+    for(auto i:edges){
+        adjlist[i[0]].push_back(i[1]);
+        adjlist[i[1]].push_back(i[0]);
+    }
+ 
+    map<int,bool>vis;
+    dfs(1,nnodes,vis,adjlist);
+ 
+    map<int,bool>vis1;
+    numzeros(1,zeros,color,vis1,adjlist);
+ 
+    vector<long long>res;
+    for(int i=1; i<=n; i++){
+        long long N=nnodes[i];
+        long long k=zeros[i];
+        if(color[i-1]=='0')k=N-k-1;
+        long long ans=k*(N-1)-power(k,k-1) + (k*(k-1))/2;
+        res.push_back(ans);
+    }
+    return res;
+}
+int main(){
+    int t; cin>>t;
+    while(t--){
+        int n; cin>>n;
+        string color; cin>>color;
+        vector<vector<int>>edges;
+        for(int i=0; i<n-1; i++){
+            vector<int>v(2);
+            cin>>v[0]>>v[1];
+            edges.push_back(v);
+        }
+        vector<long long >ans=solve(n,color,edges);
+        for(auto i:ans)cout<<i<<" ";
+        cout<<endl;
+    }
+}
