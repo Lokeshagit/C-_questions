@@ -1,0 +1,84 @@
+#include<bits/stdc++.h>
+using namespace std;
+int solve(int ind,int dis,int move,string &s){
+    if(ind>=s.size()){
+        if(move==0){
+            //cout<<s<<" "<<dis<<endl;
+            return abs(dis);
+        }
+        return 0;
+    }
+  
+    int notchange=0;
+    if(s[ind]=='R')notchange = solve(ind+1,dis-1,move,s);
+    else notchange=max(notchange,solve(ind+1,dis+1,move,s));
+     
+    int changeR=0,changeS=0;
+    if(move>0){
+        if(s[ind]=='R'){
+            s[ind]='S';
+            changeR=solve(ind,dis,move-1,s);
+            s[ind]='R';
+        }
+        if(s[ind]=='S'){
+            s[ind]='R';
+            changeS=solve(ind,dis,move-1,s);
+            s[ind]='S';
+        }
+    }
+    return max({notchange,changeR,changeS});
+}
+int game(string s,int N){
+    return solve(0,0,N,s);
+}
+int main(){
+    int t; cin>>t;
+    while(t--){
+        string s; cin>>s;
+        int N; cin>>N;
+        int ans=game(s,N);
+        cout<<ans<<endl;
+    }
+}
+
+
+----------------------------------
+
+int n;
+
+int solve(int ind, int dis, int move, string &s, vector<vector<vector<int>>> &dp) {
+    if (ind >= n) {
+        if (move == 0) return abs(dis);
+        return 0;
+    }
+    if (dp[ind][dis + n][move] != -1) 
+        return dp[ind][dis + n][move];
+
+    int notchange = 0;
+    if (s[ind] == 'R')
+        notchange = solve(ind + 1, dis - 1, move, s, dp);
+    else
+        notchange = solve(ind + 1, dis + 1, move, s, dp);
+
+    int changeR = 0, changeS = 0;
+    if (move > 0) {
+        if (s[ind] == 'R') {
+            s[ind] = 'S';
+            changeR = solve(ind, dis, move - 1, s, dp);
+            s[ind] = 'R';
+        }
+        if (s[ind] == 'S') {
+            s[ind] = 'R';
+            changeS = solve(ind, dis, move - 1, s, dp);
+            s[ind] = 'S';
+        }
+    }
+
+    return dp[ind][dis + n][move] = max({notchange, changeR, changeS});
+}
+
+int game(string s, int N) {
+    n = (int)s.size();
+    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(2 * n + 1, vector<int>(N + 1, -1)));
+    return solve(0, 0, N, s, dp);
+}
