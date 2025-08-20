@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+bool checkwin(int n, int m, vector<vector<int>>& arr, int p) {
+    for(int i = 1; i < n-1; i++) {
+        for(int j = 1; j < m-1; j++) {
+            if(arr[i][j] == p && arr[i-1][j] == p && arr[i][j-1] == p && arr[i+1][j] == p && arr[i][j+1] == p) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void solve(bool amove, int &bwin, int &awin, int &draw, int n, int m, int k, vector<vector<int>>& arr) {
+    bool full = true;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            if(arr[i][j] == 0) {
+                full = false;
+                for(int x = 1; x <= k; x++) {
+                    arr[i][j] = x;
+                    if(checkwin(n, m, arr, x)) {
+                        if(amove) awin++;
+                        else bwin++;
+                    } else {
+                        solve(!amove, bwin, awin, draw, n, m, k, arr);
+                    }
+                    arr[i][j] = 0;  
+                }
+            }
+        }
+    }
+    if(full) {
+        draw++;  
+    }
+}
+ 
+void hemanth_hp() {
+    //int n, m, k;
+    // cin >> n >> m >> k;
+    // vector<vector<int>> arr(n, vector<int>(m, 0));
+ 
+    // for(int i = 0; i < n; i++) {
+    //     for(int j = 0; j < m; j++) {
+    //         cin >> arr[i][j];
+    //     }
+    // }
+    
+    int n=3, m=5, k=2;
+    vector<vector<int>> arr{{1,1,1,2,1}, {0,1,0,2,2}, {1,1,1,2,1}};
+    int bwin = 0, awin = 0, draw = 0;
+    solve(true, bwin, awin, draw, n, m, k, arr);
+    cout << awin << " " << bwin << " " << draw << endl;
+}
+int main() {
+    int t=1;
+    //cin >> t;
+    while(t--) hemanth_hp();
+}
