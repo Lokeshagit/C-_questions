@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Net {
+    int r, c, h, w;
+    int r2() const { return r + h - 1; } // bottom row
+    int c2() const { return c + w - 1; } // right col
+};
+
+bool overlap(const Net &a, const Net &b) {
+    // Check if two rectangles overlap
+    if (a.r > b.r2() || b.r > a.r2()) return false;
+    if (a.c > b.c2() || b.c > a.c2()) return false;
+    return true;
+}
+
+struct DSU {
+    vector<int> parent, rank;
+    DSU(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i=0; i<n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a != b) {
+            if (rank[a] < rank[b]) swap(a, b);
+            parent[b] = a;
+            if (rank[a] == rank[b]) rank[a]++;
+        }
+    }
+};
+
+int maxFishesInMegaNet(int x, int y, vector<Net> &nets, vector<pair<int,int>> &fishes) {
+    int n = nets.size();
+
+    DSU dsu(n);
+
+    // Build graph by union overlapping nets
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            if (overlap(nets[i], nets[j])) {
+                dsu.unite(i, j);
+            }
+        }
+    }
+
+    // Map to count fishes per mega net
+    vector<int> fishCount(n, 0);
+
+    // For each fish, check which nets contain it, assign fish to that net's mega net
+    for (auto &[fr, fc] : fishes) {
+        for (int i = 0; i < n; i++) {
+            if (fr >= nets[i].r && fr <= nets[i].r2() && fc >= nets[i].c && fc <= nets[i].c2()) {
+                int root = dsu.find(i);
+                fishCount[root]++;
+                break; // fish belongs to one mega net (since nets overlap)
+            }
+        }
+    }
+
+    // Find max fish count in any mega net
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        if (dsu.find(i) == i) { // only consider leaders
+            ans = max(ans, fishCount[i]);
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    // Example usage:
+    int x = 10, y = 10; // sea size (not necessarily needed in logic)
+
+    vector<Net> nets = {
+        {1, 1, 3, 3},
+        {2, 2, 3, 3},
+        {6, 6, 2, 2},
+    };
+
+    vector<pair<int,int>> fishes = {
+        {1,1}, {2,2}, {3,3}, {6,6}, {7,7}
+    };
+
+    cout << maxFishesInMegaNet(x, y, nets, fishes) << "\n"; // Output should be 3 (first 2 nets overlap, combined mega net has 3 fishes)
+    return 0;
+}
