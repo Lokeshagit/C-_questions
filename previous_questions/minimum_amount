@@ -1,0 +1,59 @@
+Question 2: Minimum amount ( 30M )
+
+you will be given an array of size n.
+you can take two adjacent elements and out of removed elements which is minimum remove that element from the array and add largest element to your answer then add back that to again into the array.
+you need to perform the operations until the array size becomes 1.
+ return the minimum sum u can attain.
+example.:
+33 30 32
+output: 65
+
+first take 30 and 32, then remove 30 from the array and add 32 into the ans and the array.
+not array become 33, 32
+now take the two element and now remove 32 and add 33 into the ans and the array.
+now array contain only element 33. 
+total sum = 65.
+
+-----------------------------
+
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <climits>
+
+using namespace std;
+
+int minSum(vector<int>& arr) {
+    stack<int> st;
+    int res = 0;
+
+    for (int num : arr) {
+        while (!st.empty() && st.top() <= num) {
+            int mid = st.top();
+            st.pop();
+            if (st.empty()) {
+                res += num;
+            } else {
+                res += min(st.top(), num);
+            }
+        }
+        st.push(num);
+    }
+
+    while (st.size() > 1) {
+        int top = st.top();
+        st.pop();
+        res += st.top();
+    }
+
+    return res;
+}
+
+int main() {
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int& x : arr) cin >> x;
+
+    cout << minSum(arr) << "\n";
+    return 0;
+}
