@@ -1,3 +1,15 @@
+3. Graph question (40M)
+
+Given a sea which is distributed from (0.0)(left top) to (x,y) (bottom right) in 2D matrix.
+U will be given with n nets which are distributed in the sea.
+each net will be present at the (row, col) and it is having the height hi and width wi. which from the 2D matrix from the starting point (row,col).
+some nets can be overlap and from mega net and if no nets overlap then it's considered as meg net itself.
+U will be given m number of fish.
+each fish present at the point (r, c).
+You have to return what is the maximum number of fishes are there in any mega net.
+
+-------------------
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
