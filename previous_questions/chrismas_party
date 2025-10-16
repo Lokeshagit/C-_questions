@@ -10,11 +10,25 @@ int find_min_cost(int N, int M, int MOD, int OFF){
                 if(X != Y){
                     cost[Z][X][Y] = ((X+OFF)*(X+Y+OFF)*(X+Y+Z+OFF))%MOD+1;
                 }
-                min_val = min(min_val, cost[Z][X][Y]);
                 cout << cost[Z][X][Y] << " ";
             }
             cout << endl;
         }
+    }
+    int total_cost = 0;
+    for(int X=1; X<=N; X++){
+        for(int Y=1; Y<=N; Y++){
+            for(int Z=1; Z<=N-M; Z++){
+                if(X != Y){
+                    total_cost += cost[Z][X][Y]; 
+                }
+            }
+            if(X != Y){
+                min_val = min(min_val, total_cost);
+                total_cost=0;
+            }
+        }
+        
     }
     return min_val;
 }
@@ -26,3 +40,12 @@ int main()
     cout << find_min_cost(N, M, MOD, OFF) << endl;
     return 0;
 }
+
+------------------
+
+4 3 19 7
+2147483647 7 12 14 
+3 2147483647 18 5 
+10 3 2147483647 11 
+7 8 12 2147483647 
+3
