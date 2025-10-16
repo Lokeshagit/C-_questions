@@ -7303,4 +7303,2305 @@ int beautifulPath(vector<vector<int>> edges, int A, int B, int n) {
     
 }
 
+=========================================
+
+https://www.hackerrank.com/contests/week40-ms-skill-test/challenges/string-construction/submissions/code/1396616047
+
+int stringConstruction(string s) {
+    unordered_set<char> unique_chars(s.begin(), s.end());
+    return unique_chars.size();
+}
+
+
+==============================================
+
+https://www.hackerrank.com/contests/week41-ms-skill-test/challenges/min-max-riddle/submissions/code/1396898540
+
+vector<long> riddle(vector<long> arr) {
+    // complete this function
+    int n=arr.size();
+    vector<long> res(n, 0);
+    res[0] = *max_element(arr.begin(), arr.end());
+    res[n-1] = *min_element(arr.begin(), arr.end());
+    
+    for(int i=1; i<n-1; i++){
+        long maxi=0;
+        for(int j=0; j+i<n; j++){
+            maxi= max(maxi, *min_element(arr.begin()+j, arr.begin()+j+i+1));
+        }
+        res[i] = maxi;
+    }
+    return res; 
+}
+
+-----------------------
+
+https://www.hackerrank.com/contests/week41-ms-skill-test/challenges/min-max-riddle/submissions/code/1396899475
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<long> riddle(vector<long> arr) {
+    int n = arr.size();
+    vector<int> left(n, -1), right(n, n);
+    stack<int> st;
+
+    for (int i = 0; i < n; i++) {
+        while (!st.empty() && arr[st.top()] >= arr[i]) {
+            st.pop();
+        }
+        if (!st.empty()) left[i] = st.top();
+        st.push(i);
+    }
+
+    while (!st.empty()) st.pop();
+
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.empty() && arr[st.top()] >= arr[i]) {
+            st.pop();
+        }
+        if (!st.empty()) right[i] = st.top();
+        st.push(i);
+    }
+
+    vector<long> ans(n + 1, 0);
+
+    for (int i = 0; i < n; i++) {
+        int len = right[i] - left[i] - 1;
+        ans[len] = max(ans[len], arr[i]);
+    }
+
+    for (int i = n - 1; i >= 1; i--) {
+        ans[i] = max(ans[i], ans[i + 1]);
+    }
+
+    ans.erase(ans.begin());
+    return ans;
+}
+
+===============================================
+
+https://www.hackerrank.com/contests/week41-ms-skill-test/challenges/median/submissions/code/1396901158
+
+#include <bits/stdc++.h>
+using namespace std;
+
+multiset<long> low, high;
+
+void rebalance() {
+    if (low.size() > high.size() + 1) {
+        high.insert(*low.rbegin());
+        low.erase(prev(low.end()));
+    } else if (high.size() > low.size()) {
+        low.insert(*high.begin());
+        high.erase(high.begin());
+    }
+}
+
+string getMedian() {
+    if (low.empty() && high.empty()) return "Wrong!";
+    if ((low.size() + high.size()) % 2 == 1) {
+        return to_string(*low.rbegin());
+    } else {
+        long a = *low.rbegin();
+        long b = *high.begin();
+        if ((a + b) % 2 == 0) return to_string((a + b) / 2);
+        else {
+            return to_string((a + b) / 2) + ".5";
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    while (q--) {
+        char op;
+        long x;
+        cin >> op >> x;
+
+        if (op == 'a') {
+            if (low.empty() || x <= *low.rbegin())
+                low.insert(x);
+            else
+                high.insert(x);
+
+            rebalance();
+            cout << getMedian() << "\n";
+        } 
+        else {
+            bool removed = false;
+            if (!low.empty() && x <= *low.rbegin()) {
+                auto it = low.find(x);
+                if (it != low.end()) {
+                    low.erase(it);
+                    removed = true;
+                }
+            } 
+            if (!removed && !high.empty()) {
+                auto it = high.find(x);
+                if (it != high.end()) {
+                    high.erase(it);
+                    removed = true;
+                }
+            }
+
+            if (!removed) {
+                cout << "Wrong!\n";
+                continue;
+            }
+
+            rebalance();
+            if (low.empty() && high.empty())
+                cout << "Wrong!\n";
+            else
+                cout << getMedian() << "\n";
+        }
+    }
+    return 0;
+}
+
+=================================================
+
+https://www.hackerrank.com/contests/week43-ms-skill-test/challenges/jim-and-the-orders/submissions/code/1397226199
+
+vector<int> jimOrders(vector<vector<int>> orders) {
+    int n = orders.size();
+    vector<pair<int,int>> delivery(n);
+    for (int i = 0; i < n; i++) {
+        int delivery_time = orders[i][0] + orders[i][1];
+        delivery[i] = {delivery_time, i+1};  // store 1-based index
+    }
+    sort(delivery.begin(), delivery.end());
+    
+    vector<int> ans;
+    for (auto &p : delivery) {
+        ans.push_back(p.second);
+    }
+    return ans;
+}
+
+
+-------------------
+
+vector<int> jimOrders(vector<vector<int>> orders) {
+    map<int,int> mp;
+    vector<int> res;
+    int i = 1;
+    for(auto p:orders){
+        int sum = p[0]+p[1];
+        res.push_back(sum);
+        mp[sum]=i;
+        i++;
+    }
+    sort(res.begin(), res.end());
+    vector<int> ans;
+    for(auto x:res){
+        ans.push_back(mp[x]);
+    }
+    return ans;
+}
+
+====================================================
+
+https://www.hackerrank.com/contests/week43-ms-skill-test/challenges/chief-hopper/submissions/code/1397228026
+
+int chiefHopper(vector<int> arr) {
+    int n = arr.size();
+    int energy = 0;
+
+    for (int i = n - 1; i >= 0; i--) {
+        energy = (energy + arr[i] + 1) / 2;
+    }
+
+    return energy;
+}
+
+
+=========================================================
+
+https://leetcode.com/problems/diagonal-traverse/submissions/1767019834/
+
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& mat) {
+        if (mat.empty()) return {};
+        int m = mat.size(), n = mat[0].size();
+        vector<int> result;
+        result.reserve(m * n);
+
+        int r = 0, c = 0;
+        bool goingUp = true;
+
+        while (result.size() < m * n) {
+            result.push_back(mat[r][c]);
+
+            if (goingUp) {
+                // Moving up-right
+                if (c == n - 1) {
+                    r++;            // Hit last column, go down
+                    goingUp = false;
+                } else if (r == 0) {
+                    c++;            // Hit first row, go right
+                    goingUp = false;
+                } else {
+                    r--;
+                    c++;
+                }
+            } else {
+                // Moving down-left
+                if (r == m - 1) {
+                    c++;            // Hit last row, go right
+                    goingUp = true;
+                } else if (c == 0) {
+                    r++;            // Hit first column, go down
+                    goingUp = true;
+                } else {
+                    r++;
+                    c--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+
+=======================================
+
+https://www.hackerrank.com/contests/week43-ms-skill-test-graph/challenges/journey-to-the-moon/submissions/code/1397565377
+
+void solve(int node, vector<vector<int>>& graph, int& count, vector<int>& vis){
+    vis[node] = 1;
+    count++;
+    for(auto it: graph[node]){
+        if(!vis[it]){
+            solve(it, graph, count, vis);
+        }
+    }
+}
+
+int journeyToMoon(int n, vector<vector<int>> astronaut) {
+    vector<vector<int>> graph(n);
+    for(auto it:astronaut){
+        graph[it[0]].push_back(it[1]);
+        graph[it[1]].push_back(it[0]);
+    }
+    vector<int> vis(n, 0);
+    vector<int> component;
+    for(int i=0;i<n;i++){
+        if(!vis[i]){
+            int count=0;
+            solve(i, graph, count, vis);
+            component.push_back(count);
+        }
+    }
+    int total_pairs = n * (n - 1) / 2;
+    
+    int same_pairs = 0;
+    for (int size : component) {
+        same_pairs += size * (size - 1) / 2;
+    }
+    return total_pairs - same_pairs;
+}
+
+------------------------
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited, int& count) {
+    visited[node] = true;
+    count++;
+    for (int neigh : adj[node]) {
+        if (!visited[neigh]) {
+            dfs(neigh, adj, visited, count);
+        }
+    }
+}
+
+int main() {
+    int n, p;
+    cin >> n >> p;
+    vector<vector<int>> adj(n);
+    for (int i = 0; i < p; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<bool> visited(n, false);
+    vector<int> component_sizes;
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            int count = 0;
+            dfs(i, adj, visited, count);
+            component_sizes.push_back(count);
+        }
+    }
+
+    long long total_pairs = (long long)n * (n - 1) / 2;
+    long long same_country_pairs = 0;
+    for (int size : component_sizes) {
+        same_country_pairs += (long long)size * (size - 1) / 2;
+    }
+    
+    cout << total_pairs - same_country_pairs << endl;
+    return 0;
+}
+
+
+=======================================================================
+
+https://www.hackerrank.com/contests/week43-ms-skill-test-graph/challenges/red-knights-shortest-path/submissions/code/1397568935
+
+#include <bits/stdc++.h>
+using namespace std;
+struct Node {
+   int r, c;
+   vector<string> path;
+};
+int main() {
+   int n;
+   cin >> n;
+   int r1, c1, r2, c2;
+   cin >> r1 >> c1 >> r2 >> c2;
+   // Possible moves of the Red Knight
+   vector<int> dr = {-2, -2, 0, 2, 2, 0};
+   vector<int> dc = {-1, 1, 2, 1, -1, -2};
+   vector<string> moveName = {"UL", "UR", "R", "LR", "LL", "L"};
+   queue<Node> q;
+   vector<vector<bool>> visited(n, vector<bool>(n, false));
+   q.push({r1, c1, {}});
+   visited[r1][c1] = true;
+   while (!q.empty()) {
+       Node cur = q.front();
+       q.pop();
+       if (cur.r == r2 && cur.c == c2) {
+           cout << cur.path.size() << "\n";
+           for (string &s : cur.path)
+               cout << s << " ";
+           cout << "\n";
+           return 0;
+       }
+       for (int i = 0; i < 6; i++) {
+           int nr = cur.r + dr[i];
+           int nc = cur.c + dc[i];
+           if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
+               visited[nr][nc] = true;
+               vector<string> newPath = cur.path;
+               newPath.push_back(moveName[i]);
+               q.push({nr, nc, newPath});
+           }
+       }
+   }
+   cout << "Impossible\n";
+   return 0;
+}
+
+===============================================================
+
+MS department level LSET test:
+
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(int i=0; i<n; i++){
+        cin >> a[i];
+    }
+    int ans=1, cnt=1;
+    for(int i=0; i<n-1; i++){
+        if(2*a[i] >= a[i+1]){
+            cnt++;
+        } 
+        else {
+            cnt=1;
+        }
+        ans = max(cnt, ans);
+    }
+    cout << ans << endl;
+    return 0;
+}
+
+----
+10
+1 2 5 6 7 10 21 23 24 49
+4
+
+=========================================
+
+/*
+4
+3 
+2 3 1
+1 2 3 
+1
+1
+1 
+16 
+1 1 2 1 1 3 6 5 5 4 8 4 4 3 14 10
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+10
+6 7 8 9 10 1 2 3 4 5
+1 2 3 4 5 6 7 8 9 10
+*/
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    vector<int> p(n), ans(n);
+    for(int i=0; i<n; i++){
+        cin >> p[i];
+    }
+    for(int a=1; a<=n; a++){
+        map<int, int> mp;
+        mp[a]++;
+        int maxi=a;
+        for(int i=0; i<n; i++){
+            mp[p[i]]++;
+            if(mp[p[i]] > mp[maxi])
+                maxi = p[i];
+        }
+        ans[a-1] = maxi;   
+    }
+    cout << endl;
+    for(auto x:ans){
+        cout << x << " ";
+    }
+    return 0;
+}
+
+=======================================
+
+https://www.hackerearth.com/challenges/test/lgsoft-swpct-pretest-oct-2025-01/?login=f7f58ad1ace3b8246f18039be25478d5
+
+
+=====================
+
+https://leetcode.com/problems/minimum-fuel-cost-to-report-to-the-capital/submissions/1780791125/
+
+class Solution {
+public:
+    long long fuel = 0;
+
+    int dfs(int node, int parent, vector<vector<int>>& graph, int seats) {
+        int people = 1; // Every node has one representative
+
+        for (int neighbor : graph[node]) {
+            if (neighbor != parent) {
+                people += dfs(neighbor, node, graph, seats);
+            }
+        }
+
+        if (node != 0) {
+            // Cars needed = ceil(people / seats)
+            fuel += (people + seats - 1) / seats;
+        }
+
+        return people;
+    }
+
+    long long minimumFuelCost(vector<vector<int>>& roads, int seats) {
+        int n = roads.size() + 1;
+        vector<vector<int>> graph(n);
+
+        // Build adjacency list
+        for (auto& road : roads) {
+            graph[road[0]].push_back(road[1]);
+            graph[road[1]].push_back(road[0]);
+        }
+
+        dfs(0, -1, graph, seats);
+
+        return fuel;
+    }
+};
+=============================
+
+https://www.hackerrank.com/contests/week45-ms-skill-test/challenges/k-factorization/submissions/code/1398002221
+
+vector<int> kFactorization(int n, vector<int> A) {
+    sort(A.begin(), A.end());
+    vector<int> ans;
+
+    int i = A.size() - 1;
+    while (n != 1 && i >= 0){
+        while (n % A[i] == 0){
+            ans.push_back(n);
+            n = n / A[i];
+        }
+        i--;
+    }
+
+    if (n != 1){
+        ans.clear();
+        ans.push_back(-1);
+        return ans;
+    }
+
+    ans.push_back(1);
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
+
+=============================================
+
+https://www.hackerrank.com/contests/week45-ms-skill-test/challenges/simplified-chess-engine/submissions/code/1398000440
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Piece {
+    char type;  // 'Q','R','B','N'
+    bool white;
+    Piece(char t='.', bool w=false) : type(t), white(w) {}
+};
+
+struct State {
+    char board[8][8];
+    bool whiteToMove;
+
+    State() {
+        for (int r=0; r<8; r++)
+            for (int c=0; c<8; c++)
+                board[r][c] = '.';
+        whiteToMove = true;
+    }
+
+    bool operator==(const State& o) const {
+        if (whiteToMove != o.whiteToMove) return false;
+        for (int r=0; r<8; r++)
+            for (int c=0; c<8; c++)
+                if (board[r][c] != o.board[r][c]) return false;
+        return true;
+    }
+};
+
+namespace std {
+    template<>
+    struct hash<State> {
+        size_t operator()(const State &s) const {
+            size_t h = 0;
+            for (int r=0; r<8; r++)
+                for (int c=0; c<8; c++) {
+                    h = h * 31 + s.board[r][c];
+                }
+            h = h * 2 + (s.whiteToMove ? 1 : 0);
+            return h;
+        }
+    };
+}
+
+int dr[8] = {-1,-1,-1,0,1,1,1,0};
+int dc[8] = {-1,0,1,1,1,0,-1,-1};
+
+// Knight moves
+int knightR[8] = {-2,-2,-1,-1,1,1,2,2};
+int knightC[8] = {-1,1,-2,2,-2,2,-1,1};
+
+bool inBoard(int r,int c) {
+    return r>=0 && r<8 && c>=0 && c<8;
+}
+
+vector<State> generateMoves(const State &s) {
+    vector<State> res;
+    bool white = s.whiteToMove;
+
+    for (int r=0; r<8; r++) {
+        for (int c=0; c<8; c++) {
+            char p = s.board[r][c];
+            if (p == '.') continue;
+            bool pieceWhite = isupper(p);
+            if (pieceWhite != white) continue;
+
+            char pt = toupper(p);
+
+            if (pt == 'Q' || pt == 'R' || pt == 'B') {
+                vector<pair<int,int>> directions;
+                if (pt == 'Q') {
+                    for (int i=0; i<8; i++)
+                        directions.push_back({dr[i], dc[i]});
+                } else if (pt == 'R') {
+                    directions = {{-1,0},{1,0},{0,-1},{0,1}};
+                } else if (pt == 'B') {
+                    directions = {{-1,-1},{-1,1},{1,-1},{1,1}};
+                }
+                for (auto d : directions) {
+                    for (int dist=1; dist<8; dist++) {
+                        int nr = r + d.first*dist;
+                        int nc = c + d.second*dist;
+                        if (!inBoard(nr,nc)) break;
+                        char target = s.board[nr][nc];
+                        if (target == '.') {
+                            State ns = s;
+                            ns.board[nr][nc] = p;
+                            ns.board[r][c] = '.';
+                            ns.whiteToMove = !white;
+                            res.push_back(ns);
+                        } else {
+                            bool targetWhite = isupper(target);
+                            if (targetWhite != white) {
+                                // Capture
+                                State ns = s;
+                                ns.board[nr][nc] = p;
+                                ns.board[r][c] = '.';
+                                ns.whiteToMove = !white;
+                                res.push_back(ns);
+                            }
+                            break; // blocked
+                        }
+                    }
+                }
+            } else if (pt == 'N') {
+                for (int i=0; i<8; i++) {
+                    int nr = r + knightR[i];
+                    int nc = c + knightC[i];
+                    if (!inBoard(nr,nc)) continue;
+                    char target = s.board[nr][nc];
+                    if (target == '.' || (isupper(target) != white)) {
+                        State ns = s;
+                        ns.board[nr][nc] = p;
+                        ns.board[r][c] = '.';
+                        ns.whiteToMove = !white;
+                        res.push_back(ns);
+                    }
+                }
+            }
+        }
+    }
+    return res;
+}
+
+bool blackQueenCaptured(const State &s) {
+    // Black Queen = 'q'
+    for (int r=0; r<8; r++)
+        for (int c=0; c<8; c++)
+            if (s.board[r][c] == 'q')
+                return false;
+    return true;
+}
+
+unordered_map<State, int> memo;
+
+int canWhiteWin(State s, int depth) {
+    // Memoized recursive search
+    if (depth < 0) return 0; // ran out of moves
+
+    if (blackQueenCaptured(s)) return 1; // white won
+
+    if (memo.count(s)) return memo[s];
+
+    vector<State> nextMoves = generateMoves(s);
+
+    if (nextMoves.empty()) {
+        memo[s] = 0;
+        return 0;
+    }
+
+    if (s.whiteToMove) {
+        for (auto &ns : nextMoves) {
+            if (canWhiteWin(ns, depth-1)) {
+                memo[s] = 1;
+                return 1;
+            }
+        }
+        memo[s] = 0;
+        return 0;
+    } else {
+        for (auto &ns : nextMoves) {
+            if (!canWhiteWin(ns, depth-1)) {
+                memo[s] = 0;
+                return 0;
+            }
+        }
+        memo[s] = 1;
+        return 1;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T; cin >> T;
+    while (T--) {
+        int W, B, M;
+        cin >> W >> B >> M;
+        State s;
+
+        // Clear board
+        for (int r=0; r<8; r++)
+            for (int c=0; c<8; c++)
+                s.board[r][c] = '.';
+
+        for (int i=0; i<W; i++) {
+            char t, col; int row;
+            cin >> t >> col >> row;
+            int r = 8 - row;
+            int c = col - 'A';
+            s.board[r][c] = t; // white uppercase
+        }
+        for (int i=0; i<B; i++) {
+            char t, col; int row;
+            cin >> t >> col >> row;
+            int r = 8 - row;
+            int c = col - 'A';
+            s.board[r][c] = tolower(t); // black lowercase
+        }
+
+        s.whiteToMove = true;
+        memo.clear();
+        bool win = canWhiteWin(s, M);
+        cout << (win ? "YES\n" : "NO\n");
+    }
+
+    return 0;
+}
+
+
+=============================================
+
+
+https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero/submissions/1782161774/
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int x) {
+        int n = nums.size();
+        int total = 0;
+        for (int num : nums) total += num;
+
+        int target = total - x;
+        if (target < 0) return -1;
+
+        if (target == 0) return n;
+
+        int maxLen = -1;
+        int left = 0, currSum = 0;
+
+        for (int right = 0; right < n; right++) {
+            currSum += nums[right];
+
+            while (currSum > target && left <= right) {
+                currSum -= nums[left];
+                left++;
+            }
+
+            if (currSum == target) {
+                maxLen = max(maxLen, right - left + 1);
+            }
+        }
+
+        return maxLen == -1 ? -1 : n - maxLen;
+    }
+};
+
+==================================================
+
+https://www.hackerearth.com/challenges/test/lgsoft-swpct-mocktest-oct-2025/?login=886f5b077b9acf7dcedb606355171557
+
+==============================================
+
+https://www.hackerrank.com/contests/week47-ms-skill-test-graph/challenges/crab-graphs/submissions/code/1398590163
+
+int crabGraphs(int n, int t, vector<vector<int>> graph) {
+    const int N = 2 * n + 2;
+    const int SRC = 0;
+    const int SNK = N - 1;
+ 
+    vector<vector<int>> capacity(N, vector<int>(N, 0));
+    vector<vector<int>> adj(N);
+ 
+    auto add_edge = [&](int u, int v, int cap) {
+        if (capacity[u][v] == 0 && capacity[v][u] == 0) {
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        capacity[u][v] += cap;
+    };
+ 
+    for (int i = 1; i <= n; ++i) {
+        int head = i;
+        int foot = i + n;
+ 
+        add_edge(SRC, head, t);
+        add_edge(foot, SNK, 1);
+    }
+ 
+    for (auto &edge : graph) {
+        int u = edge[0];
+        int v = edge[1];
+ 
+        add_edge(u, v + n, 1);
+        add_edge(v, u + n, 1);
+    }
+ 
+    int total_flow = 0;
+    vector<int> parent(N);
+ 
+    auto bfs = [&]() -> bool {
+        fill(parent.begin(), parent.end(), -1);
+        queue<pair<int, int>> q;
+        q.push({SRC, INT_MAX});
+        parent[SRC] = -2;
+ 
+        while (!q.empty()) {
+            int cur = q.front().first;
+            int flow = q.front().second;
+            q.pop();
+ 
+            for (int next : adj[cur]) {
+                if (parent[next] == -1 && capacity[cur][next] > 0) {
+                    parent[next] = cur;
+                    int new_flow = min(flow, capacity[cur][next]);
+                    if (next == SNK)
+                        return true;
+                    q.push({next, new_flow});
+                }
+            }
+        }
+        return false;
+    };
+ 
+    auto maxflow = [&]() -> int {
+        int flow = 0;
+        while (bfs()) {
+            int cur = SNK;
+            int new_flow = INT_MAX;
+            while (cur != SRC) {
+                int prev = parent[cur];
+                new_flow = min(new_flow, capacity[prev][cur]);
+                cur = prev;
+            }
+ 
+            cur = SNK;
+            while (cur != SRC) {
+                int prev = parent[cur];
+                capacity[prev][cur] -= new_flow;
+                capacity[cur][prev] += new_flow;
+                cur = prev;
+            }
+ 
+            flow += new_flow;
+        }
+        return flow;
+    };
+ 
+    int max_feet = maxflow();
+    return max_feet ;
+}
+
+======================================= 
+
+
+https://www.hackerrank.com/contests/week47-ms-skill-test-graph/challenges/the-indian-job/submissions/code/1398589692
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int T; cin >> T;
+    while (T--) {
+        int N; long long G;
+        cin >> N >> G;
+        
+        vector<int> A(N);
+        for (int i = 0; i < N; i++) cin >> A[i];
+        
+        // Sort tasks descending
+        sort(A.rbegin(), A.rend());
+        
+        long long slot1 = 0, slot2 = 0;
+        for (int i = 0; i < N; i++) {
+            // Assign task to slot with smaller current end time
+            if (slot1 <= slot2) {
+                slot1 += A[i];
+            } else {
+                slot2 += A[i];
+            }
+        }
+        
+        long long totalTime = max(slot1, slot2);
+        cout << (totalTime <= G ? "YES\n" : "NO\n");
+    }
+    
+    return 0;
+}
+
+==============================================
+
+https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/
+
+class Solution {
+public:
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        int n = bloomDay.size();
+        if(m*k > n) return -1;
+        long long min_ind = *min_element(bloomDay.begin(), bloomDay.end());
+        long long max_ind = *max_element(bloomDay.begin(), bloomDay.end());
+        for(long long i=min_ind; i<=max_ind; i++){
+            int cnt=0, cnt_m=0;
+            for(int j=0; j<n; j++){
+                if(bloomDay[j] <= i){
+                    cnt++;
+                } else{
+                    cnt=0;
+                }
+                if(cnt == k){
+                    cnt_m++;
+                    cnt=0;
+                }
+            }
+            if(cnt_m == m){
+                cout << i << " ";
+                return i;
+            }
+        }
+        return max_ind;
+    }
+};
+
+--------------------------
+
+class Solution {
+public:
+    bool canMake(vector<int>& bloomDay, int m, int k, int mid) {
+        int bouquets = 0;
+        int flowers = 0;
+        for (int x : bloomDay) {
+            if (x <= mid) {
+                flowers++;
+                if (flowers == k) {
+                    bouquets++;
+                    flowers = 0;
+                }
+            } else {
+                flowers = 0;
+            }
+        }
+        return bouquets >= m;
+    }
+
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        long long total = (long long)m * k;
+        if (total > bloomDay.size()) return -1;
+
+        int low = *min_element(bloomDay.begin(), bloomDay.end());
+        int high = *max_element(bloomDay.begin(), bloomDay.end());
+        int ans = -1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (canMake(bloomDay, m, k, mid)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+};
+
+==========================================================
+
+https://leetcode.com/problems/minimum-speed-to-arrive-on-time/
+
+class Solution {
+public:
+    bool canReach(const vector<int>& dist, double hour, int speed) {
+        double time = 0;
+        int n = dist.size();
+        for (int i = 0; i < n; ++i) {
+            double d = dist[i]*1.0/speed;
+            if(i!=dist.size()-1)
+                time=time+ceil(d);
+            else
+                time+=d;
+            if(time>hour)
+                return false;
+        }
+        if(time <= hour)
+            return true;
+        return false;
+    }
+    
+    int minSpeedOnTime(vector<int>& dist, double hour) {
+        int left = 1, right = 10000000;
+        int ans = -1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (canReach(dist, hour, mid)) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
+
+======================================================
+
+https://www.hackerearth.com/practice/algorithms/searching/binary-search/practice-problems/algorithm/promotion-1/
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+ 
+    int n, m; 
+    cin >> n >> m;
+ 
+    vector<int> boxes(n);
+    for (int i = 0; i < n; ++i) cin >> boxes[i];
+ 
+    vector<int> trucks(m);
+    for (int i = 0; i < m; ++i) cin >> trucks[i];
+
+    sort(boxes.rbegin(), boxes.rend());
+    sort(trucks.rbegin(), trucks.rend());
+
+    if (boxes[0] > trucks[0]) {
+        cout << -1 << "\n";
+        return 0;
+    }
+
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+
+    for (int cap : trucks) {
+        pq.push({0, cap});
+    }
+
+    for (int w : boxes) {
+        vector<pair<int,int>> temp;
+        bool assigned = false;
+ 
+        while (!pq.empty()) {
+            auto [trips, cap] = pq.top(); pq.pop();
+ 
+            if (cap >= w) {
+                pq.push({trips + 1, cap});
+                assigned = true;
+                for (auto &p : temp) pq.push(p);
+                break;
+            } else {
+                temp.push_back({trips, cap});
+            }
+        }
+ 
+        if (!assigned) {
+            cout << -1 << "\n";
+            return 0;
+        }
+    }
+
+    int maxTrips = 0;
+    while (!pq.empty()) {
+        maxTrips = max(maxTrips, pq.top().first);
+        pq.pop();
+    }
+
+    int total_time = 2 * maxTrips - 1;
+    cout << total_time << "\n";
+ 
+    return 0;
+}
+
+======================================================
+
+https://leetcode.com/problems/fruit-into-baskets/submissions/1796047544/
+
+class Solution {
+public:
+    int totalFruit(vector<int>& fruits) {
+        int l =0,r=0,max_len = 0;
+        unordered_map<int,int> basket;
+        while(r<fruits.size())
+        {
+            basket[fruits[r]]++;
+            if(basket.size()>2)
+            {
+                basket[fruits[l]]--;
+                if(basket[fruits[l]]==0)
+                {
+                    basket.erase(fruits[l]);
+                   
+                }
+                l++;
+                
+            }
+            max_len = max(max_len,r-l+1);
+            r++;
+        }
+        return max_len;
+    }
+};
+
+======================================================
+
+https://www.geeksforgeeks.org/problems/longest-k-unique-characters-substring0853/1
+
+class Solution {
+  public:
+    int longestKSubstr(string &s, int k) {
+        // code here
+        int l=0,r=0,max_len = 0;
+        map<char, int> mp;
+        bool valid = false;
+        while(r<s.size())
+        {
+            mp[s[r]]++;
+            if(mp.size()>k)
+            {
+                valid=true;
+                mp[s[l]]--;
+                if(mp[s[l]]==0)
+                {
+                    mp.erase(s[l]);
+                   
+                }
+                l++;
+                
+            }
+            max_len = max(max_len,r-l+1);
+            r++;
+        }
+        if(valid || mp.size() == k) 
+            return max_len;
+        else
+            return -1;
+    }
+};
+
+===========================================
+
+https://leetcode.com/problems/get-equal-substrings-within-budget/submissions/1270313968/
+
+class Solution {
+public:
+    int equalSubstring(string s, string t, int maxCost) {
+        int n = s.length();
+        int ans = 0, window = 0, left = 0;
+        for (int right = 0; right < n; right++) {
+            window += abs(s[right] - t[right]);
+            while (window > maxCost) {
+                window -= abs(s[left] - t[left]);
+                left++;
+            }
+            ans = max(ans, right - left + 1);
+        }
+        return ans;
+    }
+};
+
+---------------------
+
+class Solution {
+public:
+ 
+    int check(string s, string t, int n, int maxCost, int mid)
+    {
+        int i=0;
+        int j=mid-1;
+        int sum = 0;
+        for(int k=0;k<mid;k++)
+        {
+            sum += (abs(s[k]-t[k]));
+        }
+        if(sum <= maxCost)
+            return true;
+        while(j<n-1)
+        {
+            sum -= (abs(s[i]-t[i]));
+            i++;
+            j++;
+            sum += (abs(s[j]-t[j]));
+            if(sum <= maxCost)
+                return true;
+        }
+        return false;
+    }
+ 
+    int equalSubstring(string s, string t, int maxCost) {
+        int n = s.length();
+        int st = 0;
+        int e = n;
+ 
+        int ans = 0;
+ 
+        while(st<=e)
+        {
+            int mid = (st+e)/2;
+ 
+            if(check(s,t,n,maxCost,mid))
+            {
+                ans = mid;
+                st = mid+1;
+            }
+            else
+            {
+                e = mid-1;
+            }
+        }
+        return ans;
+    }
+};
+
+
+========================================
+
+https://leetcode.com/problems/grumpy-bookstore-owner/submissions/1796096547/
+
+class Solution {
+public:
+    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int minutes) {
+        int total=0;
+        int n = customers.size();
+        for(int i=0; i<n; i++){
+            if(grumpy[i] == 0){
+                total += customers[i];
+            }
+        }
+
+        int maxGain = 0;
+        int currentGain = 0;
+        int l = 0;
+        for(int r=0; r<n; r++){
+            if(grumpy[r] == 1){
+                currentGain += customers[r];
+            }
+            if(r-l+1 > minutes){
+                if(grumpy[l] == 1){
+                    currentGain -= customers[l];
+                }
+                l++;
+            }
+            maxGain = max(maxGain, currentGain);
+        }
+        return total + maxGain;
+    }
+};
+
+=========================================
+
+
+https://leetcode.com/problems/maximize-the-minimum-powered-city/submissions/1796324931/
+
+class Solution {
+public:
+    long long maxPower(vector<int>& stations, int r, int k) {
+        long long left = 0;
+        long long right = accumulate(stations.begin(), stations.end(), 0LL) + k;
+        long long ans = 0;
+        while (left <= right) {
+            long long mid = (left + right) / 2;
+            if (isGood(stations, r, mid, k)) {
+                ans = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    bool isGood(vector<int>& stations, int r, long long minPowerRequired, int additionalStations) {
+        int n = stations.size();
+        long long windowPower = accumulate(stations.begin(), stations.begin()+r, 0LL);
+        vector<int> additions(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (i + r < n) {
+
+                windowPower += stations[i + r];
+            }
+            if (windowPower < minPowerRequired) {
+                long long needed = minPowerRequired - windowPower;
+                if (needed > additionalStations) {
+                    return false;
+                }
+                additions[min(n - 1, i + r)] += needed;
+                windowPower = minPowerRequired;
+                additionalStations -= needed;
+            }
+            if (i - r >= 0) {
+                windowPower -= stations[i - r] + additions[i - r];
+            }
+        }
+        return true;
+    }
+};
+
+==============================================
+
+
+https://leetcode.com/problems/permutations/submissions/1797037854/
+
+class Solution {
+public:
+    void solve(int idx, vector<int>& nums, vector<vector<int>> &res){
+        if(idx == nums.size()){
+            res.push_back(nums);
+            return;
+        }
+        for(int i=idx; i<nums.size(); i++){
+            swap(nums[idx], nums[i]);
+            solve(idx+1, nums, res);
+            swap(nums[idx], nums[i]);
+        }
+    }
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        solve(0, nums, res);
+        return res;
+    }
+};
+
+--------------
+
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        do{
+            res.push_back(nums);
+        } while(next_permutation(nums.begin(), nums.end()));
+        return res;
+    }
+};
+
+
+=====================================
+
+https://leetcode.com/problems/shortest-path-visiting-all-nodes/submissions/1797049996/
+
+class Solution {
+public:
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int n = graph.size();
+        if (n == 1) return 0;
+
+        int final_mask = (1 << n) - 1;
+
+        queue<pair<int,int>> q;
+
+        vector<vector<bool>> visited(n, vector<bool>(1 << n, false));
+
+        for (int i = 0; i < n; i++) {
+            int mask = 1 << i;
+            q.push({i, mask});
+            visited[i][mask] = true;
+        }
+
+        int steps = 0;
+        while (!q.empty()) {
+            int size = q.size();
+            while (size--) {
+                auto [node, mask] = q.front(); q.pop();
+
+                if (mask == final_mask) {
+                    return steps;
+                }
+
+                for (int neighbor : graph[node]) {
+                    int next_mask = mask | (1 << neighbor);
+                    if (!visited[neighbor][next_mask]) {
+                        visited[neighbor][next_mask] = true;
+                        q.push({neighbor, next_mask});
+                    }
+                }
+            }
+            steps++;
+        }
+
+        return -1;
+    }
+};
+
+
+----------------
+
+class Solution {
+public:
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int n = graph.size();
+        int final_mask = (1 << n) -1;
+
+        vector<vector<int>> visited(n, vector<int> (1<<n, 0));
+        queue<vector<int>> q;
+        for(int i=0; i<n; i++){
+            int mask = 1 << i;
+            q.push({0, i, mask});
+            visited[i][mask] = true;
+        }
+
+        while(!q.empty()){
+            int steps = q.front()[0];
+            int node = q.front()[1];
+            int mask = q.front()[2];
+            q.pop();
+
+            if(mask == final_mask){
+                return steps;
+            }
+            for(int neighbor:graph[node]){
+                int new_mask = mask | 1 << neighbor;
+                if(!visited[neighbor][new_mask]){
+                    visited[neighbor][new_mask] = 1;
+                    q.push({steps+1, neighbor, new_mask});
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+
+==========================================
+
+https://www.naukri.com/code360/problems/travelling-salesman-problem_1385180?leftPanelTabValue=SUBMISSION&customSource=studio_nav
+
+
+#include <bits/stdc++.h> 
+int shortestRoute(vector<vector<int>> &distance)
+{
+    int N=distance.size();
+	// Write your code here.
+    if(N==1) return distance[0][0];
+    vector<int> cities;
+    for (int i = 1; i < N; i++) {
+        cities.push_back(i);
+    }
+
+    long long ans = LLONG_MAX;
+    do {
+        long long cost = distance[0][cities[0]];
+        for (int i = 0; i < N-2; i++) {
+            cost += distance[cities[i]][cities[i + 1]];
+        }
+        cost += distance[cities[N-2]][0];
+
+        ans = min(ans, cost);
+    } while (next_permutation(cities.begin(), cities.end()));
+    return ans;
+}
+
+--------------------------
+
+#include <bits/stdc++.h> 
+int shortestRoute(vector<vector<int>> &distance)
+{
+    int N=distance.size();
+	// Write your code here.
+    if(N==1) return distance[0][0];
+	int FULL_MASK = (1 << N) - 1;
+
+    vector<vector<long long>> dp(1 << N, vector<long long>(N, INT_MAX));
+    dp[1][0] = 0;
+
+    for (int mask = 1; mask <= FULL_MASK; ++mask) {
+        for (int u = 0; u < N; ++u) {
+            if (!(mask & (1 << u))) continue;
+            if (dp[mask][u] == INT_MAX) continue;
+
+            for (int v = 0; v < N; ++v) {
+                if (mask & (1 << v)) continue;
+                int nextMask = mask | (1 << v);
+                dp[nextMask][v] = min(dp[nextMask][v], dp[mask][u] + distance[u][v]);
+            }
+        }
+    }
+
+    long long ans = INT_MAX;
+    for (int i = 1; i < N; ++i) {
+        if (dp[FULL_MASK][i] == INT_MAX) continue;
+        ans = min(ans, dp[FULL_MASK][i] + distance[i][0]);
+    }
+    return ans;
+}
+
+==================================================
+
+
+https://leetcode.com/problems/find-building-where-alice-and-bob-can-meet/submissions/1800066091/
+
+
+class Solution {
+public:
+using pii = pair<int, int>;
+    vector<int> leftmostBuildingQueries(vector<int>& heights, vector<vector<int>>& queries) {
+        int n=heights.size(), qz=queries.size();
+        vector<int> ans(qz, -1);
+        vector<pii> idx;
+
+        for (int i= 0; i< qz; i++) {
+            int& x=queries[i][0], & y=queries[i][1];
+            if (x > y) // let x <= y
+                swap(x, y);
+            if (x == y|| heights[x]<heights[y])
+                ans[i] = y;
+            else idx.emplace_back(y, i);
+        }
+
+        sort(idx.begin(), idx.end(), greater<>());
+        vector<pii> stack;
+
+        int j=n-1;
+        for (auto [_, i] : idx) {
+            int x = queries[i][0];
+            int y = queries[i][1];
+            for (; j >y; j--) {
+                while (!stack.empty() && heights[stack.back().second] < heights[j])
+                    stack.pop_back();
+                stack.emplace_back(heights[j], j);
+            }
+
+            auto it=upper_bound(stack.rbegin(), stack.rend(), make_pair(heights[x], n));
+            ans[i]=(it==stack.rend()) ?-1 : it->second;
+        }
+        return ans;
+    }
+};
+
+======================================
+
+https://leetcode.com/problems/maximal-rectangle/submissions/1718252140/
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+
+        int maxArea = 0;
+        int n = matrix[0].size();
+        vector<int> heights(n, 0);
+
+        for(int i = 0; i < matrix.size(); i++) {
+            for(int j = 0; j < n; j++) {
+                if(matrix[i][j] == '1') heights[j]++;
+                else heights[j] = 0;
+            }
+            maxArea = max(maxArea, largestRectangleArea(heights));
+        }
+        return maxArea;
+    }
+
+    int largestRectangleArea(vector<int>& heights) {
+        stack<int> st;
+        int maxArea = 0;
+        heights.push_back(0);
+
+        for(int i = 0; i < heights.size(); i++) {
+            while(!st.empty() && heights[i] < heights[st.top()]) {
+                int height = heights[st.top()]; st.pop();
+                int width = st.empty() ? i : i - st.top() - 1;
+                maxArea = max(maxArea, height * width);
+            }
+            st.push(i);
+        }
+        heights.pop_back(); // Clean up
+        return maxArea;
+    }
+};
+
+==============================================
+
+https://leetcode.com/problems/maximal-square/submissions/1800173487/
+
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int rows=matrix.size();
+        int cols=matrix[0].size();
+
+        vector<vector<int>>dp(rows,vector<int>(cols,0));
+        for(int j=0;j<cols;j++){
+            if(matrix[0][j]=='1')
+               dp[0][j]=1;
+        }
+        for(int i=0;i<rows;i++){
+            if(matrix[i][0]=='1')
+                dp[i][0]=1;
+        }
+
+        for(int i=1;i<rows;i++){
+            for(int j=1;j<cols;j++){
+                if(matrix[i][j]=='1')
+                   {
+                    dp[i][j]=1+min(dp[i-1][j],min(dp[i-1][j-1],dp[i][j-1]));
+                   }
+                else{
+                    dp[i][j]=0;
+                }
+            }
+        }
+
+        int res=INT_MIN;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                res=max(res,dp[i][j]);
+            }
+        }
+        return res*res;
+    }
+};
+
+===========================================
+
+https://leetcode.com/problems/car-fleet-ii/submissions/1800185083/
+
+class Solution {
+public:
+    vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+        int n = (int)cars.size();
+        vector<double> ans(n, -1.0);
+        vector<int> st; st.reserve(n);
+
+        for (int i = n - 1; i >= 0; --i) {
+            int pi = cars[i][0], vi = cars[i][1];
+            while (!st.empty()) {
+                int j = st.back();
+                int pj = cars[j][0], vj = cars[j][1];
+                if (vi <= vj) { st.pop_back(); continue; }
+                double t = double(pj - pi) / double(vi - vj);
+                if (ans[j] > 0 && t > ans[j]) { st.pop_back(); continue; }
+                ans[i] = t;
+                break;
+            }
+            st.push_back(i);
+        }
+        return ans;
+    }
+};
+
+
+======================================================
+
+https://leetcode.com/problems/trapping-rain-water/submissions/1800163721/
+
+class Solution
+{
+public:
+    int trap(vector<int> &height)
+    {
+        int n = height.size();
+        int water = 0;
+        vector<int> stack;
+        for (int right = 0; right < n; right++)
+        {
+            while (!stack.empty() && height[stack.back()] < height[right])
+            {
+                int mid = stack.back();
+                stack.pop_back();
+                if (stack.empty())
+                    break;
+                int left = stack.back();
+                int minHeight = min(height[right] - height[mid], height[left] - height[mid]);
+                int width = right - left - 1;
+                water += minHeight * width;
+            }
+            stack.push_back(right);
+        }
+        return water;
+    }
+};
+
+=================================================
+
+https://leetcode.com/problems/number-of-visible-people-in-a-queue/submissions/1800201353/
+
+class Solution {
+public:
+    vector<int> canSeePersonsCount(vector<int>& ht) {
+        int n = ht.size();
+        vector<int> ans(n, 0);
+        stack<int> st;
+        for (int i = n - 1; i >= 0; --i) {
+            int cnt = 0;
+            while (!st.empty() && st.top() < ht[i]) {
+                ++cnt;
+                st.pop();
+            }
+            if (!st.empty()) {
+                ++cnt;
+            }
+            ans[i] = cnt;
+            st.push(ht[i]);
+        }
+
+        return ans;
+    }
+};
+
+=====================================================
+
+
+https://leetcode.com/problems/map-of-highest-peak/submissions/1801110820/
+
+class Solution {
+public:
+using pii = pair<int, int>;
+    vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
+        int n=isWater.size();
+        int m=isWater[0].size();
+        vector<vector<int>> heights(n, vector<int> (m, -1));
+        int dr[] = {0, 0, -1, 1};
+        int dc[] = {1, -1, 0, 0};
+        queue<pii> q;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(isWater[i][j]){
+                    heights[i][j] = 0;
+                    q.push({i, j});
+                }
+            }
+        }
+        int h=0;
+        while(!q.empty()){
+            int k=q.size();
+            while(k--){
+                int r=q.front().first;
+                int c=q.front().second;
+                q.pop();
+                for(int d=0; d<4; d++){
+                    int nr = r + dr[d];
+                    int nc = c + dc[d];
+                    if(nr < 0 || nr >= n || nc < 0 || nc >= m || heights[nr][nc] != -1) continue;
+                    q.push({nr, nc});
+                    heights[nr][nc] = h+1;
+                }
+            }
+            h++;
+        }
+        return heights;
+    }
+};
+
+======================================
+
+https://leetcode.com/problems/cheapest-flights-within-k-stops/submissions/1801072488/
+
+class Solution {
+public:
+using pii = pair<int, int>;
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<vector<pii>> graph(n);
+        for(auto e:flights){
+            graph[e[0]].push_back({e[1], e[2]});
+        }
+        queue<vector<int>> q;
+        vector<int> dist(n+1, INT_MAX);
+        q.push({src, k, 0});
+        dist[src] = 0;
+        while(!q.empty()){
+            int node = q.front()[0];
+            int stops = q.front()[1];
+            int price = q.front()[2];
+            q.pop();
+            if(stops < 0) continue;
+            for(auto it:graph[node]){
+                int newNode = it.first;
+                int cost = it.second;
+                if(stops>=0 && dist[newNode] > price + cost){
+                    dist[newNode] = price+cost;
+                    q.push({newNode, stops-1, dist[newNode]});
+                }
+            }
+        }
+        return dist[dst] == INT_MAX? -1: dist[dst];
+    }
+};
+
+========================================
+
+https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/submissions/1801124886/
+
+class DisjointSet {
+    vector<int> size, parent;
+
+public:
+    DisjointSet(int n) {
+        size.resize(n + 1, 1);
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+    int findPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findPar(parent[node]);
+    }
+    void unionbySize(int u, int v) {
+        int up_u = findPar(u);
+        int up_v = findPar(v);
+        if (up_u == up_v)
+            return;
+        if (size[up_u] < size[up_v]) {
+            parent[up_u] = up_v;
+            size[up_v] += size[up_u];
+        } else {
+            parent[up_v] = up_u;
+            size[up_u] += size[up_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int maxRow = 0, maxCol = 0;
+        int n = stones.size();
+        for (int i = 0; i < n; i++) {
+            maxRow = max(maxRow, stones[i][0]);
+            maxCol = max(maxCol, stones[i][1]);
+        }
+        DisjointSet ds(maxRow + maxCol + 1);
+        unordered_map<int, int> mp;
+        for (auto it : stones) {
+            int row = it[0];
+            int col = it[1] + maxRow + 1;
+            ds.unionbySize(row, col);
+            mp[row] = 1;
+            mp[col] = 1;
+        }
+        int count = 0;
+        for (auto i : mp) {
+            if (ds.findPar(i.first) == i.first)
+                count++;
+        }
+        return n - count;
+    }
+};
+
+======================================
+
+https://leetcode.com/problems/count-servers-that-communicate/submissions/1801140050/
+
+class Solution {
+public:
+    int countServers(vector<vector<int>>& grid) {
+        const int m=grid.size(), n=grid[0].size();
+        int row[250]={0}, col[250]={0}, cnt=0;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if (grid[i][j]){
+                    cnt++;
+                    row[i]++;
+                    col[j]++;
+                }
+            }
+        }
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if (grid[i][j]&& row[i]==1 && col[j]==1){
+                    cnt--;
+                }
+            }
+        }
+        return cnt;
+    }
+};
+
+=============================================
+
+https://leetcode.com/problems/pizza-with-3n-slices/submissions/1802172602/
+
+class Solution {
+public:
+int n;
+int dp[505][200][2];
+int f(int idx, int left, int first, vector<int> &s) {
+    if(idx >= n) {
+        if(left) return INT_MIN;
+        return 0;
+    }
+    if(dp[idx][left][first] != -1) return dp[idx][left][first];
+    int ans = f(idx + 1, left, first, s);
+    if(left && !(idx == n - 1 && first)) {
+        ans = max(ans, s[idx] + f(idx + 2, left - 1, idx ? first : 1, s));
+    }
+    return dp[idx][left][first] = ans;
+}
+    int maxSizeSlices(vector<int>& slices) {
+        n = slices.size();
+        memset(dp, -1, sizeof(dp));
+        return f(0, n / 3, 0, slices);
+    }
+};
+
+
+================================
+
+https://leetcode.com/problems/accounts-merge/submissions/1802173805/
+
+class DisjointSet {
+    vector<int> parent, rank;
+public:
+    DisjointSet(int n) {
+        rank.resize(n, 0);
+        parent.resize(n);
+        for(int i = 0; i < n; ++i) parent[i] = i;
+    }
+    int findPar(int node) {
+        if(node == parent[node]) return node;
+        return parent[node] = findPar(parent[node]);
+    }
+    void unionByRank(int u, int v) {
+        int ulp_u = findPar(u);
+        int ulp_v = findPar(v);
+        if(ulp_u == ulp_v) return;
+        if(rank[ulp_u] < rank[ulp_v]) parent[ulp_u] = ulp_v;
+        else if(rank[ulp_v] < rank[ulp_u]) parent[ulp_v] = ulp_u;
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        unordered_map<string,int>um;
+        int n=accounts.size();
+        DisjointSet ds(n);
+        for(int i=0;i<n;i++){
+            int m = accounts[i].size();
+            for(int j=1;j<m;j++){
+                string ref = accounts[i][j];
+                if(um.find(ref)!=um.end()){
+                    ds.unionByRank(i,um[ref]);
+                }
+                else um[ref]=i;
+            }           
+        }
+        vector<vector<string>>vs(n);
+        for(auto it:um){
+            int parent = ds.findPar(it.second);
+            vs[parent].push_back(it.first);
+        }
+        vector<vector<string>>ans;
+        for(int i=0;i<n;i++){
+            if(vs[i].size()>0){
+                vector<string>temp;
+                temp.push_back(accounts[i][0]);
+                sort(vs[i].begin(),vs[i].end());
+                for(auto x:vs[i]) temp.push_back(x);
+                ans.push_back(temp);
+            }
+        }
+        return ans;
+    }
+};
+
+===========================================
+
+
+https://leetcode.com/problems/find-a-safe-walk-through-a-grid/submissions/
+
+
+class Solution {
+public:
+    bool findSafeWalk(vector<vector<int>>& grid, int health) {
+        int n=grid.size();
+        int m=grid[0].size();
+        priority_queue<pair<pair<int, int>, int>, vector<pair<pair<int, int>, int>>, greater<pair<pair<int, int>, int>>> pq;
+        vector<vector<int>> cost(n, vector<int>(m, INT_MAX));
+        pq.push({{0, 0}, grid[0][0]});
+        int dr[] = {0, 0, 1, -1};
+        int dc[] = {1, -1, 0, 0};
+        cost[0][0]=grid[0][0];
+        while(!pq.empty()){
+            int r=pq.top().first.first;
+            int c=pq.top().first.second;
+            int h=pq.top().second;
+            pq.pop();
+            if(r == n-1 && c == m-1){
+                for(int i=0; i<n; i++){
+                    for(int j=0; j<m; j++){
+                        cout<< cost[i][j] << " ";
+                    }
+                    cout<<endl;
+                }
+                if(cost[n-1][m-1] < health){
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+            for(int d=0; d<4; d++){
+                int nr = r + dr[d];
+                int nc = c + dc[d];
+                if(nr>=0 && nr<n &&nc>=0 &&nc<m){
+                    if(grid[nr][nc]+h < cost[nr][nc]){
+                        cost[nr][nc] = grid[nr][nc]+h;
+                        pq.push({{nr,nc}, cost[nr][nc]});
+                    }
+                }
+            }
+        }
+        return false;
+    }
+};
+
+==================================
+
+https://leetcode.com/problems/possible-bipartition/submissions/1803075519/
+
+class Solution {
+    bool dfs(int node, int col, vector<int> &color, vector<vector<int>>& graph){
+        color[node] = col;
+        for(auto it : graph[node]){
+            if(color[it] == -1){
+                if(dfs(it, !col, color, graph) == false) return false;
+            } else if(color[it] == col) {
+                return false;
+            }
+        }
+        return true;
+    }
+public:
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        vector<vector<int>> graph(n+1);
+        for(auto e:dislikes){
+            graph[e[0]].push_back(e[1]);
+            graph[e[1]].push_back(e[0]);
+        }
+        vector<int> color(n+1, -1);
+        for(int i=1; i<=n; i++){
+            if(color[i] == -1){
+                if(dfs(i, 0, color, graph) == false) return false;
+            }
+        }
+        return true;
+    }
+};
+
+
+========================================
+
+https://leetcode.com/problems/pacific-atlantic-water-flow/submissions/1714449354/
+
+class Solution {
+    int n, m;
+    vector<vector<int>> directions{{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    void bfs(const vector<vector<int>>& heights, vector<vector<bool>>& visited, queue<pair<int,int>>& q) {
+        while (!q.empty()) {
+            auto [r, c] = q.front();
+            q.pop();
+            for (auto& dir : directions) {
+                int nr = r + dir[0], nc = c + dir[1];
+                if (nr < 0 || nr >= n || nc < 0 || nc >= m || visited[nr][nc] || heights[nr][nc] < heights[r][c]) continue;
+                visited[nr][nc] = true;
+                q.push({nr, nc});
+            }
+        }
+    }
+    
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        if (heights.empty() || heights[0].empty()) return {};
+        n = heights.size();
+        m = heights[0].size();
+        
+        vector<vector<bool>> pacific(n, vector<bool>(m, false));
+        vector<vector<bool>> atlantic(n, vector<bool>(m, false));
+        
+        queue<pair<int,int>> pacificQ, atlanticQ;
+
+        for (int r = 0; r < n; r++) {
+            pacific[r][0] = true;
+            pacificQ.push({r, 0});
+            atlantic[r][m-1] = true;
+            atlanticQ.push({r, m-1});
+        }
+        for (int c = 0; c < m; c++) {
+            pacific[0][c] = true;
+            pacificQ.push({0, c});
+            atlantic[n-1][c] = true;
+            atlanticQ.push({n-1, c});
+        }
+        
+        bfs(heights, pacific, pacificQ);
+        bfs(heights, atlantic, atlanticQ);
+        
+        vector<vector<int>> result;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (pacific[r][c] && atlantic[r][c]) {
+                    result.push_back({r, c});
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+===========================================
+
+https://leetcode.com/problems/minimum-cost-of-a-path-with-special-roads/submissions/1803129795/
+
+class Solution {
+public:
+    
+    int minimumCost(vector<int>& start, vector<int>& target, vector<vector<int>>& specialRoads) {
+        
+        const int INF = 1e9+10;
+        int n = specialRoads.size();
+
+        vector<int> d(n, INF);
+
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        for (int i = 0; i < n; i++) {
+            d[i] = abs(start[0] - specialRoads[i][0]) + abs(start[1] - specialRoads[i][1]) + specialRoads[i][4];
+            pq.push({d[i], i});
+        }
+
+        int ans = abs(start[0] - target[0]) + abs(start[1] - target[1]);
+
+        while (pq.size()) {
+            auto [d_c, c] = pq.top(); pq.pop();
+            if (d_c != d[c]) continue;
+
+            ans = min(ans, d_c + abs(target[0] - specialRoads[c][2]) + abs(target[1] - specialRoads[c][3]));
+
+            for (int nxt = 0; nxt < n; nxt++) {
+                int w = abs(specialRoads[c][2] - specialRoads[nxt][0]) + abs(specialRoads[c][3] - specialRoads[nxt][1]) + specialRoads[nxt][4];
+                if (d_c + w < d[nxt]) {
+                    d[nxt] = d_c + w;
+                    pq.push({d[nxt], nxt});
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+
+
+================================================
+
+
+https://leetcode.com/problems/couples-holding-hands/submissions/1803226383/
+
+class DisjointSet {
+public:
+    vector<int> parent, size;
+    DisjointSet(int n) {
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row) {
+        int n = row.size();
+        DisjointSet ds(n);
+
+        int swaps = 0;
+        for (int i = 0; i < n; i += 2) {
+            ds.unionBySize(i, i+1);
+        }
+        for(int i=0; i<n; i+=2){
+            int left=ds.findUPar(row[i]);
+            int right=ds.findUPar(row[i+1]);
+            if(left != right){
+                swaps++;
+                ds.unionBySize(left, right);
+            }
+        }
+        return swaps;
+    }
+};
+
+
+====================================
+
+https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/submissions/1803273143/
+
+class Solution {
+public:
+    int nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {
+        int n=maze.size();
+        int m=maze[0].size();
+        queue<pair<int, int>> q;
+        q.push({entrance[0], entrance[1]});
+        int dr[] = {0, 0, 1, -1};
+        int dc[] = {1, -1, 0, 0};
+        maze[entrance[0]][entrance[1]] = '+';
+        int steps=1;
+        while(!q.empty()){
+            int k=q.size();
+            while(k--){
+                int r=q.front().first;
+                int c=q.front().second;
+                q.pop();
+                for(int d=0; d<4; d++){
+                    int nr = r + dr[d];
+                    int nc = c + dc[d];
+                    if(nr>=0 && nr<n && nc>=0 && nc<m && maze[nr][nc] == '.'){
+                        q.push({nr, nc});
+                        maze[nr][nc] = '+';
+                        if((nr == 0 || nr == n-1 || nc == 0 || nc == m-1)){
+                            return steps;
+                        }
+                    }
+                }
+            }
+            steps++;
+        }
+        return -1;
+    }
+};
+
+================================================
 
