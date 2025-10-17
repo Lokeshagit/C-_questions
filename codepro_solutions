@@ -615,6 +615,104 @@ Input:
 Output:
 18
 
+--------------------------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define MAX_RC 100
+const int INF = 1e9;
+
+int R, C;
+char grid[MAX_RC][MAX_RC + 1];
+int dr[] = {-1, 1, 0, 0};
+int dc[] = {0, 0, -1, 1};
+
+void Input_Data() {
+    cin >> R >> C;
+    for (int r = 0; r < R; r++) {
+        cin >> grid[r];
+    }
+}
+
+vector<vector<int>> bfs(pair<int, int> src) {
+    vector<vector<int>> dist(R, vector<int>(C, -1));
+    queue<pair<int, int>> q;
+    q.push(src);
+    dist[src.first][src.second] = 0;
+
+    while (!q.empty()) {
+        auto [r, c] = q.front();
+        q.pop();
+        for (int d = 0; d < 4; d++) {
+            int nr = r + dr[d], nc = c + dc[d];
+            if (nr < 0 || nc < 0 || nr >= R || nc >= C) continue;
+            if (grid[nr][nc] == '*') continue;
+            if (dist[nr][nc] == -1) {
+                dist[nr][nc] = dist[r][c] + 1;
+                q.push({nr, nc});
+            }
+        }
+    }
+    return dist;
+}
+
+int findTSP(vector<vector<int>>& dist) {
+    int n = dist.size();
+    vector<int> cities;
+    for (int i = 1; i < n; i++) cities.push_back(i);
+
+    int ans = INF;
+
+    do {
+        int cost = 0;
+        int k = 0; // start from node 0
+        bool valid = true;
+        for (int i = 0; i < cities.size(); i++) {
+            cost += dist[k][cities[i]];
+            k = cities[i];
+        }
+        cost += dist[k][0];
+        ans = min(ans, cost);
+    } while (next_permutation(cities.begin(), cities.end()));
+
+    return ans;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    Input_Data();
+
+    vector<pair<int, int>> points;
+
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            char ch = grid[i][j];
+            if (ch == 'S' || (ch >= '1' && ch <= '9')) {
+                points.push_back({i, j});
+            }
+        }
+    }
+
+    int n = points.size();
+    vector<vector<int>> distMatrix(n, vector<int>(n, 0));
+
+    for (int i = 0; i < n; i++) {
+        auto dmap = bfs(points[i]);
+        for (int j = 0; j < n; j++) {
+            distMatrix[i][j] = dmap[points[j].first][points[j].second];
+        }
+    }
+
+    int sol = findTSP(distMatrix);
+    cout << sol << '\n';
+
+    return 0;
+}
+
+
 
 =================================
 
