@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define MAXN 11
+ 
+int N, M;
+
+struct cats {
+    int x, y;
+}odds[(MAXN*(MAXN-1))/2];
+
+
+bool isSafe(vector<int>& adj, vector<int>& tower, int t) {
+    for (auto& v : adj)
+        if (tower[v] != -1 and tower[v] == t)
+            return false;
+    return true;
+}
+ 
+bool placeCats(vector<vector<int>>& adj, vector<int>& tower, int m, int node) {
+    if (node == N)
+        return true;
+     
+    for (int t = 0; t < m; t++) {
+        if (isSafe(adj[node], tower, t)){
+			tower[node] = t;
+			if (placeCats(adj, tower, m, node+1)) return true;
+			tower[node] = -1;
+		}
+	}
+    return false;
+}
+
+bool safelyDistributed(int m, vector<vector<int>>& adj) {
+    vector<int> tower(N, -1);
+    return placeCats(adj, tower, m, 0);
+}
+
+int solve() {
+    vector<vector<int>> adj(N);
+    for (int i = 0; i < M; i++) {
+        adj[odds[i].x].push_back(odds[i].y);
+        adj[odds[i].y].push_back(odds[i].x);
+    }
+     
+    int l = 1, r = N;
+    int ans = -1;
+    while (l <= r) {
+        auto m = (l+r)/2;
+        if (safelyDistributed(m, adj)) {
+            ans = m;
+            r = m-1;
+        }
+        else
+            l = m+1;
+    }
+    return ans;
+}
+
+
+void InputData() {
+    cin >> N >> M;
+    for (int i = 0; i < M; i++) {
+        cin >> odds[i].x >> odds[i].y;
+    }
+}
+ 
+int main()
+{
+    InputData();
+     
+    int ans = -1;
+	
+	ans = solve();
+     
+    cout << ans;
+ 
+    return 0;
+}
