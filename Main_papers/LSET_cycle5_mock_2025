@@ -1,0 +1,364 @@
+Question1: Dynamic range query processor:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> processRangeQueries(int n, int k, vector<int>& num) {
+    vector<int> ans;
+    for(int i=0; i<=n-k; i++){
+        int maxi=0;
+        for(int j=i; j<i+k; j++){
+            maxi = max(maxi, num[j]);
+        }
+        ans.push_back(maxi);
+    }
+    return ans;
+}
+
+int main() {
+
+    int n, k;
+    cin >> n >> k;
+
+    vector<int> num(n);
+    for (int i = 0; i < n; ++i)
+        cin >> num[i];
+
+    vector<int> res = processRangeQueries(n, k, num);
+    for(auto x:res){
+        cout << x << " ";
+    }
+    cout << endl;
+    return 0;
+}
+
+Input:
+8 3
+4 3 7 1 8 2 9 6
+
+Output:
+7 7 8 8 9 9
+
+===============================
+
+Question2 : Special nodes path:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void computeDistances(int s, vector<vector<int>>& adj, vector<int>& dist) {
+    queue<int> q;
+    dist[s] = 0;
+    q.push(s);
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+
+        for (int neighbor : adj[node]) {
+            if (dist[neighbor] == -1) {
+                dist[neighbor] = dist[node] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+int find_dist(int n, vector<vector<int>>& adj, int k, vector<int>& special_nodes){
+    vector<int> dist1(n+1, -1), dist2(n+1, -1);
+    computeDistances(1, adj, dist1);
+    computeDistances(n, adj, dist2);
+    int min_val = INT_MAX;
+    for(int i=0; i<k-1; i++){
+        for(int j=i+1; j<k; j++){
+            int val1 = 1 + dist1[special_nodes[i]] + dist2[special_nodes[j]];
+            int val2 = 1 + dist2[special_nodes[i]] + dist1[special_nodes[j]];
+            min_val = min({min_val, val1, val2, dis1[n]});
+        }
+    }
+    return min_val;
+}
+
+int main() {
+    int n = 7;
+    vector<pair<int, int>> edges = {
+        {1, 2},
+        {1, 3},
+        {3, 4},
+        {2, 5},
+        {4, 6},
+        {4, 7}
+    };
+
+    vector<vector<int>> adj(n + 1);
+    for (auto [u, v] : edges) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    int k = 3;
+    vector<int> special_nodes = {6, 4, 3};
+    
+    int res = find_dist(n, adj, k, special_nodes);
+    cout << res << endl;
+
+    return 0;
+}
+
+
+===============================
+
+Question3: Gaming marathon:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int n, int m, int t, int k, vector<pair<int, int>>& B) {
+    int totalGames = 0;
+    vector<pair<int, int>> ranges;
+    vector<pair<int, int>> val;
+
+    for (int i = 0; i < n; ++i) {
+        int range = B[i].second - B[i].first;
+        int gameCount = range / t;
+        if (gameCount > 0) {
+            ranges.emplace_back(B[i].first, B[i].second);
+            val.emplace_back(B[i].second - gameCount * t, gameCount);
+            totalGames += gameCount;
+        }
+    }
+
+    if (totalGames == 0) return -1;
+
+    int daysNeeded = (m + totalGames - 1) / totalGames;
+    int remainingGames = m;
+    int result = INT_MAX;
+
+    if (daysNeeded == 1) {
+        int availableGames = totalGames;
+        for (int i = 0; i < ranges.size(); ++i) {
+            int start = val[i].first;
+            int end = ranges[i].second;
+            int localMin = INT_MAX;
+            int gamesLeft = availableGames;
+			if(totalGames <= val[i].second) return totalGames*t;
+
+            while (start < end && gamesLeft >= remainingGames) {
+                int count = remainingGames;
+                int first = start - val[i].first;
+
+                for (int j = i; j < val.size(); ++j) {
+                    if (count > val[j].second) {
+                        count -= val[j].second;
+                    } else {
+                        first += ranges[j].first + count * t;
+                        break;
+                    }
+                }
+
+                localMin = min(localMin, first - start);
+                start += t;
+                gamesLeft--;
+            }
+
+            availableGames -= val[i].second;
+            result = min(result, localMin);
+        }
+        return result;
+    }
+
+    int baseTime = max(0, (daysNeeded - 2) * k);
+    remainingGames -= (daysNeeded - 2) * totalGames;
+
+    int availableGames = totalGames;
+    for (int i = 0; i < ranges.size(); ++i) {
+        int start = val[i].first;
+        int end = ranges[i].second;
+        int localMin = INT_MAX;
+        int gamesLeft = availableGames;
+
+        while (start < end && gamesLeft + totalGames >= remainingGames) {
+            int first = k - start;
+            int count = remainingGames - gamesLeft;
+            int last = 0;
+
+            if (count > 0) {
+                for (int j = 0; j < val.size(); ++j) {
+                    if (count > val[j].second) {
+                        count -= val[j].second;
+                    } else {
+                        last += ranges[j].first + count * t;
+                        break;
+                    }
+                }
+            }
+
+            localMin = min(localMin, first + baseTime + last);
+            start += t;
+            gamesLeft--;
+        }
+
+        availableGames -= val[i].second;
+        result = min(result, localMin);
+    }
+
+    return result;
+}
+
+int main() {
+    int n, m, t, k;
+    cin >> n >> m >> t >> k;
+    vector<pair<int, int>> B(n);
+    for (int i = 0; i < n; ++i) cin >> B[i].first >> B[i].second;
+
+    int ans = solve(n, m, t, k, B);
+    cout << ans << endl;
+    return 0;
+}
+
+/*
+4 100 2 100
+20 32
+40 45
+56 68
+69 87
+
+Output: 416
+*/
+
+
+Input:
+2
+1 5 3 9
+3 7
+1 5 5 9
+3 7
+
+
+Output:
+38
+-1
+
+------------
+
+4 100 2 100
+20 32
+40 45
+56 68
+69 87
+
+416
+
+==========================
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int n, int m, int t, int k, vector<pair<int, int>>& B){
+    int cnt=0;
+    vector<pair<int, int>> ranges;
+    vector<pair<int, int>> val;
+    for(int i=0; i<n; i++){
+        int range = B[i].second - B[i].first;
+        if(range/t > 0) {
+            ranges.push_back({B[i].first, B[i].second});
+            cnt+= range/t;
+            val.push_back({B[i].second - (range/t)*t, range/t});
+        }
+    }
+    for(int i=0; i<val.size(); i++){
+        cout << "(" << ranges[i].first << ", " << ranges[i].second << ") : (" << val[i].first << ", " << val[i].second << ")" << endl;
+    }
+    if(cnt == 0) return -1;
+    int day_need = ceil((float)m/cnt);
+    cout << "day_need : " << day_need << endl;
+    int games = m;
+    int res=INT_MAX, sum=0;
+    if(day_need == 1){
+        int cnt2 = cnt;
+        for(int i=0; i<ranges.size(); i++){
+            int start = val[i].first;
+            int end = ranges[i].second;
+            cout << "start : " << start << ", end : " << end << endl;
+            int ans = INT_MAX;
+            int cnt1 = cnt2;
+			if(games <= val[i].second) return games*t;
+            while(start < end){
+                int count = games;
+                if(cnt1 < games) break;
+                int first = start - val[i].first;
+                for(int j=i; j<val.size(); j++){
+                    if((count - val[j].second) > 0){
+                        count -= val[j].second;
+                    } else {
+                        first += ranges[j].first + (count * t);
+                        cout << "first : " << first << endl;
+                        break;
+                    }
+                }
+                first -= start;
+                ans = min(ans, first);
+                cout << "start : " << start << " first : " << first << " ans : " << ans << endl;
+                start += t;
+                cnt1--;
+            }
+            //cout << endl;
+            cnt2 -= val[i].second;
+            res = min(res, ans);
+        }
+        return res;
+    }
+    if(day_need > 2){
+        sum += (day_need - 2) * k;
+        games -= (day_need - 2) * cnt;
+        cout << "day_need - 2 sum : " << sum << endl;
+    }
+    int cnt2 = cnt;
+    for(int i=0; i<ranges.size(); i++){
+        int start = val[i].first;
+        int end = ranges[i].second;
+        cout << "start : " << start << ", end : " << end << endl;
+        int ans = INT_MAX;
+        int cnt1 = cnt2;
+        int first=0;
+        while(start < end){
+            int count = games;
+            if(cnt1+cnt < games) break;
+            first = k-start;
+            count = games - cnt1;
+            int last = 0;
+            if(count > 0){
+                for(int j=0; j<val.size(); j++){
+                    if((count - val[j].second) > 0){
+                        count -= val[j].second;
+                    } else {
+                        last += ranges[j].first + (count * t);
+                        break;
+                    }
+                }
+            }
+                
+            ans = min(ans, first+sum+last);
+            cout << " first : last " << first << " : " << last << " ans : " << ans << endl;
+            start += t;
+            cnt1--;
+        }
+        //cout << endl;
+        cnt2 -= val[i].second;
+        res = min(res, ans);
+    }
+    
+    return res;
+}
+
+int main()
+{
+    int n, m, t, k;
+    cin >> n >> m >> t >> k;
+    vector<pair<int, int>> B(n);
+    for(int i=0; i<n; i++) cin >> B[i].first >> B[i].second;
+    
+    int ans = solve(n, m, t, k, B);
+    cout << ans << endl;
+    return 0;
+}
