@@ -1,0 +1,221 @@
+Question1 : minimum index:
+
+
+#include <iostream>
+#include <string>
+#include <unordered_set>
+
+using namespace std;
+
+int firstSpecialIndex(const string& s) {
+    unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u'};
+    int n = (int)s.size();
+
+    int maxVowelLen = 0, maxConsLen = 0;
+
+    for (int i = 0; i < n; ++i) {
+        char ch = s[i];
+
+        if (ch == '?') {
+            maxVowelLen = maxVowelLen + 1;
+            maxConsLen = maxConsLen + 1;
+        } 
+        else if (vowels.count(ch)) {
+            maxVowelLen = maxVowelLen + 1;
+            maxConsLen = 0;
+        } 
+        else {
+            maxConsLen = maxConsLen + 1;
+            maxVowelLen = 0;
+        }
+
+        if (maxVowelLen >= 5) {
+            return i - 5 + 1;
+        }
+        if (maxConsLen >= 6) {
+            return i - 6 + 1;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    string s;
+    cin >> s;
+    cout << firstSpecialIndex(s) << "\n";
+    return 0;
+}
+
+
+=============================================
+
+Question2 : minimum amount:
+
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <climits>
+
+using namespace std;
+
+int minSum(vector<int>& arr) {
+    stack<int> st;
+    int res = 0;
+
+    for (int num : arr) {
+        while (!st.empty() && st.top() <= num) {
+            int mid = st.top();
+            st.pop();
+            if (st.empty()) {
+                res += num;
+            } else {
+                res += min(st.top(), num);
+            }
+        }
+        st.push(num);
+    }
+
+    while (st.size() > 1) {
+        int top = st.top();
+        st.pop();
+        res += st.top();
+    }
+
+    return res;
+}
+
+int main() {
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int& x : arr) cin >> x;
+
+    cout << minSum(arr) << "\n";
+    return 0;
+}
+
+-----------------------------
+
+
+int minSum(vector<int>& arr) {
+	int res=0;
+    for (int i=0; i<arr.size()-1; i++) {
+		res += max(arr[i], arr[i+1]);
+	}
+
+    return res;
+}
+
+example.:
+3
+
+33 30 32
+
+output: 65
+ 
+==============================================
+
+Question3 : maximum fishes:
+
+Given a sea which is distributed from (0.0)(left top) to (x,y) (bottom right) in 2D matrix.
+U will be given with n nets which are distributed in the sea.
+each net will be present at the (row, col) and it is having the height hi and width wi. 
+which from the 2D matrix from the starting point (row,col).
+some nets can be overlap and from mega net and if no nets overlap then it's considered as meg net itself.
+U will be given m number of fish.
+each fish present at the point (r, c).
+You have to return what is the maximum number of fishes are there in any mega net.
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Net {
+    int r, c, h, w;
+    int r2() const { return r + h - 1; } // bottom row
+    int c2() const { return c + w - 1; } // right col
+};
+
+bool overlap(const Net &a, const Net &b) {
+    if (a.r > b.r2() || b.r > a.r2()) return false;
+    if (a.c > b.c2() || b.c > a.c2()) return false;
+    return true;
+}
+
+struct DSU {
+    vector<int> parent, rank;
+    DSU(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i=0; i<n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a != b) {
+            if (rank[a] < rank[b]) swap(a, b);
+            parent[b] = a;
+            if (rank[a] == rank[b]) rank[a]++;
+        }
+    }
+};
+
+int maxFishesInMegaNet(int x, int y, vector<Net> &nets, vector<pair<int,int>> &fishes) {
+    int n = nets.size();
+
+    DSU dsu(n);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            if (overlap(nets[i], nets[j])) {
+                dsu.unite(i, j);
+            }
+        }
+    }
+
+    vector<int> fishCount(n, 0);
+
+    for (auto &[fr, fc] : fishes) {
+        for (int i = 0; i < n; i++) {
+            if (fr >= nets[i].r && fr <= nets[i].r2() && fc >= nets[i].c && fc <= nets[i].c2()) {
+                int root = dsu.find(i);
+                fishCount[root]++;
+                break;
+            }
+        }
+    }
+
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        if (dsu.find(i) == i) {
+            ans = max(ans, fishCount[i]);
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int x = 8, y = 8;
+
+    vector<Net> nets = {
+        {1, 1, 3, 2},
+        {2, 3, 2, 3},
+        {5, 1, 3, 2},
+        {6, 2, 2, 3},
+    };
+
+    vector<pair<int,int>> fishes = {
+        {1,2}, {2,2}, {2,4}, {3,3}, {4,4}, {5,2}, {6,3}, {6,4}, {7,7}, {8,1}
+    };
+
+    cout << maxFishesInMegaNet(x, y, nets, fishes) << "\n";
+    return 0;
+}
+
+================================================
