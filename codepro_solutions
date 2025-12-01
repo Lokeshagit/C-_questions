@@ -1,371 +1,4 @@
-Planet travel:-
-
-#include <iostream>
-#include <vector>
-#include <stack>
-using namespace std;
-
-int N; // Number of planets
-int W[100000 + 10]; // Mass of planets
-
-void InputData() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> N;
-    for (int i = 0; i < N; i++) {
-        cin >> W[i];
-    }
-}
-
-int main() {
-    InputData();
-
-    int ans = 0;
-    vector<int> wp;   // to store unique consecutive masses
-    vector<int> occ;  // to store occurrences of consecutive masses
-
-    for (int i = 0; i < N; i++) {
-        if (wp.empty() || W[i] != wp.back()) {
-            wp.push_back(W[i]);
-            occ.push_back(1);
-        } else {
-            occ.back()++;
-        }
-    }
-
-    for (int count : occ) {
-        ans += count - 1;
-    }
-
-    stack<int> st;
-    for (int val : wp) {
-        while (!st.empty() && st.top() < val) {
-            int last = st.top();
-            st.pop();
-            if (!st.empty() && last != st.top()) {
-                ans += 2;
-            } else {
-                ans += 1;
-            }
-        }
-        st.push(val);
-    }
-
-    ans += (int)st.size() - 1;
-
-    cout << ans << "\n";
-
-    return 0;
-}
-
-Input:
-6
-6 3 3 4 5 2
-
-
-Output:
-7
-
--------------------------------
-
-
-#include <bits/stdc++.h>
-using namespace std;
-
-int N; // 행성의 수 Number of planets
-int W[100000 + 10]; // 행성 질량 Mass of planets
-
-void InputData(void) {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		cin >> W[i];
-	}
-}
-
-int main(void) {
-	int ans = -1;
-
-	InputData(); // 입력 Input
-
-	// 코드를 작성하세요 Write from here
-	stack<int> st;
-	ans=N-1;
-	for(int i=0; i<N; i++){
-		while(!st.empty() && W[st.top()] < W[i]){
-			st.pop();
-		}
-		if(!st.empty()) {
-			ans+=i-st.top()>1? 1:0;
-			if(W[st.top()] == W[i] && i-st.top()>1) ans--;
-		}
-		st.push(i);
-	}
-	for(int i=N-1; i>=0; i--){
-		while(!st.empty() && W[st.top()] < W[i]){
-			st.pop();
-		}
-		if(!st.empty())
-			ans+=st.top()-i>1? 1:0;
-		st.push(i);
-	}
-	cout << ans << endl; // 출력 Output
-
-	return 0;
-}
-
-================================================
-
-Hopscotch(Code Understanding):-
-
-int dr[] = { -1, 1, 0, 0,-1, 1,-1,1};
-int dc[] = { 0, 0, -1, 1 ,-1,-1,1,1};
-
-void Touch(int r, int c) {
-	int V;
-
-	if (A[r][c] == 0) V = 1;
-	else V = 0; 
-	A[r][c] = V;
-	for (int k = 0; k < 8; k++) {
-		int nr = r;
-		int nc = c;
-		int flag = 0;
-
-		for (;;) {
-			nr = nr + dr[k];
-			nc = nc + dc[k];
-			if (nr < 0 || nr >= H || nc < 0 || nc >= W) break;
-			if (A[nr][nc] == V) {
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 1) {
-			nr = r;
-			nc = c;
-			for (;;) {
-				nr = nr + dr[k];
-				nc = nc + dc[k];
-				if(nr >= H || nr < 0 || nc >= W || nc < 0) break;
-				if(A[nr][nc]==2){
-					//found bomb
-					A[nr][nc]=V;
-					//find direction
-					int i = 1;
-					for(;;) {
-						int inr = i*dr[k] + r;
-						int inc = i*dc[k] + c;
-						if(inr<0 || inc<0 || inr >= H || inc >= W) break;
-						A[inr][inc] = V;
-						i++;
-					}
-					break;
-				}
-				if (A[nr][nc] == V) break;
-				A[nr][nc] = V;	
-			}
-		}
-	}
-	/*
-	for(int i=0;i<H;i++){
-	 	for(int j=0;j<W;j++)
-	 		cout << A[i][j] << " ";
-	 	cout << endl;
-	}*/
-	
-}
-
-
-==========================================
-
-Running :
-
-#include <bits/stdc++.h>
-using namespace std;
-
-int N;				// number of playersnumber of players
-long long T;		// time
-long long P[100000 + 10];		// player initial position
-long long S[100000 + 10];		// player speed
-int group_first[100000 + 10];	// leader of each group
-
-
-void InputData() {
-	cin >> N >> T;
-	for (int i = 0; i < N; i++) {
-		cin >> P[i] >> S[i];
-	}
-}
-
-struct Player{
-	long long p,s;
-	int id;
-	Player(long long p,long long s,int id){
-		this->p=p;
-		this->s=s;
-		this->id=id;
-	}
-};
-
-int main() {
-	InputData();// Input
-
-	// Write the code
-	vector<Player> players;
-	for (int i = 0; i < N; i++) {
-		players.emplace_back(P[i], S[i], i + 1);
-	}
-	
-	sort(players.begin(), players.end(), [](const Player &a, const Player &b) {
-		return a.p > b.p;
-	});
-	
-	Player leader = players[0];
-	int ans = 0;
-	for (int i = 1; i < N; i++) {
-		long long leader_pos = leader.p + leader.s * T;
-		long long curr_pos = players[i].p + players[i].s * T;
-		if (leader_pos > curr_pos) {
-			group_first[ans++] = leader.id;
-			leader = players[i];
-		}
-	}
-	group_first[ans++] = leader.id;
-	cout << ans << endl;
-	for (int i = 0; i < ans; i++) cout << group_first[i] << " ";
-	return 0;
-}
-
-
-Input:
-5 6
-0 2
-2 2
-6 1
-9 3
-12 2
-
-Output:
-2
-5 3 
-
-=================================
-
-Dividing an Area:-
-
-
-#include <bits/stdc++.h>
-using namespace std;
-
-int N;
-string Info;
-int sol = -1;
-
-void InputData(void) {
-	cin >> N;
-	cin >> Info;
-}
-
-string getEdge(int x, int y, int nx, int ny){
-	string s1 = to_string(x)+","+to_string(y);
-	string s2 = to_string(nx)+","+to_string(ny);
-	if(s1 > s2) swap(s1, s2);
-	return s1+"-"+s2;
-}
-
-int main(void) {
-	InputData();
-	
-	map<char, pair<int,int>> mpp;
-	mpp['0'] = {1, 0};
-	mpp['1'] = {-1, 0};
-	mpp['2'] = {0, 1};
-	mpp['3'] = {0, -1};
-	
-	set<string> point;
-	set<string> edge;
-	
-	int x=0, y=0;
-	point.insert(to_string(x)+","+to_string(y));
-	int sol=0;
-	for(int i=0; i<N; i++){
-		char ch = Info[i];
-		int dx = mpp[ch].first;
-		int dy = mpp[ch].second;
-		
-		int nx = x + dx;
-		int ny = y + dy;
-		
-		string curPoint = to_string(nx)+","+to_string(ny);
-		string curEdge = getEdge(x, y, nx, ny);
-		if(point.count(curPoint)){
-			if(!edge.count(curEdge)){
-				sol++;
-			}
-		} else {
-			point.insert(curPoint);
-		}
-		if(!edge.count(curEdge)){
-			edge.insert(curEdge);
-		}
-		x=nx;
-		y=ny;
- 	}
-	
-	cout << sol << "\n";
-	return 0;
-}
-
------------------
-
-#include <bits/stdc++.h>
-using namespace std;
- 
-int dx[4]={1,-1,0,0};
-int dy[4]={0,0,-1,1};
- 
-int main() {
-
-	int N;
-	string Info;
-	cin >> N >> Info;
-	set<pair<pair<int, int>, pair<int, int>>> visitedEdges;
-	set<pair<int, int>> visitedPositions;
-	int x = 0, y = 0;
-	visitedPositions.insert({x, y});
-	int loops = 0;
- 
-	for (int i = 0; i < N; ++i) {
-		int dir = Info[i] - '0';
-		int nx = x + dx[dir];
-		int ny = y + dy[dir];
-		pair<int, int> from = {x, y};
-		pair<int, int> to = {nx, ny};
-		if (visitedPositions.count(to) && visitedEdges.count({from, to}) == 0) {
-			loops++;
-		}
- 
-		visitedEdges.insert({from, to});
-		visitedEdges.insert({to, from});
-		visitedPositions.insert(to);
-		x = nx;
-		y = ny;
-	}
- 
-	cout << loops << "\n";
-	return 0;
-}
-
-Input:
-14
-33302111220000
-
-Output:
-2
-
-============================================
-
-Product Display:-
+Question1: Product Display:
 
 #include <iostream>
 using namespace std;
@@ -427,63 +60,31 @@ Input:
 Output:
 2
 
-=========================================
+===============================
 
-Balancing(Code Understanding):
+Question2: Balancing
 
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-
-int N;
-vector<vector<int>> Box;
-
-void InputData() {
-    cin >> N;
-    Box.assign(N, vector<int>(N));
-    for (int i = 0; i < N; ++i){
-        for (int j = 0; j < N; ++j){
-            cin >> Box[i][j];
-        }
-    }
+int main(){
+	int n; cin>>n; 
+	vector<vector<int>>v(n,vector<int>(n,0));
+	vector<int>row(n,0),col(n,0);
+	int total =0;
+	for(int i=0; i<n; i++){
+		for(int j=0; j<n; j++){
+			cin>>v[i][j];
+			total += v[i][j];
+			row[i]+=v[i][j];
+			col[j]+=v[i][j];
+		}
+	}
+	int maxi=max(*max_element(row.begin(),row.end()),*max_element(col.begin(),col.end()));
+	int ans=0;
+	ans = (maxi*n) - total;
+	cout<<ans<<endl;
 }
 
-int main() {
-    InputData();  // Input
-
-    int ans = 0;
-    int maxElement = 0;
-    int rowMax = 0;
-    int colMax = 0;
-    vector<int> rowSums;
-
-    // Row sum
-    for (int i = 0; i < N; ++i){
-        int rowSum = 0;
-        for (int j = 0; j < N; ++j){
-            rowSum += Box[i][j];
-        }
-        rowSums.push_back(rowSum);
-        rowMax = max(rowMax, rowSum);
-    }
-
-    // Column sum
-    for (int j = 0; j < N; ++j){
-        int colSum = 0;
-        for (int i = 0; i < N; ++i){
-            colSum += Box[i][j];
-        }
-        colMax = max(colMax, colSum);
-    }
-
-    maxElement = max(rowMax, colMax);
-
-    for (int i = 0; i < N; ++i){
-        ans += (maxElement - rowSums[i]);
-    }
-
-    cout << ans << endl;  // Output
-    return 0;
-}
 
 Input:
 3
@@ -495,58 +96,69 @@ Input:
 Output:
 6
 
+===============================
 
-==========================================
-
-
-Setting the Exploration Route(TSP):
+Question3: Setting the Exploration Route
 
 #include <bits/stdc++.h>
 using namespace std;
-
-constexpr int INF = 1000000;
-
-struct Point {
-    int x, y;
-    Point(int _x=0, int _y=0) : x(_x), y(_y) {}
-};
-
+#define MAX_RC 100
 int R, C;
-vector<string> grid;
+char grid[MAX_RC][MAX_RC+1];
 
-vector<vector<int>> bfs(const vector<string> &grid, const Point &start) {
-    int rows = (int)grid.size();
-    int cols = (int)grid[0].size();
-    vector<vector<int>> dist(rows, vector<int>(cols, INF));
-    queue<Point> q;
-    dist[start.x][start.y] = 0;
+vector<vector<int>> bfs(pair<int, int> start){
+    vector<vector<int>> dist(R, vector<int>(C, INT_MAX));
+    queue<pair<int, int>> q;
+    dist[start.first][start.second] = 0;
     q.push(start);
-	int dr[] = { -1, 1, 0, 0};
-	int dc[] = { 0, 0, -1, 1};
-    while (!q.empty()) {
-        Point cur = q.front(); q.pop();
-        for (int i=0; i<4; i++) {
-            int nx = cur.x + dr[i], ny = cur.y + dc[i];
-            if (nx >= 0 && ny >= 0 && nx < rows && ny < cols
-                && grid[nx][ny] != '*' && dist[nx][ny] == INF) {
-                dist[nx][ny] = dist[cur.x][cur.y] + 1;
-                q.push(Point(nx, ny));
-            }
+    int dr[] = {0, 0, 1, -1};
+    int dc[] = {1, -1, 0, 0};
+    while(!q.empty()){
+        int r=q.front().first;
+        int c=q.front().second;
+        q.pop();
+        for(int d=0; d<4; d++){
+            int nr = r + dr[d];
+            int nc = c + dc[d];
+            if(nr<0 || nr>=R || nc<0 || nc>=C || grid[nr][nc] == '*' || dist[nr][nc] != INT_MAX) continue;
+            dist[nr][nc] = dist[r][c]+1;
+            q.push({nr, nc});
         }
     }
     return dist;
 }
 
-int solveTSP(const vector<vector<int>> &dist) {
-    int n = (int)dist.size();
+--------------------------------
+
+int findTSP(vector<vector<int>>& dist, int n){
+    int distance=INT_MAX;
+    vector<int> point;
+    for(int i=1; i<n; i++) point.push_back(i);
+    do{
+        int k=0;
+        int d=0;
+        for(int i=0; i<n-1;i++){
+            d += dist[k][point[i]];
+            k=point[i];
+        }
+        d += dist[k][0];
+        distance = min(distance, d);
+    } while(next_permutation(point.begin(), point.end()));
+    
+    return distance;
+}
+
+------------------------------------
+
+int findTSP(const vector<vector<int>> &dist, int n) {
     int maxMask = 1 << n;
-    vector<vector<int>> dp(maxMask, vector<int>(n, INF));
+    vector<vector<int>> dp(maxMask, vector<int>(n, INT_MAX));
     dp[1][0] = 0;
 
-    for (int mask = 1; mask < maxMask; mask++) {
+    for (int mask = 0; mask < maxMask; mask++) {
         for (int j = 0; j < n; j++) {
             if ((mask & (1 << j)) == 0) continue;
-            if (dp[mask][j] == INF) continue;
+            if (dp[mask][j] == INT_MAX) continue;
             for (int k = 0; k < n; k++) {
                 if ((mask & (1 << k)) != 0) continue;
                 int nextMask = mask | (1 << k);
@@ -555,55 +167,51 @@ int solveTSP(const vector<vector<int>> &dist) {
         }
     }
 
-    int res = INF;
+    int res = INT_MAX;
     for (int i = 0; i < n; i++) {
         res = min(res, dp[maxMask - 1][i] + dist[i][0]);
     }
     return res;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+---------------------------------------------------
 
+int main()
+{
     cin >> R >> C;
-    grid.resize(R);
-    for (int i = 0; i < R; i++) {
-        cin >> grid[i];
-    }
-
-    // Find nodes 'S' and digits '0'..'9'
-    unordered_map<char, Point> nodeMap;
-    for (int i = 0; i < R; i++) {
-        for (int j = 0; j < C; j++) {
-            char c = grid[i][j];
-            if (c == 'S' || (c >= '0' && c <= '9')) {
-                nodeMap[c] = Point(i, j);
+    unordered_map<char, pair<int, int>> digit_map;
+    for(int i=0; i<R; i++){
+        for(int j=0; j<C; j++){
+            char ch;
+            cin >> ch;
+            grid[i][j] = ch;
+            if(ch == 'S' || (ch >= '0' && ch <= '9')){
+                digit_map[ch] = {i, j};
             }
         }
     }
-
-    int size = (int)nodeMap.size();
-    vector<Point> ordered(size);
-    ordered[0] = nodeMap['S'];
-    for (int i = 1; i < size; i++) {
-        ordered[i] = nodeMap[(char)('0' + i)];
+    int n=digit_map.size();
+    vector<pair<int, int>> order(n);
+    order[0] = digit_map['S'];
+    for(int i=1; i<n; i++){
+        order[i] = digit_map[char('0'+ i)];
     }
-
-    vector<vector<int>> dist(size, vector<int>(size, INF));
-    for (int i = 0; i < size; i++) {
-        auto d = bfs(grid, ordered[i]);
-        for (int j = 0; j < size; j++) {
-            dist[i][j] = d[ordered[j].x][ordered[j].y];
+    
+    vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
+    for(int i=0; i<n; i++){
+        auto d = bfs(order[i]);
+        for(int j=0; j<n; j++){
+            dist[i][j] = d[order[j].first][order[j].second];
         }
     }
-
-    int ans = solveTSP(dist);
-    cout << ans << "\n";
-
+    
+    int ans = findTSP(dist, n);
+    
+    cout << ans << endl;
     return 0;
 }
 
+--------------
 Input:
 5 5
 .S*..
@@ -613,314 +221,460 @@ Input:
 ...3.
 
 Output:
+0 4 5 6 
+4 0 5 4 
+5 5 0 5 
+6 4 5 0 
 18
 
---------------------------------------------
+============================
+
+Question4: Rental robot vacuum cleaner fee calculation
+
+#include <iostream>
+using namespace std;
+
+char start_time[10];
+char end_time[10];
+
+void InputData(void)
+{
+	cin >> start_time;
+	cin >> end_time;
+}
+
+int ConvertInt(char * t)
+{
+	return (t[0] - '0') * 10 + (t[1] - '0');
+}
+
+int ComputeTime(void)
+{
+	int s = ConvertInt(start_time) * 60 + ConvertInt(start_time + 3);
+	int e = ConvertInt(end_time) * 60 + ConvertInt(end_time + 3);
+	if(e<s) e += 24*60;
+
+	return (e - s);
+}
+
+int Solve(void)
+{
+	int p;
+	int t = ComputeTime();
+	if (t < 30) return 500;
+	t -= 30;
+	p = 500 + ((t+9)/10) * 300;
+	
+	if(p>30000) return 30000;
+
+	return p;
+}
+
+void OutputData(int sol)
+{
+	cout << sol;
+}
+
+int main(void)
+{
+	int sol = -1;
+	InputData();// 입력
+
+	sol = Solve();
+
+	OutputData(sol);// 출력
+
+	return 0;
+}
+
+Input: 
+07:00
+08:00
+
+Output:
+1400
+
+
+==================================
+
+Question5: Creation of a Park
+
+#include <bits/stdc++.h>
+using namespace std;
+int N;
+vector<string> grid;
+
+int dfs(int r, int c, char ch){
+	int cnt=1;
+	int dr[] = {0, 0, 1, -1};
+	int dc[] = {1, -1, 0, 0};
+	for(int d=0; d<4; d++){
+		int nr = r + dr[d];
+		int nc = c + dc[d];
+		if(nr<0 || nr>=N || nc<0 || nc>=N || grid[nr][nc] != ch) continue;
+		grid[nr][nc] = 'A';
+		cnt += dfs(nr, nc, ch);
+	}
+	return cnt;
+}
+
+int main(){
+	cin >> N;
+	grid.resize(N);
+	for(int i=0; i<N; i++) cin >> grid[i];
+	
+	int rz=0, rc=0, gz=0, gc=0, bz=0, bc=0;
+	
+	for(int i=0; i<N; i++){
+		for(int j=0; j<N; j++){
+			if(grid[i][j] == 'R'){
+				rz++;
+				rc += dfs(i, j, 'R');
+			} else if(grid[i][j] == 'G'){
+				gz++;
+				gc += dfs(i, j, 'G');
+			} else if(grid[i][j] == 'B'){
+				bz++;
+				bc += dfs(i, j, 'B');
+			}
+		}
+	}
+	priority_queue<pair<pair<int,int>,char>> pq;
+	pq.push({{rz,rc},'R'});
+	pq.push({{gz,gc},'G'});
+	pq.push({{bz,bc},'B'});
+	auto result = pq.top();
+	char ans = result.second;
+	int areacnt = result.first.first;
+ 
+	cout << ans << " " << areacnt << "\n";
+	return 0;
+}
+
+Input:
+5
+RRRBB
+GGBBB
+BBGRR
+BBGGR
+BRRRR
+
+
+Output:
+R 2
+
+===================================
+
+Question6: Plannet Travel
 
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX_RC 100
-const int INF = 1e9;
+int N;
+int W[100000 + 10];
 
-int R, C;
-char grid[MAX_RC][MAX_RC + 1];
-int dr[] = {-1, 1, 0, 0};
-int dc[] = {0, 0, -1, 1};
-
-void Input_Data() {
-    cin >> R >> C;
-    for (int r = 0; r < R; r++) {
-        cin >> grid[r];
-    }
+void InputData(void) {
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		cin >> W[i];
+	}
 }
 
-vector<vector<int>> bfs(pair<int, int> src) {
-    vector<vector<int>> dist(R, vector<int>(C, -1));
-    queue<pair<int, int>> q;
-    q.push(src);
-    dist[src.first][src.second] = 0;
+int main(void) {
+	int ans = -1;
 
-    while (!q.empty()) {
-        auto [r, c] = q.front();
-        q.pop();
-        for (int d = 0; d < 4; d++) {
-            int nr = r + dr[d], nc = c + dc[d];
-            if (nr < 0 || nc < 0 || nr >= R || nc >= C) continue;
-            if (grid[nr][nc] == '*') continue;
-            if (dist[nr][nc] == -1) {
-                dist[nr][nc] = dist[r][c] + 1;
-                q.push({nr, nc});
-            }
-        }
-    }
-    return dist;
+	InputData();
+	
+	stack<int> st;
+	ans=N-1;
+	for(int i=0; i<N; i++){
+		while(!st.empty() && W[st.top()] < W[i]){
+			st.pop();
+		}
+		if(!st.empty()) {
+			ans+=i-st.top()>1? 1:0;
+			if(W[st.top()] == W[i] && i-st.top()>1) ans--;
+		}
+		st.push(i);
+	}
+	for(int i=N-1; i>=0; i--){
+		while(!st.empty() && W[st.top()] < W[i]){
+			st.pop();
+		}
+		if(!st.empty())
+			ans+=st.top()-i>1? 1:0;
+		st.push(i);
+	}
+	cout << ans << endl;
+
+	return 0;
 }
 
-int findTSP(vector<vector<int>>& dist) {
-    int n = dist.size();
-    vector<int> cities;
-    for (int i = 1; i < n; i++) cities.push_back(i);
+Input: 
+6
+6 3 3 4 5 2
 
-    int ans = INF;
 
-    do {
-        int cost = 0;
-        int k = 0; // start from node 0
-        bool valid = true;
-        for (int i = 0; i < cities.size(); i++) {
-            cost += dist[k][cities[i]];
-            k = cities[i];
-        }
-        cost += dist[k][0];
-        ans = min(ans, cost);
-    } while (next_permutation(cities.begin(), cities.end()));
-
-    return ans;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    Input_Data();
-
-    vector<pair<int, int>> points;
-
-    for (int i = 0; i < R; i++) {
-        for (int j = 0; j < C; j++) {
-            char ch = grid[i][j];
-            if (ch == 'S' || (ch >= '1' && ch <= '9')) {
-                points.push_back({i, j});
-            }
-        }
-    }
-
-    int n = points.size();
-    vector<vector<int>> distMatrix(n, vector<int>(n, 0));
-
-    for (int i = 0; i < n; i++) {
-        auto dmap = bfs(points[i]);
-        for (int j = 0; j < n; j++) {
-            distMatrix[i][j] = dmap[points[j].first][points[j].second];
-        }
-    }
-
-    int sol = findTSP(distMatrix);
-    cout << sol << '\n';
-
-    return 0;
-}
-
+Output:
+7
 
 
 =================================
 
-Math Gallary:
+Question7: Hopscotch:
+
+int dr[8] = { -1, 1, 0, 0, 1, 1, -1, -1 };
+int dc[8] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+
+void Touch(int r, int c) {
+	int V;
+
+	if (A[r][c] == 0) V = 1;
+	else V = 0;
+	A[r][c] = V;
+
+	for (int k = 0; k < 8; k++) {
+		int nr = r;
+		int nc = c;
+		int flag = 0;
+
+		for (;;) {
+			nr = nr + dr[k];
+			nc = nc + dc[k];
+			if (nr < 0 || nr >= H || nc < 0 || nc >= W) break;
+			if (A[nr][nc] == V) {
+				flag = 1;
+				break;
+			}
+		}
+		int bomb=0;
+		if (flag == 1) {
+			nr = r;
+			nc = c;
+			for (;;) {
+				nr = nr + dr[k];
+				nc = nc + dc[k];
+				if (nr < 0 || nr >= H || nc < 0 || nc >= W) break;
+				if (A[nr][nc] == V && bomb == 0) {
+					break;
+				}
+				if(A[nr][nc] == 2) bomb = 1;
+				A[nr][nc] = V;
+			}
+		}
+	}
+}
+
+Input:
+5 6
+0 2 0 0 0 0
+0 0 1 1 0 1
+0 2 2 1 0 0
+1 2 1 1 0 0
+0 1 1 0 0 2
+2
+1 2
+1 1
+
+
+Output:
+14
+
+===================================
+
+Question8: Running:
 
 #include <bits/stdc++.h>
 using namespace std;
 
-int S, E1, E2;
-int ans1, ans2;
-unordered_map<int, vector<int>> edges;
-unordered_map<int, int> factors;
-vector<int> visit;
+int N;
+long long T;
+long long P[100000 + 10];
+long long S[100000 + 10];
+int group_first[100000 + 10];
 
-bool digitSatisfy(int a, int b) {
-    if (b < 1000 || b > 9999) return false;
-    int count = 0;
-    string sa = to_string(a);
-    string sb = to_string(b);
-    for (int i = 0; i < 4; i++) {
-        if (sa[i] == sb[i]) count++;
-    }
-    return count >= 3;
-}
 
-int findFactors(int x) {
-    int count = 0;
-    int root = (int) sqrt(x);
-    for (int i = 1; i <= root; i++) {
-        if (x % i == 0) {
-            if (i * i == x) count += 1;
-            else count += 2;
-        }
-    }
-    return count;
-}
-
-bool isValid(int a, int b) {
-    int absDiff = abs(a - b);
-    return (absDiff == 0) || (absDiff == 1);
-}
-
-int mathGalaxy(int s, int e) {
-    visit.assign(9000, -1);
-    queue<int> q;
-    q.push(s);
-    visit[s - 1000] = 0;
-
-    while (!q.empty()) {
-        int p = q.front(); q.pop();
-        for (int v : edges[p]) {
-            if (visit[v - 1000] == -1 && isValid(factors[p], factors[v])) {
-                visit[v - 1000] = visit[p - 1000] + 1;
-                if (v == e) {
-                    return visit[v - 1000];
-                }
-                q.push(v);
-            }
-        }
-    }
-    return -1;
-}
-
-void buildGraph() {
-    for (int i = 1000; i <= 9999; i++) {
-        edges[i] = vector<int>();
-        factors[i] = findFactors(i);
-    }
-    for (int i = 1000; i <= 9999; i++) {
-        for (int j = 1; j <= 9; j++) {
-            // Check +j*1000
-            if (digitSatisfy(i, i + j * 1000)) edges[i].push_back(i + j * 1000);
-            if (digitSatisfy(i, i + j * 100)) edges[i].push_back(i + j * 100);
-            if (digitSatisfy(i, i + j * 10)) edges[i].push_back(i + j * 10);
-            if (digitSatisfy(i, i + j * 1)) edges[i].push_back(i + j * 1);
-
-            // Check -j*1000
-            if (digitSatisfy(i, i - j * 1000)) edges[i].push_back(i - j * 1000);
-            if (digitSatisfy(i, i - j * 100)) edges[i].push_back(i - j * 100);
-            if (digitSatisfy(i, i - j * 10)) edges[i].push_back(i - j * 10);
-            if (digitSatisfy(i, i - j * 1)) edges[i].push_back(i - j * 1);
-        }
-    }
+void InputData() {
+	cin >> N >> T;
+	for (int i = 0; i < N; i++) {
+		cin >> P[i] >> S[i];
+	}
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    // Build graph & factors once
-    buildGraph();
-
-    cin >> S >> E1 >> E2;
-
-    ans1 = mathGalaxy(S, E1);
-    ans2 = mathGalaxy(S, E2);
-
-    cout << ans1 << "\n" << ans2 << "\n";
-
-    return 0;
+	InputData();
+	vector<pair<long long, int>> pos(N);
+	for(int i=0; i<N; i++){
+		pos[i].first = P[i]+ T * S[i];
+		pos[i].second = i+1;
+	}
+	vector<int> player;
+	long long maxp = pos[N-1].first;
+	player.push_back(N);
+	for(int i=N-2; i>=0; i--){
+		if(pos[i].first < maxp){
+			player.push_back(pos[i].second);
+			maxp = pos[i].first;
+		}
+	}
+	cout << player.size() << endl;
+	for(auto p:player) cout << p << " ";
+	return 0;
 }
 
-==============================================
+Input:
+5 6
+0 2
+2 2
+6 1
+9 3
+12 2
 
+Output:
+2
+5 3 
 
-Math galaxy:
+=====================================
+
+Question9: Collection of parcels
 
 #include <bits/stdc++.h>
 using namespace std;
+#define pii pair<int, int>
 
-int S, E1, E2;
-int ans1, ans2;
-unordered_map<int, vector<int>> edges;
-unordered_map<int, int> factors;
-vector<int> visited;  // renamed here
+vector<pii> pos;
+long long distance(pii x, pii y){
+    return (abs(x.first - y.first)+abs(x.second-y.second));
+}
 
-int findFactors(int x) {
-    int count = 0;
-    int root = sqrt(x);
-    for (int i = 1; i <= root; ++i) {
-        if (x % i == 0) {
-            count += (i == x / i) ? 1 : 2;
+long long solveTSP(vector<int>&list, int ind){
+    if(list.empty()) return 0;
+    vector<int> loc = list;
+    sort(loc.begin(), loc.end());
+    long long min_cost=LLONG_MAX;
+    do{
+        long long cost=0;
+        pii src = pos[ind];
+        pii dest = pos[loc[0]];
+        cost += distance(src, dest);
+        for(int i=0; i<(int)loc.size()-1; i++){
+            src = pos[loc[i]];
+            dest = pos[loc[i+1]];
+            cost += distance(src, dest) * (i+2);
         }
-    }
-    return count;
+        cost += distance(pos[loc.back()], pos[ind]) * ((int)loc.size() + 1);
+        min_cost = min(min_cost, cost);
+
+    } while (next_permutation(loc.begin(), loc.end()));
+    return min_cost;
 }
 
-bool digitSatisfy(int a, int b) {
-    if (b < 1000 || b > 9999) return false;
-    string sa = to_string(a);
-    string sb = to_string(b);
-    int count = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (sa[i] == sb[i]) count++;
-    }
-    return count >= 3;
+int main(){
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	
+	int N;
+	cin >> N;
+	pos.resize(N+2);
+	for(int i=0; i<2; i++){
+		cin >> pos[i+N].first >> pos[i+N].second;
+	}
+	for(int i=0; i<N; i++){
+		cin >> pos[i].first >> pos[i].second;
+	}
+	long long ans = LLONG_MAX;
+	int total = 1 << N;
+	for(int mask=0; mask<total; mask++){
+		vector<int> listA, listB;
+		for(int i=0; i<N; i++){
+			if(mask & (1<<i))
+				listA.push_back(i);
+			else
+				listB.push_back(i);
+		}
+		/*
+		for(auto x:listA) cout << x << " ";
+		cout << endl;
+		for(auto x:listB) cout << x << " ";
+		cout << endl;*/
+		long long costA = solveTSP(listA, N);
+		long long costB = solveTSP(listB, N+1);
+		ans = min(ans, costA+costB);
+	}
+	cout << ans <<  endl;
+	return 0;
 }
 
-void buildGraph() {
-    for (int i = 1000; i <= 9999; ++i) {
-        edges[i] = vector<int>();
-        factors[i] = findFactors(i);
-    }
+Input:
+3
+10 10
+20 20
+5 5
+12 8
+30 30
 
-    for (int i = 1000; i <= 9999; ++i) {
-        for (int j = 1; j <= 9; ++j) {
-            int deltas[] = {j * 1000, j * 100, j * 10, j};
+Output:
+102
 
-            for (int d : deltas) {
-                int add = i + d;
-                int sub = i - d;
+===================================
 
-                if (digitSatisfy(i, add)) {
-                    edges[i].push_back(add);
-                }
-                if (digitSatisfy(i, sub)) {
-                    edges[i].push_back(sub);
-                }
-            }
-        }
-    }
+Question10: Finding hidden pictures
+
+
+#include <iostream>
+using namespace std;
+
+int N;
+int a[10 + 10][10 + 10];
+int X1, X2, X3;
+
+int di[8] = { -1,-1,0,1,1,1,0,-1 };
+int dj[8] = { 0,1,1,1,0,-1,-1,-1 };
+int Solve(void) {
+	int count = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (a[i][j] != X1) continue;
+			for (int k = 0; k < 8; k++) {
+				int ni = i + di[k];
+				int nj = j + dj[k];
+				if (ni < 0 || ni >= N) continue;
+				if (nj < 0 || nj >= N) continue;
+				if (a[ni][nj] != X2) continue;
+				int nr = ni + di[k];
+				int nc = nj + dj[k];
+				if (nr < 0 || nr >= N) continue;
+				if (nc < 0 || nc >= N) continue;
+				if (a[nr][nc] != X3) continue;
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
-bool isValid(int a, int b) {
-    int diff = abs(a - b);
-    return diff == 0 || diff == 1;
+void InputData(void) {
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> a[i][j];
+		}
+	}
+	cin >> X1 >> X2 >> X3;
 }
 
-int mathGalaxy(int s, int e) {
-    visited.assign(9000, -1);  // renamed here
-    queue<int> q;
-    q.push(s);
-    visited[s - 1000] = 0;      // renamed here
-
-    while (!q.empty()) {
-        int p = q.front(); q.pop();
-
-        for (int v : edges[p]) {
-            if (visited[v - 1000] == -1 && isValid(factors[p], factors[v])) { // renamed here
-                visited[v - 1000] = visited[p - 1000] + 1; // renamed here
-                if (v == e) {
-                    return visited[v - 1000];  // renamed here
-                }
-                q.push(v);
-            }
-        }
-    }
-    return -1;
+int main(void) {
+	int ans;
+	InputData();
+	ans = Solve();
+	cout << ans;
+	return 0;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+==================================
 
-    cin >> S >> E1 >> E2;
+Question11: Math Galaxy
 
-    buildGraph();
-
-    ans1 = mathGalaxy(S, E1);
-    ans2 = mathGalaxy(S, E2);
-
-    cout << ans1 << "\n" << ans2 << "\n";
-
-    return 0;
-}
-
-
----------------
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -946,18 +700,6 @@ bool isDiffOne(int a,int b)
     if(diffCount==1)
 		return true;
 	return false;
-}
- 
-int findNumberOfFactors(int i)
-{
-	int count=0;
-	for(int k = 1; k * k <= i; ++k)
-	{
-		if(i%k==0)
-			count+=2;
-		if (k * k == i) count--;
-	}
-	return count;
 }
  
 int main()
@@ -1024,80 +766,94 @@ Output:
 3
 8
 
-
-=================================================
-
-Finding Hidden Pictures:
-
-#include <iostream>
-using namespace std;
-
-int N; // 풍경화의 크기
-int a[10 + 10][10 + 10]; // 풍경화
-int X1, X2, X3; // 숨은 그림을 의미하는 3개의 숫자
-
-int di[8] = { -1,-1,0,1,1,1,0,-1 };
-int dj[8] = { 0,1,1,1,0,-1,-1,-1 };
-int Solve(void) {
-	int count = 0;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (a[i][j] != X1) continue;
-			for (int k = 0; k < 8; k++) {
-				int ni = i + di[k];
-				int nj = j + dj[k];
-				if (ni < 0 || ni >= N) continue;
-				if (nj < 0 || nj >= N) continue;
-				if (a[ni][nj] != X2) continue;
-				int nr = ni + di[k];
-				int nc = nj + dj[k];
-				if (nr < 0 || nr >= N) continue;
-				if (nc < 0 || nc >= N) continue;
-				if (a[nr][nc] != X3) continue;
-				count++;
-			}
-		}
+-------------------------
+int findNumberOfFactors(int i)
+{
+	int count=0;
+	for(int k = 1; k * k <= i; ++k)
+	{
+		if(i%k==0)
+			count+=2;
+		if (k * k == i) count--;
 	}
 	return count;
 }
 
-void InputData(void) {
-	cin >> N;
+===================================
+
+Question12 : Removal of foreign particle:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+int K;
+int X[50000];
+
+void InputData() {
+	cin >> N >> K;
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			cin >> a[i][j];
+		cin >> X[i];
+	}
+}
+ 
+bool check(int mid) {
+	int cnt=0;
+	int cp=0;
+	for(int i=0; i<N; i++){
+		if(cp>=X[i])continue;
+		else{
+			cnt++;
+			cp=X[i]+2 * mid;
 		}
 	}
-	cin >> X1 >> X2 >> X3;
+	return cnt<=K;
 }
+ 
+int main() {
+	int ans = 0;
+	InputData();
 
-int main(void) {
-	int ans = -1;
-	InputData(); // 입력
+	sort(X,X+N);
+	int start=1;
+	int end = X[N-1];
+	//cout << end << " - " << start << endl;
 
-	// 코드 작성
-	ans = Solve();
-
-	cout << ans; // 출력
+	while(start <= end)
+	{
+		int mid = (end+start)/2;
+		if(check(mid))
+		{
+			ans = mid;
+			end = mid-1;
+		}
+		else
+		{
+			start = mid+1;
+		}
+	}
+	cout << ans << endl;
 	return 0;
 }
 
 Input:
-5
-1 2 3 4 5
-8 7 9 0 8
-7 7 1 7 9
-8 2 9 1 8
-9 3 1 3 3
-9 7 8
+7 2
+20
+25
+18
+8
+10
+3
+1
+
 
 Output:
 5
 
 
-============================================
+==================================
 
-Clockwise rotation:
+Question13: Clockwise rotation:
 
 
 #define SWAP(a, b) {int temp = a;a = b;b = temp;}
@@ -1136,9 +892,58 @@ Output:
 1 5 9
 4 7 8
 
-===============================================
+================================
 
-Chemical Synthesis:
+Question14: Dividing an Area
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int dx[4]={1,-1,0,0};
+int dy[4]={0,0,-1,1};
+ 
+int main() {
+
+	int N;
+	string Info;
+	cin >> N >> Info;
+	set<pair<pair<int, int>, pair<int, int>>> visitedEdges;
+	set<pair<int, int>> visitedPositions;
+	int x = 0, y = 0;
+	visitedPositions.insert({x, y});
+	int loops = 0;
+ 
+	for (int i = 0; i < N; ++i) {
+		int dir = Info[i] - '0';
+		int nx = x + dx[dir];
+		int ny = y + dy[dir];
+		pair<int, int> from = {x, y};
+		pair<int, int> to = {nx, ny};
+		if (visitedPositions.count(to) && visitedEdges.count({from, to}) == 0) {
+			loops++;
+		}
+ 
+		visitedEdges.insert({from, to});
+		visitedEdges.insert({to, from});
+		visitedPositions.insert(to);
+		x = nx;
+		y = ny;
+	}
+ 
+	cout << loops << "\n";
+	return 0;
+}
+
+Input:
+14
+33302111220000
+
+Output:
+2
+
+==========================
+
+Question15: Chemical Synthesis:
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -1159,30 +964,25 @@ int main(){
 	cout.tie(NULL);
  
 	int ans = 0;
-	InputData();//입력
- 
-	//코드를 작성하세요
-	int maximum = INT_MIN;
+	InputData();
+
 	map<int,int> mp;
 	for(int i=0;i<M;i++)
 	{
 		mp[ID[i]]++;
 	}
-	int i=0,j=M-1;
-	while(j<N)
+	int left=0,right=M-1;
+	while(right<N)
 	{
 		for(int k=0;k<=15;k++)
 		{
-			int a = mp[k-1]+mp[k]+mp[k+1];
-			maximum = max(maximum,a);
+			ans = max(ans,mp[k]+mp[k+1]+mp[k+2]);
 		}
-		mp[ID[i]]--;
-		i++;
-		j++;
-		mp[ID[j]]++;
+		mp[ID[left++]]--;
+		mp[ID[++right]]++;
 	}
  
-	cout << maximum << "\n";//출력
+	cout << ans << "\n";
 	return 0;
 }
 
@@ -1193,357 +993,3 @@ Input:
 
 Output:
 4
-
-
-===============================================
-
-Removal of foreign particle:
-
-#include <bits/stdc++.h>
-using namespace std;
-
-int N; // 이물질의 개수
-int K; // 장비 최대 사용가능 횟수
-int X[50000]; // 이물질의 위치
-
-void InputData() {
-	cin >> N >> K;
-	for (int i = 0; i < N; i++) {
-		cin >> X[i];
-	}
-}
- 
-bool check(int mid) {
-	int n = 0;
-	int i = 0;
-	
-	while (i < N) {
-		n++;
-		int rem = X[i] + 2 * mid;
-		while (i < N && X[i] <= rem){
-			i++;
-		}
-	}
-	return n <= K;
-}
- 
-int main() {
-	int ans = 0;
-	InputData();
-
-	sort(X,X+N);
-	int start=1;
-	int end = X[N-1];
-	//cout << end << " - " << start << endl;
-
-	while(start <= end)
-	{
-		int mid = (end+start)/2;
-		if(check(mid))
-		{
-			ans = mid;
-			end = mid-1;
-		}
-		else
-		{
-			start = mid+1;
-		}
-	}
-	cout << ans << endl;// 출력하는 부분
-	return 0;
-}
-
-Input:
-7 2
-20
-25
-18
-8
-10
-3
-1
-
-
-Output:
-5
-
-
-==============================================
-
-Collection of parcels(TSP):
-
-#include <bits/stdc++.h>
-using namespace std;
-
-struct POS {
-    long long x, y;
-    POS(long long x = 0, long long y = 0) : x(x), y(y) {}
-};
-
-int N;
-vector<POS> pos; // [0..N-1]: deliveries, [N]: officeA, [N+1]: officeB
-long long ans = LLONG_MAX;
-
-long long distance(const POS& a, const POS& b) {
-    return abs(a.x - b.x) + abs(a.y - b.y);
-}
-
-long long permuteAndCalc(int depth, const vector<int>& list, vector<int>& perm, vector<bool>& used, int officeIndex, long long minCost);
-
-long long tspWithIncreasingWeights(const vector<int>& list, int officeIndex) {
-    if (list.empty()) return 0;
-    long long minCost = LLONG_MAX;
-    vector<int> perm(list.size());
-    vector<bool> used(list.size(), false);
-
-    minCost = permuteAndCalc(0, list, perm, used, officeIndex, minCost);
-    return minCost;
-}
-
-long long permuteAndCalc(int depth, const vector<int>& list, vector<int>& perm, vector<bool>& used, int officeIndex, long long minCost) {
-    if (depth == (int)list.size()) {
-        long long cost = 0;
-        POS src = pos[officeIndex];
-        POS dest = pos[perm[0]];
-        cost += distance(src, dest);
-
-        for (int i = 0; i < (int)list.size() - 1; i++) {
-            src = pos[perm[i]];
-            dest = pos[perm[i + 1]];
-            cost += distance(src, dest) * (i + 2);
-        }
-
-        cost += distance(pos[perm.back()], pos[officeIndex]) * ((int)list.size() + 1);
-        return min(minCost, cost);
-    }
-
-    for (int i = 0; i < (int)list.size(); i++) {
-        if (!used[i]) {
-            used[i] = true;
-            perm[depth] = list[i];
-            minCost = permuteAndCalc(depth + 1, list, perm, used, officeIndex, minCost);
-            used[i] = false;
-        }
-    }
-    return minCost;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> N;
-    pos.resize(N + 2);
-
-    // Read office positions: N and N+1
-    for (int i = 0; i < 2; i++) {
-        cin >> pos[N + i].x >> pos[N + i].y;
-    }
-
-    // Read delivery points
-    for (int i = 0; i < N; i++) {
-        cin >> pos[i].x >> pos[i].y;
-    }
-
-    int total = 1 << N;
-    for (int mask = 0; mask < total; mask++) {
-        vector<int> listA, listB;
-        for (int i = 0; i < N; i++) {
-            if (mask & (1 << i))
-                listA.push_back(i);
-            else
-                listB.push_back(i);
-        }
-
-        long long costA = tspWithIncreasingWeights(listA, N);   // Office A
-        long long costB = tspWithIncreasingWeights(listB, N + 1); // Office B
-        ans = min(ans, costA + costB);
-    }
-
-    cout << ans << "\n";
-
-    return 0;
-}
-
-Input:
-3
-10 10
-20 20
-5 5
-12 8
-30 30
-
-
-Output:
-102
-
-=======================================================
-
-
-Rental robot vacuum cleaner fee calculation:
-
-
-// 수정전 로봇청소기 1회 사용 시작시간과 종료시간을 이용하여 요금을 계산한 코드
-
-#include <iostream>
-using namespace std;
-
-char start_time[10];
-char end_time[10];
-
-void InputData(void)
-{
-	cin >> start_time;
-	cin >> end_time;
-}
-
-int ConvertInt(char * t)
-{
-	return (t[0] - '0') * 10 + (t[1] - '0');
-}
-
-int ComputeTime(void)
-{
-	int s = ConvertInt(start_time) * 60 + ConvertInt(start_time + 3);
-	int e = ConvertInt(end_time) * 60 + ConvertInt(end_time + 3);
-	if(e < s) e += 24 * 60;
-	return (e - s);
-}
-
-int Solve(void)
-{
-	int p;
-	int t = ComputeTime();
-	int flag = 0;
-	if((t-30)%10) flag = 1;
-	if (t < 30) return 500;
-	p = 500 + ((int)((t - 30) / 10) + flag) * 300;
-	if(p > 30000) return 30000;
-	return p;
-}
-
-void OutputData(int sol)
-{
-	cout << sol;
-}
-
-int main(void)
-{
-	int sol = -1;
-	InputData();// 입력
-
-	sol = Solve();
-
-	OutputData(sol);// 출력
-
-	return 0;
-}
-
-
-Input:
-07:00
-08:00
-
-Output:
-1400
-
-==============================================
-
-Creation of a Park:
-
-#include <bits/stdc++.h>
-using namespace std;
-
-int N;
-vector<vector<char>> mapGrid;
-
-char ans;      // Buyer's name
-int areaCount; // Number of buyer's areas
-
-// DFS to calculate connected region size of a given character
-int dfs(int i, int j, int N, vector<vector<char>>& map, char curr) {
-    if (i < 0 || j < 0 || i >= N || j >= N || map[i][j] != curr) {
-        return 0;
-    }
-    int size = 1;
-    map[i][j] = '#'; // mark visited
-    size += dfs(i - 1, j, N, map, curr);
-    size += dfs(i, j - 1, N, map, curr);
-    size += dfs(i + 1, j, N, map, curr);
-    size += dfs(i, j + 1, N, map, curr);
-    return size;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> N;
-    mapGrid.assign(N, vector<char>(N));
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cin >> mapGrid[i][j];
-        }
-    }
-
-    // Priority queues for R, G, B (max heaps)
-    unordered_map<char, priority_queue<int>> countMap;
-    countMap['R'] = priority_queue<int>();
-    countMap['G'] = priority_queue<int>();
-    countMap['B'] = priority_queue<int>();
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            char c = mapGrid[i][j];
-            if (c == 'R' || c == 'G' || c == 'B') {
-                int size = dfs(i, j, N, mapGrid, c);
-                countMap[c].push(size);
-							cout << c << " : " << size << endl;
-            }
-        }
-    }
-
-    ans = 'R';
-    areaCount = 0;
-
-    for (auto& entry : countMap) {
-        char key = entry.first;
-        auto& pq = entry.second;
-
-        int sizeCount = (int)pq.size();
-
-        if (sizeCount > areaCount) {
-            areaCount = sizeCount;
-            ans = key;
-        }
-        else if (areaCount > 0 && sizeCount == areaCount) {
-            // Compare largest connected region sizes
-            int maxSizeCurrent = pq.top();
-            int maxSizeAns = countMap[ans].top();
-
-            if (maxSizeCurrent > maxSizeAns) {
-                ans = key;
-            }
-        }
-    }
-
-    cout << ans << " " << areaCount << "\n";
-
-    return 0;
-}
-
-Input:
-5
-RRRBB
-GGBBB
-BBGRR
-BBGGR
-BRRRR
-
-
-Output:
-R 2
-
-==============================================
-
-
