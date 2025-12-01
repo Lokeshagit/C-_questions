@@ -1,0 +1,175 @@
+Question1 : minimum energy to travel:
+
+We need to traversal from G to S. We can travel all 8 directions. 
+Wind can be in any 4 direction. If wind is in East direction (E), then energy required for East, north-east(NE) & South east direction is 0 and other directions its 1. Same way for other directions also. 
+Output the minimum energy required to travel, and in which wind direction energy consumption will be less. (East -0, South 1, West 2, North-3).
+Constraints:
+•	2 <= H, W <= 100
+Input Format:
+•	First line contains 2 integer values, number of rows (H) and number of columns (W)
+•	The next H lines contain each row string value. Each row contains a string length of W
+ 
+Output Format:
+•	First value represent the direction and the second value is the minimum power required to reach destination
+
+
+-------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Pos {
+    int x, y;
+};
+
+int H, W;
+vector<string> grid;
+
+int dx[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+int dy[] = {0, 1, 1, 1, 0, -1, -1, -1};
+
+// Wind directions (East=0, South=1, West=2, North=3)
+vector<vector<int>> zeroCostMoves = {
+    {2,1,3},    // East: E, NE, SE
+    {4,3,5},    // South: S, SE, SW
+    {6,7,5},    // West: W, NW, SW
+    {0,1,7}     // North: N, NE, NW
+};
+
+bool isValid(int x, int y) {
+    return x >=0 && x < H && y >=0 && y < W && grid[x][y] != '#';
+}
+
+int zeroOneBFS(Pos start, Pos end, int windDir) {
+    vector<vector<int>> dist(H, vector<int>(W, INT_MAX));
+    dist[start.x][start.y] = 0;
+    queue<pair<Pos, int>> q;
+    q.push({start, 0});
+
+    while(!q.empty()) {
+        Pos curr = q.front().first;
+        int cost = q.front().second;q.pop();
+        if(curr.x == end.x && curr.y == end.y) {
+            for(int i=0; i<H; i++){
+                for(int j=0; j<W; j++){
+                    if(dist[i][j] == INT_MAX)
+                        cout << -1 << " ";
+                    else
+                        cout << dist[i][j] << " ";
+                }
+                cout << endl;
+            }
+            return dist[curr.x][curr.y];
+        }
+
+        for(int d=0; d<8; d++) {
+            int nx = curr.x + dx[d];
+            int ny = curr.y + dy[d];
+            if(!isValid(nx, ny)) continue;
+            bool flag=false;
+            for(auto zeroMove : zeroCostMoves[windDir]) {
+                if(d == zeroMove) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag) {
+                if(cost<dist[nx][ny]){
+                    dist[nx][ny] = cost;
+                    q.push({{nx, ny},cost});
+                }
+            } else {
+                if(cost+1 < dist[nx][ny]){
+                    dist[nx][ny] = cost+1;
+                    q.push({{nx, ny}, cost+1});
+                }
+            }
+        }
+    }
+
+    return INT_MAX; // unreachable
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> H >> W;
+    grid.resize(H);
+    Pos start, end;
+    for(int i=0; i<H; i++) {
+        cin >> grid[i];
+        for(int j=0; j<W; j++) {
+            if(grid[i][j] == 'G') start = {i,j};
+            else if(grid[i][j] == 'S') end = {i,j};
+        }
+    }
+
+    int minEnergy = INT_MAX, minDir = -1;
+    for(int dir=0; dir<4; dir++) {
+        cout << dir << ": " << endl;
+        int energy = zeroOneBFS(start, end, dir);
+        if(energy < minEnergy) {
+            minEnergy = energy;
+            minDir = dir;
+        }
+    }
+
+    cout << minDir << " " << (minEnergy == INT_MAX ? -1 : minEnergy) << "\n";
+
+    return 0;
+}
+
+
+
+------------------------
+
+Input:
+5 6
+#G.#.#
+#.#..#
+#..#..
+#.#...
+##..S#
+
+Output:
+2 0
+
+------
+
+5 6 
+#G.#.#
+#.#..#
+#..#..
+#.#...
+##..S#
+0: 
+-1 0 0 -1 0 -1 
+-1 1 -1 0 0 -1 
+-1 2 1 -1 0 0 
+-1 2 -1 1 1 0 
+-1 -1 2 2 1 -1 
+1: 
+-1 0 1 -1 2 -1 
+-1 0 -1 1 2 -1 
+-1 0 0 -1 1 2 
+-1 0 -1 0 1 1 
+-1 -1 0 0 0 -1 
+2: 
+-1 0 1 -1 3 -1 
+-1 1 -1 2 3 -1 
+-1 2 2 -1 3 4 
+-1 2 -1 3 4 4 
+-1 -1 3 4 4 -1 
+3: 
+-1 0 1 -1 2 -1 
+-1 1 -1 2 3 -1 
+-1 2 2 -1 3 4 
+-1 3 -1 3 4 4 
+-1 -1 4 4 4 -1 
+1 0
+
+
+==================================================
+
+Question2: 
