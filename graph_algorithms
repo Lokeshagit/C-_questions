@@ -1,0 +1,857 @@
+
+BFS:
+
+vector<int> bfs(int V, vector<int> adj[]) {
+    int vis[V] = {0}; 
+    vis[0] = 1; 
+    queue<int> q;
+    q.push(0); 
+    vector<int> vec;
+    while(!q.empty()) { 
+        int node = q.front(); 
+        q.pop(); 
+        vec.push_back(node);
+        for(auto it : adj[node]) {
+            if(!vis[it]) {
+                vis[it] = 1; 
+                q.push(it); 
+            }
+        }
+    }
+    return vec; 
+}
+
+------------------
+
+DFS:
+
+void dfs(int v, vector<int> adj[], vector<int>& vis) {
+    vis[v] = 1;
+    for (int u : adj[v]) {
+        if (!vis[u]) {
+            dfs(u, adj, vis);
+        }
+    }
+}
+
+------------------
+
+Connected Component:
+
+int countComponents(int V, vector<vector<int>>& edges) {
+    vector<vector<int>> adj(V);
+    for (auto &e : edges) {
+        adj[e[0]].push_back(e[1]);
+        adj[e[1]].push_back(e[0]);
+    }
+	
+    vector<int> visited(V, 0);
+    int components = 0;
+
+    for (int i = 0; i < V; ++i) {
+        if (!visited[i]) {
+            components++;
+            queue<int> q;
+            q.push(i);
+            visited[i] = 1;
+            while (!q.empty()) {
+                int node = q.front(); q.pop();
+                for (auto &nbr : adj[node]) {
+                    if (!visited[nbr]) {
+                        visited[nbr] = 1;
+                        q.push(nbr);
+                    }
+                }
+            }
+        }
+    }
+    return components;
+}
+
+----------------------------------
+
+Detect Cycle in an Undirected Graph:
+
+bool detect(int src, vector<int> adj[], int vis[]) {
+    vis[src] = 1;
+    queue<pair<int,int>> q; 
+	q.push({src, -1});
+	while(!q.empty()) {
+		int node = q.front().first; 
+		int parent = q.front().second; 
+		q.pop(); 
+	
+		for(auto adjNode: adj[node]) {
+			if(!vis[adjNode]) {
+				vis[adjNode] = 1; 
+				q.push({adjNode, node}); 
+			}
+			else if(parent != adjNode) {
+				return true; 
+			}
+		}
+	}
+	return false; 
+}
+
+
+--------------------------
+
+Bipartite Graph:
+
+class Solution {
+private: 
+    bool dfs(int node, int col, vector<int>& color[], vector<int> adj[]) {
+        color[node] = col; 
+        for(auto it : adj[node]) {
+            if(color[it] == -1) {
+                if(dfs(it, !col, color, adj) == false) return false; 
+            }
+            else if(color[it] == col) {
+                return false; 
+            }
+        }
+        
+        return true; 
+    }
+public:
+	bool isBipartite(int V, vector<int>adj[]){
+	    vector<int> color(V, -1); 
+	    for(int i = 0;i<V;i++) {
+	        if(color[i] == -1) {
+	            if(dfs(i, 0, color, adj) == false) 
+	                return false; 
+	        }
+	    }
+	    return true; 
+	}
+};
+
+---------------------------
+
+Multicoloring Graph:
+
+class Solution{
+public:
+    class Solution {
+  public:
+  bool isSafe(int node, int currentColor, bool graph[101][101], vector<int> &nodeColor, int n){
+        for(int i=0; i<n; i++){
+            if(graph[node][i] == 1 && nodeColor[i] == currentColor) return false;
+        }
+        return true;
+    }
+    
+    bool solve(int node,bool graph[101][101], vector<int> &nodeColor, int m, int n){
+        if(node == n){
+            return true;
+        }
+        
+        for(int color=1; color<=m; color++){
+            if(isSafe(node, color, graph, nodeColor, n)){
+                nodeColor[node] = color;
+                if(solve(node+1, graph, nodeColor, m, n)) return true;
+                nodeColor[node] = 0;
+            }
+        }
+        return false;
+    }
+    
+
+    bool graphColoring(int v, vector<vector<int>> &edges, int m) {
+        // code here
+        bool graph[101][101] = {0};
+        for(auto it : edges){
+            graph[it[0]][it[1]] = 1;
+        }
+        vector<int> nodeColor(v, 0);
+        return solve(0, graph, nodeColor, m, v);
+    }
+};
+
+----------------
+
+bool isSafe(vector<int>& adj, vector<int>& tower, int t) {
+    for (auto& v : adj)
+        if (tower[v] != -1 and tower[v] == t)
+            return false;
+    return true;
+}
+ 
+bool placeCats(vector<vector<int>>& adj, vector<int>& tower, int m, int node) {
+    if (node == N)
+        return true;
+     
+    for (int t = 0; t < m; t++) {
+        if (isSafe(adj[node], tower, t)){
+			tower[node] = t;
+			if (placeCats(adj, tower, m, node+1)) return true;
+			tower[node] = -1;
+		}
+	}
+    return false;
+}
+
+bool safelyDistributed(int m, vector<vector<int>>& adj) {
+    vector<int> tower(N, -1);
+    return placeCats(adj, tower, m, 0);
+}
+
+-----------------------------
+
+Detect cycle in a directed graph:
+
+class Solution {
+private:
+	bool dfsCheck(int node, vector<int> adj[], int vis[], int pathVis[]) {
+		vis[node] = 1;
+		pathVis[node] = 1;
+		for (auto it : adj[node]) {
+			if (!vis[it]) {
+				if (dfsCheck(it, adj, vis, pathVis) == true)
+					return true;
+			}
+			else if(pathVis[it]) {
+				return true;
+			}
+		}
+
+		pathVis[node] = 0;
+		return false;
+	}
+public:
+	bool isCyclic(int V, vector<int> adj[]) {
+		int vis[V] = {0};
+		int pathVis[V] = {0};
+
+		for (int i = 0; i < V; i++) {
+			if (!vis[i]) {
+				if (dfsCheck(i, adj, vis, pathVis) == true) return true;
+			}
+		}
+		return false;
+	}
+};
+
+-------------------
+
+Topological Sort:
+
+class Solution {
+private:
+	void dfs(int node, int vis[], stack<int> &st, vector<int> adj[]) {
+		vis[node] = 1;
+		for (auto it : adj[node]) {
+			if (!vis[it]) dfs(it, vis, st, adj);
+		}
+		st.push(node);
+	}
+public:
+	vector<int> topoSort(int V, vector<int> adj[])
+	{
+		int vis[V] = {0};
+		stack<int> st;
+		for (int i = 0; i < V; i++) {
+			if (!vis[i]) {
+				dfs(i, vis, st, adj);
+			}
+		}
+
+		vector<int> ans;
+		while (!st.empty()) {
+			ans.push_back(st.top());
+			st.pop();
+		}
+		return ans;
+	}
+};
+
+--------------------------
+
+Kahn's Algorithm:
+
+class Solution {
+public:
+	vector<int> topoSort(int V, vector<int> adj[])
+	{
+		int indegree[V] = {0};
+		for (int i = 0; i < V; i++) {
+			for (auto it : adj[i]) {
+				indegree[it]++;
+			}
+		}
+
+		queue<int> q;
+		for (int i = 0; i < V; i++) {
+			if (indegree[i] == 0) {
+				q.push(i);
+			}
+		}
+		vector<int> topo;
+		while (!q.empty()) {
+			int node = q.front();
+			q.pop();
+			topo.push_back(node);
+
+			for (auto it : adj[node]) {
+				indegree[it]--;
+				if (indegree[it] == 0) q.push(it);
+			}
+		}
+
+		return topo;
+	}
+};
+
+------------------
+
+Detect a cycle in a directed graph:
+
+class Solution {
+public:
+    bool isCyclic(int V, vector<vector<int>>& adj) {
+        vector<int> indegree(V, 0);
+        for (int i = 0; i < V; i++) {
+            for (auto &nbr : adj[i]) {
+                indegree[nbr]++;
+            }
+        }
+        queue<int> q;
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0)
+                q.push(i);
+        }
+
+        int count = 0;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            count++;
+
+            for (auto &nbr : adj[node]) {
+                indegree[nbr]--;
+                if (indegree[nbr] == 0)
+                    q.push(nbr);
+            }
+        }
+        return count != V;
+    }
+};
+
+---------------------
+
+Alien Dictionary - Topological Sort:
+
+class Solution {
+private:
+    vector<int> topoSort(int V, vector<int> adj[]) {
+        vector<int> indegree(V, 0);
+
+        for (int i = 0; i < V; i++) {
+            for (auto neighbor : adj[i]) {
+                indegree[neighbor]++;
+            }
+        }
+        queue<int> q;
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+
+        vector<int> topo;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            topo.push_back(node);
+            for (auto neighbor : adj[node]) {
+                indegree[neighbor]--;
+                if (indegree[neighbor] == 0) {
+                    q.push(neighbor);
+                }
+            }
+        }
+
+        return topo;
+    }
+
+public:
+    string findOrder(string dict[], int N, int K) {
+        vector<int> adj[K];
+        for (int i = 0; i < N - 1; i++) {
+            string s1 = dict[i];
+            string s2 = dict[i + 1];
+            int len = min(s1.size(), s2.size());
+
+            for (int ptr = 0; ptr < len; ptr++) {
+                if (s1[ptr] != s2[ptr]) {
+                    adj[s1[ptr] - 'a'].push_back(s2[ptr] - 'a');
+                    break;
+                }
+            }
+        }
+        vector<int> topo = topoSort(K, adj);
+
+        string ans = "";
+        for (auto node : topo) {
+            ans += char(node + 'a');
+        }
+
+        return ans;
+    }
+};
+
+---------------------
+
+Shortest Path in Undirected Graph with unit distance:
+
+class Solution {
+public:
+    vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
+        vector<int> adj[N]; 
+        for(auto it : edges) {
+            adj[it[0]].push_back(it[1]); 
+            adj[it[1]].push_back(it[0]); 
+        }
+
+        vector<int> dist(N, 1e9);
+        dist[src] = 0; 
+        queue<int> q;
+        q.push(src); 
+        while(!q.empty()) {
+            int node = q.front(); 
+            q.pop(); 
+            for(auto it : adj[node]) {
+                if(dist[node] + 1 < dist[it]) {
+                    dist[it] = 1 + dist[node]; 
+                    q.push(it); 
+                }
+            }
+        }
+        vector<int> ans(N, -1);
+        for(int i = 0;i<N;i++) {
+            if(dist[i] != 1e9) {
+                ans[i] = dist[i]; 
+            }
+        }
+        return ans; 
+    }
+};
+
+---------------------------------
+
+Shortest Path in Directed Acyclic Graph Topological Sort:
+
+class Solution {
+private:
+    void topoSort(int node, vector <pair<int, int>> adj[],
+		int vis[], stack <int> & st) {. 
+		vis[node] = 1;
+		for (auto it: adj[node]) {
+			int v = it.first;
+			if (!vis[v]) {
+				topoSort(v, adj, vis, st);
+			}
+		}
+		st.push(node);
+    }
+public:
+    vector <int> shortestPath(int N, int M, vector < vector < int >> & edges) {
+		vector<pair<int, int>> adj[N];
+		for (int i = 0; i < M; i++) {
+		int u = edges[i][0];
+		int v = edges[i][1];
+		int wt = edges[i][2];
+		adj[u].push_back({v, wt}); 
+		}
+		int vis[N] = {0};
+		stack<int> st;
+		for (int i=0; i<N; i++) {
+			if (!vis[i]) {
+				topoSort(i, adj, vis, st);
+			}
+		}
+		
+		vector<int> dist(N);
+		for (int i=0; i<N; i++) {
+			dist[i] = 1e9;
+		}
+		
+		dist[0] = 0;
+		while (!st.empty()) {
+			int node = st.top();
+			st.pop();
+		
+			for (auto it: adj[node]) {
+				int v = it.first;
+				int wt = it.second;
+		
+				if (dist[node] + wt < dist[v]) {
+					dist[v] = wt + dist[node];
+				}
+			}
+		}
+		
+		for(int i=0; i<N; i++) {
+			if (dist[i] == 1e9) dist[i] = -1;
+		}
+		return dist;
+    }
+};
+
+-----------------------
+
+Dijkstra’s Algorithm:
+
+class Solution{
+public:
+    vector<int> dijkstra(int V, vector<vector<int>> adj[], int S) {
+        vector<int> dist(V, 1e9), parent(V);
+        for(int i=0; i<=V; i++) parent[i] = i;
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        pq.push({0, S});
+        dist[S]=0;
+        while(!pq.empty()){
+            int node = pq.top().second;
+            int wt = pq.top().first;
+            pq.pop();
+            for(auto it:adj[node]){
+                int adjNode = it[0];
+                int adjWt = it[1];
+                if(wt + adjWt < dist[adjNode]){
+                    dist[adjNode] = adjWt + wt;
+                    parent[adjNode] = node;
+                    pq.push({dist[adjNode], adjNode});
+                }
+            }
+            cout << endl;
+        }
+        
+        if(dist[V-1] == 1e9) 
+			return {-1};
+    
+	/* to print path
+        vector<int> path;
+        int node = V;
+        while(parent[node] != node){
+            path.push_back(node);
+            node = parent[node];
+        }
+        path.push_back(S);
+        reverse(path.begin(), path.end());
+    */
+        return dist;
+    }
+};
+
+------------------------------
+
+Shortest Distance in a Binary Maze:
+
+class Solution
+{
+public:
+    int shortestPath(vector<vector<int>> &grid, pair<int, int> source, pair<int, int> destination)
+    {
+        if (source.first == destination.first && source.second == destination.second)
+            return 0;
+
+        queue<pair<int, pair<int, int>>> q;
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<int>> dist(n, vector<int>(m, 1e9));
+        dist[source.first][source.second] = 0;
+        q.push({0, {source.first, source.second}});
+
+        int dr[] = {-1, 0, 1, 0};
+        int dc[] = {0, 1, 0, -1};
+
+        while (!q.empty())
+        {
+            auto it = q.front();
+            q.pop();
+            int dis = it.first;
+            int r = it.second.first;
+            int c = it.second.second;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int newr = r + dr[i];
+                int newc = c + dc[i];
+
+                if (newr >= 0 && newr < n && newc >= 0 && newc < m && grid[newr][newc] == 1 && dis + 1 < dist[newr][newc])
+                {
+                    dist[newr][newc] = 1 + dis;
+                    if (newr == destination.first &&
+                        newc == destination.second)
+                        return dis + 1;
+                    q.push({1 + dis, {newr, newc}});
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+--------------------
+
+Bellman Ford Algorithm:
+
+class Solution {
+public:
+	vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+		vector<int> dist(V, 1e8);
+		dist[S] = 0;
+		for (int i = 0; i < V - 1; i++) {
+			for (auto it : edges) {
+				int u = it[0];
+				int v = it[1];
+				int wt = it[2];
+				if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+					dist[v] = dist[u] + wt;
+				}
+			}
+		}
+		for (auto it : edges) {
+			int u = it[0];
+			int v = it[1];
+			int wt = it[2];
+			if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+				return { -1};
+			}
+		}
+		return dist;
+	}
+};
+
+--------------------
+
+Floyd Warshall Algorithm:
+
+class Solution {
+public:
+	void shortest_distance(vector<vector<int>>&matrix) {
+		int n = matrix.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (matrix[i][j] == -1) {
+					matrix[i][j] = 1e9;
+				}
+				if (i == j) matrix[i][j] = 0;
+			}
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					matrix[i][j] = min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+				}
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (matrix[i][j] == 1e9) {
+					matrix[i][j] = -1;
+				}
+			}
+		}
+	}
+};
+
+-----------------------------
+
+Prim's Algorithm - Minimum Spanning Tree:
+
+class Solution
+{
+public:
+	int spanningTree(int V, vector<vector<int>> adj[])
+	{
+		priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int>>> pq;
+		vector<int> vis(V, 0);
+		pq.push({0, 0});
+		int sum = 0;
+		while (!pq.empty()) {
+			auto it = pq.top();
+			pq.pop();
+			int node = it.second;
+			int wt = it.first;
+
+			if (vis[node] == 1) continue;
+			vis[node] = 1;
+			sum += wt;
+			for (auto it : adj[node]) {
+				int adjNode = it[0];
+				int edW = it[1];
+				if (!vis[adjNode]) {
+					pq.push({edW, adjNode});
+				}
+			}
+		}
+		return sum;
+	}
+};
+
+-------------------------
+
+DisjointSet:
+
+class DisjointSet {
+    vector<int> parent, size;
+public:
+    DisjointSet(int n) {
+        parent.resize(n + 1);
+		size.resize(n+1, 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+	void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+			size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+			size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+--------------------
+
+Kruskal's Algorithm - Minimum Spanning Tree:
+
+class DisjointSet {
+    vector<int> rank, parent, size;
+public:
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+class Solution
+{
+public:
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {
+        vector<pair<int, pair<int, int>>> edges;
+        for (int i = 0; i < V; i++) {
+            for (auto it : adj[i]) {
+                int adjNode = it[0];
+                int wt = it[1];
+                int node = i;
+
+                edges.push_back({wt, {node, adjNode}});
+            }
+        }
+        DisjointSet ds(V);
+        sort(edges.begin(), edges.end());
+        int mstWt = 0;
+        for (auto it : edges) {
+            int wt = it.first;
+            int u = it.second.first;
+            int v = it.second.second;
+
+            if (ds.findUPar(u) != ds.findUPar(v)) {
+                mstWt += wt;
+                ds.unionBySize(u, v);
+            }
+        }
+
+        return mstWt;
+    }
+};
+
+---------------------------
+
+TSP:
+
+int findTSP(vector<vector<int>>& dist, int n){
+    int distance=INT_MAX;
+    vector<int> point;
+    for(int i=1; i<n; i++) point.push_back(i);
+    do{
+        int k=0;
+        int d=0;
+        for(int i=0; i<n-1;i++){
+            d += dist[k][point[i]];
+            k=point[i];
+        }
+        d += dist[k][0];
+        distance = min(distance, d);
+    } while(next_permutation(point.begin(), point.end()));
+    
+    return distance;
+}
+
+------------------------------------
+
+int findTSP(const vector<vector<int>> &dist, int n) {
+    int maxMask = 1 << n;
+    vector<vector<int>> dp(maxMask, vector<int>(n, INT_MAX));
+    dp[1][0] = 0;
+
+    for (int mask = 0; mask < maxMask; mask++) {
+        for (int j = 0; j < n; j++) {
+            if ((mask & (1 << j)) == 0) continue;
+            if (dp[mask][j] == INT_MAX) continue;
+            for (int k = 0; k < n; k++) {
+                if ((mask & (1 << k)) != 0) continue;
+                int nextMask = mask | (1 << k);
+                dp[nextMask][k] = min(dp[nextMask][k], dp[mask][j] + dist[j][k]);
+            }
+        }
+    }
+
+    int res = INT_MAX;
+    for (int i = 0; i < n; i++) {
+        res = min(res, dp[maxMask - 1][i] + dist[i][0]);
+    }
+    return res;
+}
+
+
+---------------------------
+
+
+
+
