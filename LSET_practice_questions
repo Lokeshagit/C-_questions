@@ -34,3 +34,106 @@ https://leetcode.com/problems/pacific-atlantic-water-flow/description/
 https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/description/
 https://leetcode.com/problems/find-a-safe-walk-through-a-grid 
 https://leetcode.com/problems/possible-bipartition
+General topic:
+https://leetcode.com/problems/adjacent-increasing-subarrays-detection-ii/
+https://leetcode.com/problems/beautiful-towers-i/
+https://leetcode.com/problems/gas-station/description/
+https://leetcode.com/problems/task-scheduler/
+https://codeforces.com/problemset/problem/1263/D
+
+
+
+========================
+
+https://www.hackerearth.com/practice/algorithms/greedy/basics-of-greedy-algorithms/practice-problems/algorithm/tree-of-candles-912e495c/ 
+https://www.hackerearth.com/practice/algorithms/graphs/breadth-first-search/practice-problems/algorithm/emergency-meeting-da1fc0b5/
+https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/bobs-journey-2-809f1266/ 
+https://www.hackerearth.com/practice/algorithms/searching/binary-search/practice-problems/algorithm/distribute-the-numbers-8122fa09/ 
+https://leetcode.com/problems/beautiful-towers-i/ 
+https://leetcode.com/problems/beautiful-towers-ii/
+https://leetcode.com/problems/minimum-operations-to-make-array-equal-to-target/
+https://leetcode.com/problems/the-number-of-weak-characters-in-the-game/
+https://leetcode.com/problems/non-overlapping-intervals/ 
+https://leetcode.com/problems/task-scheduler/
+https://www.hackerearth.com/problem/algorithm/old-keypad-in-a-foreign-land-24/?source=list_view
+https://www.hackerearth.com/problem/algorithm/panda-and-destruction/?source=list_view
+https://leetcode.com/problems/burst-balloons/
+https://leetcode.com/problems/beautiful-arrangement/
+https://leetcode.com/problems/task-scheduler/
+https://www.hackerearth.com/problem/algorithm/sengij-and-the-apples-c4b983b8/?source=list_view
+https://www.codechef.com/problems/FIRESC
+https://www.spoj.com/problems/CAM5/
+https://www.spoj.com/problems/PT07Y/
+https://www.spoj.com/problems/ELEVTRBL/
+https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/
+https://leetcode.com/problems/as-far-from-land-as-possible/
+https://www.hackerearth.com/problem/algorithm/mr-president/?source=list_view - todo 
+https://leetcode.com/problems/repeated-dna-sequences/ 
+https://leetcode.com/problems/fruit-into-baskets/
+https://leetcode.com/problems/filling-bookcase-shelves/
+https://leetcode.com/problems/broken-calculator
+https://leetcode.com/problems/daily-temperatures/
+https://leetcode.com/problems/surrounded-regions/
+https://leetcode.com/problems/minimum-moves-to-pick-k-ones/
+https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/
+https://leetcode.com/problems/partition-labels/
+https://leetcode.com/problems/minimum-cost-of-a-path-with-special-roads
+https://www.hackerrank.com/challenges/abbr/problem 
+https://leetcode.com/problems/largest-rectangle-in-histogram/
+https://leetcode.com/problems/course-schedule/   
+https://leetcode.com/problems/maximum-tastiness-of-candy-basket/
+https://leetcode.com/problems/minimum-speed-to-arrive-on-time/
+https://leetcode.com/problems/maximum-number-of-coins-you-can-get/
+
+==============================================
+
+cycle 6:
+
+Binary Search:
+https://leetcode.com/problems/minimum-limit-of-balls-in-a-bag/description/
+https://leetcode.com/problems/escape-the-spreading-fire/description/
+https://www.hackerearth.com/problem/algorithm/promotion-1/?source=list_view
+
+Sliding window:
+https://leetcode.com/problems/maximum-beauty-of-an-array-after-applying-operation/
+https://leetcode.com/problems/reschedule-meetings-for-maximum-free-time-i/
+https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/
+
+
+TSP:
+https://leetcode.com/problems/permutations/description/
+https://www.naukri.com/code360/problems/travelling-salesman-problem_1385180
+
+Greedy & Monotonic:
+https://leetcode.com/problems/minimum-operations-to-convert-all-elements-to-zero/description/
+https://www.geeksforgeeks.org/problems/maximum-of-minimum-for-every-window-size3453/1
+https://www.geeksforgeeks.org/problems/candy/1
+
+https://www.hackerrank.com/contests/week52-ms-skill-test-1763458754/challenges
+
+Graph BFS/DFS:
+https://www.geeksforgeeks.org/problems/number-of-distinct-islands/1
+https://leetcode.com/problems/making-a-large-island/description/
+https://leetcode.com/problems/minimum-time-to-visit-a-cell-in-a-grid/description/
+
+DP & Recursion
+http://leetcode.com/problems/sudoku-solver/description/ 
+https://leetcode.com/problems/pizza-with-3n-slices 
+https://leetcode.com/problems/cheapest-flights-within-k-stops/description 
+https://leetcode.com/problems/target-sum 
+https://leetcode.com/problems/word-search/
+
+Graph Theory:
+https://leetcode.com/problems/frog-jump/description/
+https://leetcode.com/problems/couples-holding-hands
+https://leetcode.com/problems/minimum-time-to-visit-disappearing-nodes
+https://leetcode.com/problems/find-a-safe-walk-through-a-grid
+https://leetcode.com/problems/pacific-atlantic-water-flow/description/ 
+https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/description/
+
+Generic Topic
+https://leetcode.com/problems/asteroid-collision/description/
+https://leetcode.com/problems/task-scheduler/description/
+https://leetcode.com/problems/filling-bookcase-shelves/description/
+https://leetcode.com/problems/maximize-the-minimum-powered-city/description/
+https://codeforces.com/problemset/problem/1263/D
