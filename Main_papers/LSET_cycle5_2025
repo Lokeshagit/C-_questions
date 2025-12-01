@@ -1,0 +1,177 @@
+question1: Factorial Sum
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int factorSum(int num){
+    int sum=num-1;
+    for(int i=2; i<=num/2; i++){
+        int cnt=0;
+        for(int j=i; j<=num; j+=i){
+            if(j%i == 0 && j!=i) cnt++;
+        }
+        cout << i << " " << cnt << endl;
+        sum += (cnt * i);
+    }
+    cout << num << " : " << sum <<  endl;
+    return sum;
+}
+
+int findSum(int A, int B){
+    return factorSum(B)-factorSum(A);
+}
+
+int main()
+{
+    int A, B;
+    cin >> A >> B;
+    int ans = findSum(A, B);
+    cout << ans << endl;
+
+    return 0;
+}
+
+Input: A=3, B=10;
+Output: 30
+
+2 4
+3 2
+4 1
+5 1
+10 : 32
+3 : 2
+30
+
+---------------------
+
+int factorSum(int num){
+    int sum=0;
+    for(int i=1; i<=num/2; i++){
+        sum += ((num/i) -1) * i;
+    }
+    cout << num << " : " << sum <<  endl;
+    return sum;
+}
+
+====================================
+
+Question2: sliding window
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int findTime(vector<int> num, int N, int C, int M) {
+    int sum = 0, cnt = 0;
+    for (int i = 0; i < N; i++) {
+        if (sum + num[i] > C) {
+            cnt++;
+            sum = num[i];
+        } else {
+            sum += num[i];
+        }
+    }
+
+    if (sum > 0) cnt++;
+
+    int t = cnt * M + 1;
+    return t;
+}
+
+int main() {
+    int N, C, M;
+    cin >> N >> C >> M;
+    vector<int> num(N);
+    for (int i = 0; i < N; i++) {
+        cin >> num[i];
+    }
+    cout << findTime(num, N, C, M) << endl;
+    return 0;
+}
+
+Input:
+7 12 3
+10 5 7 3 2 6 4
+
+Output:
+13
+
+===================
+
+Question3: minimum_cost
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void bfs(int src, vector<vector<int>>& graph, int val, vector<int>& dist){
+    dist[src] = 0;
+    queue<int> q;
+    q.push(src);
+    while(!q.empty()){
+        int node = q.front(); q.pop();
+        for(int it:graph[node]){
+            if(dist[it] == -1){
+                dist[it] = dist[node]+val;
+                q.push(it);
+            }
+        }
+    }
+}
+
+int findCost(vector<vector<int>>& graph, int N, int M, int X, int Y, int Z){
+    vector<int> dist1(N+1, -1),dist2(N+1, -1), dist3(N+1, -1);
+    bfs(1, graph, X, dist1);
+    bfs(2, graph, Y, dist2);
+    bfs(N, graph, Z, dist3);
+    for(int i=1; i<=N; i++){
+        cout << dist1[i] << " " << dist2[i] << " " << dist3[i] << endl;
+    }
+    int sum=INT_MAX;
+    for(int i=1; i<=N; i++){
+        sum = min(sum, dist1[i]+dist2[i]+dist3[i]);
+    }
+    return sum;
+}
+
+int main()
+{
+    int N, M, X, Y, Z;
+    cin >> N >> M >> X >> Y >> Z;
+    vector<vector<int>> graph(N+1);
+    for(int i=0; i<M; i++){
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+    int ans = findCost(graph, N, M, X, Y, Z);
+    cout << ans << endl;
+
+    return 0;
+}
+
+Input:
+7 8 2 3 4
+1 3
+2 4
+3 4
+3 5
+4 5
+4 6
+5 7
+6 7
+
+Output:
+14
+
+
+0 9 12
+6 0 12
+2 6 8
+4 3 8
+4 6 4
+6 6 4
+6 9 0
+
+============================================
+
+
